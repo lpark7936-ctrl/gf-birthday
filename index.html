@@ -1,0 +1,295 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little World Made for You 🌊</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Georgia, serif;
+    color: #f3f4ff;
+    text-align: center;
+    background:
+        radial-gradient(ellipse at 20% 20%, #41418a 0%, transparent 45%),
+        radial-gradient(ellipse at 80% 70%, #087f9c 0%, transparent 50%),
+        linear-gradient(145deg, #100d35, #25185a, #075c83);
+    background-attachment: fixed;
+    overflow-x: hidden;
+}
+
+.ocean {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.bubble {
+    position: absolute;
+    bottom: -80px;
+    width: 12px;
+    height: 12px;
+    border: 1px solid rgba(113, 245, 255, 0.65);
+    border-radius: 50%;
+    animation: rise 13s linear infinite;
+}
+
+.bubble:nth-child(1) { left: 10%; animation-delay: 0s; }
+.bubble:nth-child(2) { left: 25%; animation-delay: 4s; width: 20px; height: 20px; }
+.bubble:nth-child(3) { left: 48%; animation-delay: 2s; }
+.bubble:nth-child(4) { left: 70%; animation-delay: 7s; width: 17px; height: 17px; }
+.bubble:nth-child(5) { left: 88%; animation-delay: 5s; }
+
+@keyframes rise {
+    0% {
+        transform: translateY(0);
+        opacity: 0;
+    }
+    20% { opacity: 0.8; }
+    100% {
+        transform: translateY(-120vh);
+        opacity: 0;
+    }
+}
+
+main {
+    position: relative;
+    z-index: 1;
+    width: min(850px, 92%);
+    margin: auto;
+    padding: 65px 0;
+}
+
+.welcome, .letter-card {
+    background: rgba(20, 23, 65, 0.72);
+    border: 1px solid rgba(111, 228, 255, 0.35);
+    border-radius: 28px;
+    padding: 45px 30px;
+    margin-bottom: 35px;
+    box-shadow: 0 0 35px rgba(36, 211, 232, 0.12);
+    backdrop-filter: blur(12px);
+}
+
+.small-title {
+    color: #f5d477;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.8rem;
+}
+
+h1 {
+    color: #83f4f2;
+    font-size: clamp(2rem, 6vw, 3.3rem);
+    text-shadow: 0 0 22px rgba(75, 229, 255, 0.4);
+}
+
+.subtitle {
+    color: #d2b9ff;
+    font-size: 1.35rem;
+    line-height: 1.7;
+}
+
+.intro {
+    line-height: 1.9;
+    color: #e6e8ff;
+}
+
+button {
+    margin-top: 25px;
+    padding: 16px 30px;
+    border: 1px solid #9afaff;
+    border-radius: 40px;
+    background: linear-gradient(100deg, #168da9, #7352b8);
+    color: white;
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 25px rgba(91, 238, 255, 0.4);
+}
+
+.letter-card[hidden] {
+    display: none;
+}
+
+.letter-card {
+    animation: appear 1.2s ease;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.diamond {
+    font-size: 4rem;
+    animation: glow 3s ease-in-out infinite;
+}
+
+@keyframes glow {
+    50% {
+        transform: scale(1.12);
+        filter: drop-shadow(0 0 15px #70f5ff);
+    }
+}
+
+h2 {
+    color: #f5d477;
+    font-size: 2.2rem;
+}
+
+.letter {
+    text-align: left;
+    line-height: 2;
+    font-size: 1.08rem;
+    color: #f0edff;
+    margin-top: 30px;
+}
+
+.letter p {
+    margin-bottom: 25px;
+}
+
+.signature {
+    color: #83f4f2;
+    font-size: 1.2rem;
+    font-style: italic;
+    margin-top: 35px;
+}
+
+footer {
+    color: #c8b9f4;
+    font-size: 0.9rem;
+    padding: 25px;
+}
+
+@media (max-width: 600px) {
+    .welcome, .letter-card {
+        padding: 35px 22px;
+    }
+
+    .letter {
+        font-size: 1rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="ocean" aria-hidden="true">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+</div>
+
+<main>
+
+    <section class="welcome">
+        <p class="small-title">A birthday surprise made with love</p>
+
+        <h1>Happy Birthday, My Love 🌊</h1>
+
+        <p class="subtitle">
+            A little world, made just for you.
+        </p>
+
+        <p class="intro">
+            Even though oceans separate us,
+            you're always close to my heart.
+        </p>
+
+        <button id="surpriseButton">
+            Discover Your Surprise ✨
+        </button>
+    </section>
+
+    <section class="letter-card" id="letterSection" hidden>
+
+        <div class="diamond">💎</div>
+
+        <p class="small-title">A letter from my heart to yours</p>
+
+        <h2>My Rarest Diamond</h2>
+
+        <div class="letter">
+
+            <p>
+                You sometimes remind me of a diamond: rare, precious,
+                and beautiful in ways that words could never fully describe.
+                But what makes you so special to me isn't simply your appearance.
+                It's your heart, your spirit, your personality, and all the
+                little things that make you who you are.
+            </p>
+
+            <p>
+                You are so much more than just another person in my life.
+                You've become someone incredibly important to me, someone I
+                cherish beyond what I could ever properly express. I don't
+                just love the way you look; I love the person behind that
+                beauty, and I hope you never forget how special you truly are.
+            </p>
+
+            <p>
+                I love you with every part of my being, and I will continue
+                to love you with every passing second, every minute, and
+                every day that follows. No matter how many miles separate us,
+                you will always have a special place in my heart.
+            </p>
+
+            <p>
+                You are my rarest diamond, my greatest treasure, and someone
+                I am endlessly grateful to have in my life. ❤️
+            </p>
+
+        </div>
+
+        <p class="signature">With all my love, always ♡</p>
+
+    </section>
+
+    <footer>
+        Made with love, across every ocean. 🌙
+    </footer>
+
+</main>
+
+<script>
+const surpriseButton = document.getElementById("surpriseButton");
+const letterSection = document.getElementById("letterSection");
+
+surpriseButton.addEventListener("click", function() {
+    letterSection.hidden = false;
+
+    surpriseButton.textContent = "My Rarest Diamond 💎";
+
+    letterSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+});
+</script>
+
+</body>
+</html>
