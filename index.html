@@ -397,5 +397,107 @@ function playBirthdayMusic() {
     document.getElementById("musicButton").textContent = "♫ Our Song Is Playing ♡";
 }
 </script>
+    <script>
+const memorySymbols = ["❤️", "❤️", "💎", "💎", "🌸", "🌸", "🌙", "🌙"];
+
+let flippedCards = [];
+let matchedPairs = 0;
+let lockBoard = false;
+
+function openMemoryGame() {
+    document.querySelector(".welcome").hidden = true;
+    document.getElementById("letterSection").hidden = true;
+
+    const game = document.getElementById("memoryGame");
+    game.hidden = false;
+
+    startMemoryGame();
+    game.scrollIntoView({ behavior: "smooth" });
+}
+
+function closeMemoryGame() {
+    document.getElementById("memoryGame").hidden = true;
+    document.querySelector(".welcome").hidden = false;
+
+    document.querySelector(".welcome").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+function startMemoryGame() {
+    const board = document.getElementById("memoryBoard");
+    const gameWin = document.getElementById("gameWin");
+
+    let shuffledCards = [...memorySymbols].sort(() => Math.random() - 0.5);
+
+    flippedCards = [];
+    matchedPairs = 0;
+    lockBoard = false;
+
+    board.innerHTML = "";
+    gameWin.hidden = true;
+
+    document.getElementById("gameStatus").textContent = "Matches: 0 / 4";
+
+    shuffledCards.forEach(symbol => {
+        const card = document.createElement("button");
+
+        card.type = "button";
+        card.className = "memory-card";
+        card.textContent = "❔";
+        card.dataset.symbol = symbol;
+
+        card.addEventListener("click", function () {
+            flipMemoryCard(card);
+        });
+
+        board.appendChild(card);
+    });
+}
+
+function flipMemoryCard(card) {
+    if (
+        lockBoard ||
+        card.classList.contains("matched") ||
+        flippedCards.includes(card)
+    ) {
+        return;
+    }
+
+    card.textContent = card.dataset.symbol;
+    flippedCards.push(card);
+
+    if (flippedCards.length === 2) {
+        if (flippedCards[0].dataset.symbol === flippedCards[1].dataset.symbol) {
+            flippedCards.forEach(card => {
+                card.classList.add("matched");
+                card.disabled = true;
+            });
+
+            matchedPairs++;
+
+            document.getElementById("gameStatus").textContent =
+                `Matches: ${matchedPairs} / 4`;
+
+            flippedCards = [];
+
+            if (matchedPairs === 4) {
+                document.getElementById("gameWin").hidden = false;
+            }
+        } else {
+            lockBoard = true;
+
+            setTimeout(() => {
+                flippedCards.forEach(card => {
+                    card.textContent = "❔";
+                });
+
+                flippedCards = [];
+                lockBoard = false;
+            }, 800);
+        }
+    }
+}
+</script>
 </body>
 </html>
