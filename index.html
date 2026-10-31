@@ -11,7 +11,43 @@
 <meta property="og:url" content="https://lpark7936-ctrl.github.io/gf-birthday/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+.memory-board {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(55px, 1fr));
+    gap: 12px;
+    max-width: 440px;
+    margin: 25px auto;
+}
 
+.memory-card {
+    min-height: 90px;
+    border: 1px solid #9afaff;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #168da9, #7352b8);
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.memory-card:disabled {
+    cursor: default;
+    opacity: 1;
+}
+
+.memory-card.matched {
+    background: rgba(40, 150, 130, 0.8);
+}
+
+@media (max-width: 600px) {
+    .memory-board {
+        gap: 8px;
+    }
+
+    .memory-card {
+        min-height: 72px;
+        font-size: 1.7rem;
+    }
+}
 <style>
 * {
     box-sizing: border-box;
