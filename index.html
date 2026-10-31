@@ -307,13 +307,40 @@ surpriseButton.addEventListener("click", function() {
     });
 });
 </script>
-<iframe
-    id="birthdayMusic"
-    width="0"
-    height="0"
-    src="https://www.youtube.com/embed/CAeAt5kPZ7c?autoplay=1&loop=1&playlist=CAeAt5kPZ7c"
-    title="Birthday music"
-    allow="autoplay; encrypted-media">
-</iframe>
+<div style="text-align: center; margin: 20px 0;">
+    <button
+        id="musicButton"
+        onclick="playBirthdayMusic()"
+        style="
+            padding: 14px 28px;
+            border: 1px solid #9afaff;
+            border-radius: 40px;
+            background: linear-gradient(100deg, #168da9, #7352b8);
+            color: white;
+            font-family: Georgia, serif;
+            font-size: 1rem;
+            cursor: pointer;">
+        ♡ Play Our Song ♡
+    </button>
+
+    <iframe
+        id="birthdayMusic"
+        width="0"
+        height="0"
+        src=""
+        allow="autoplay; encrypted-media">
+    </iframe>
+</div>
+
+<script>
+function playBirthdayMusic() {
+    const player = document.getElementById("birthdayMusic");
+
+    player.src =
+        "https://www.youtube.com/embed/CAeAt5kPZ7c?autoplay=1&loop=1&playlist=CAeAt5kPZ7c";
+
+    document.getElementById("musicButton").textContent = "♫ Our Song Is Playing ♡";
+}
+</script>
 </body>
 </html>
