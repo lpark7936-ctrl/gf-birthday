@@ -234,6 +234,53 @@ footer {
 .memory-card.matched {
     background: rgba(40, 150, 130, 0.8);
 }
+    /* Our little ocean companions */
+.ocean-buddy {
+    position: fixed;
+    bottom: 25px;
+    z-index: 5;
+    border: none;
+    background: rgba(20, 40, 90, 0.55);
+    border-radius: 50%;
+    width: 85px;
+    height: 85px;
+    font-size: 3rem;
+    cursor: pointer;
+    animation: buddyFloat 3s ease-in-out infinite;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 20px rgba(113, 245, 255, 0.25);
+}
+
+.ocean-buddy:hover {
+    transform: scale(1.15);
+}
+
+.seal-buddy {
+    left: 20px;
+}
+
+.dolphin-buddy {
+    right: 20px;
+    animation-delay: 1.5s;
+}
+
+@keyframes buddyFloat {
+    0%, 100% {
+        translate: 0 0;
+    }
+    50% {
+        translate: 0 -12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .ocean-buddy {
+        width: 65px;
+        height: 65px;
+        font-size: 2.3rem;
+        bottom: 12px;
+    }
+}
 </style>
 </head>
 
@@ -246,7 +293,20 @@ footer {
     <div class="bubble"></div>
     <div class="bubble"></div>
 </div>
+<!-- Our two little ocean companions -->
+<button class="ocean-buddy seal-buddy"
+        id="sealBuddy"
+        type="button"
+        aria-label="Click the baby seal">
+    🦭
+</button>
 
+<button class="ocean-buddy dolphin-buddy"
+        id="dolphinBuddy"
+        type="button"
+        aria-label="Click the baby dolphin">
+    🐬
+</button>
 <main>
 
     <section class="welcome">
