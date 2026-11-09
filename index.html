@@ -281,6 +281,41 @@ footer {
         bottom: 12px;
     }
 }
+    /* Big friendly shark */
+#bigShark {
+    position: fixed;
+    top: 50%;
+    left: -350px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+    animation: sharkArrival 1.5s ease-out forwards;
+    animation-delay: 1s;
+}
+
+.shark-character {
+    font-size: 9rem;
+    filter: drop-shadow(0 0 20px #55eaff);
+}
+
+.shark-message {
+    background: white;
+    color: #174c76;
+    padding: 15px 22px;
+    border-radius: 25px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    box-shadow: 0 0 20px #75eaff;
+}
+
+@keyframes sharkArrival {
+    to {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
 </style>
 </head>
 
@@ -307,6 +342,10 @@ footer {
         aria-label="Click the baby dolphin">
     🐬
 </button>
+    <div id="bigShark">
+    <div class="shark-message">Hey Hon! ❤️</div>
+    <div class="shark-character">🦈</div>
+</div>
 <main>
 
     <section class="welcome">
