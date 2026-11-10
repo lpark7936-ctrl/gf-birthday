@@ -216,35 +216,79 @@ h1, .subtitle, .dolphin, .welcome {
     </div>
 </div>
 <script>
+  
+<script>
     const userInput = document.getElementById("userInput");
     const sendButton = document.getElementById("sendButton");
     const chatMessages = document.getElementById("chatMessages");
 
-    function sendMessage() {
+    const workerURL =
+        "https://autumn-cell-2bb4.leopcentral.workers.dev";
+
+    const conversation = [];
+
+    function addMessage(text, className) {
+        const bubble = document.createElement("div");
+        bubble.className = "message " + className;
+        bubble.textContent = text;
+        chatMessages.appendChild(bubble);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function sendMessage() {
         const message = userInput.value.trim();
 
-        if (message === "") return;
+        if (!message || sendButton.disabled) return;
 
-        // Display user's message
-        const userBubble = document.createElement("div");
-        userBubble.className = "message user-message";
-        userBubble.textContent = message;
-        chatMessages.appendChild(userBubble);
+        addMessage(message, "user-message");
+        conversation.push({
+            role: "user",
+            content: message
+        });
 
         userInput.value = "";
+        sendButton.disabled = true;
+        sendButton.textContent = "Thinking...";
 
-        // Temporary dolphin response
-        setTimeout(() => {
-            const dolphinBubble = document.createElement("div");
-            dolphinBubble.className = "message dolphin-message";
-            dolphinBubble.textContent =
-                "That's interesting! 🐬 Tell me more!";
-            chatMessages.appendChild(dolphinBubble);
+        try {
+            const response = await fetch(workerURL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    messages: conversation
+                })
+            });
 
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }, 700);
+            const data = await response.json();
 
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+            if (!response.ok) {
+                throw new Error(data.error || "Connection failed.");
+            }
+
+            if (!data.reply) {
+                throw new Error("The dolphin returned an empty reply.");
+            }
+
+            addMessage(data.reply, "dolphin-message");
+
+            conversation.push({
+                role: "assistant",
+                content: data.reply
+            });
+
+        } catch (error) {
+            console.error(error);
+            addMessage(
+                "Oh no! I couldn't reach my AI brain. Please try again! 🐬",
+                "dolphin-message"
+            );
+        } finally {
+            sendButton.disabled = false;
+            sendButton.textContent = "Send";
+            userInput.focus();
+        }
     }
 
     sendButton.addEventListener("click", sendMessage);
@@ -254,6 +298,8 @@ h1, .subtitle, .dolphin, .welcome {
             sendMessage();
         }
     });
+</script>
+
 </script>
 </body>
 </html>
