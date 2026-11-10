@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -189,6 +188,22 @@ button:disabled {
     padding: 12px;
 }
 
+.model-picker {
+    padding: 16px 18px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+.model-picker label { font-weight: bold; }
+.model-picker select {
+    width: 100%; padding: 12px; border-radius: 12px;
+    border: 1px solid #67e8f9; background: #082f49;
+    color: white; font-size: 15px;
+}
+#modelHint { color: #cffafe; font-size: 12px; }
+.model-picker select:disabled { opacity: .6; }
+
 @media(max-width: 500px) {
     .dolphin { font-size: 65px; }
     .chat-messages { height: 50vh; }
@@ -242,6 +257,16 @@ button:disabled {
             <button id="sendButton" disabled>Send</button>
         </div>
 
+        <div class="model-picker">
+            <label for="modelSelect">Choose Dolphin's brain</label>
+            <select id="modelSelect">
+                <option value="light">Light — smaller download</option>
+                <option value="standard" selected>Standard — balanced</option>
+                <option value="advanced">Advanced — stronger device needed</option>
+            </select>
+            <div id="modelHint">Standard uses the model that already worked for you.</div>
+        </div>
+
         <div class="actions">
             <button id="loadButton">Wake Up Dolphin 🐬</button>
             <button id="clearButton">New Chat</button>
@@ -259,7 +284,18 @@ button:disabled {
 import { CreateMLCEngine } from
     "https://esm.run/@mlc-ai/web-llm";
 
-const MODEL = "Llama-3.2-1B-Instruct-q4f16_1-MLC";
+// WebLLM model IDs. If a model is unavailable in the installed
+// WebLLM catalog, its loading error will be shown in the chat.
+const MODELS = {
+    light: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+    standard: "Llama-3.2-1B-Instruct-q4f16_1-MLC",
+    advanced: "Llama-3.2-3B-Instruct-q4f16_1-MLC"
+};
+const MODEL_HINTS = {
+    light: "Light: smaller model, usually faster but less capable.",
+    standard: "Standard uses the model that already worked for you.",
+    advanced: "Advanced: larger download and higher graphics-memory requirements."
+};
 
 const status = document.getElementById("status");
 const progressBar = document.getElementById("progressBar");
@@ -268,6 +304,8 @@ const input = document.getElementById("userInput");
 const sendButton = document.getElementById("sendButton");
 const loadButton = document.getElementById("loadButton");
 const clearButton = document.getElementById("clearButton");
+const modelSelect = document.getElementById("modelSelect");
+const modelHint = document.getElementById("modelHint");
 
 let engine = null;
 let busy = false;
@@ -340,6 +378,7 @@ function setStatus(text) {
 function updateButtons() {
     sendButton.disabled = !engine || busy;
     loadButton.disabled = loading || !!engine;
+    modelSelect.disabled = loading || !!engine;
 }
 
 async function loadAI() {
@@ -361,7 +400,8 @@ async function loadAI() {
     try {
         setStatus("Downloading Dolphin's AI brain...");
 
-        engine = await CreateMLCEngine(MODEL, {
+        const selectedModel = MODELS[modelSelect.value];
+        engine = await CreateMLCEngine(selectedModel, {
             initProgressCallback: (progress) => {
                 if (progress.text) {
                     setStatus(progress.text);
@@ -394,6 +434,10 @@ async function loadAI() {
 
         loadButton.textContent = "Try Again 🐬";
         progressBar.style.width = "0%";
+        addMessage(
+            "Try selecting Light or Standard if this device cannot load the chosen model.",
+            "bot"
+        );
     } finally {
         loading = false;
         updateButtons();
@@ -467,6 +511,10 @@ async function sendMessage() {
         input.focus();
     }
 }
+
+modelSelect.addEventListener("change", () => {
+    modelHint.textContent = MODEL_HINTS[modelSelect.value];
+});
 
 loadButton.addEventListener("click", loadAI);
 sendButton.addEventListener("click", sendMessage);
