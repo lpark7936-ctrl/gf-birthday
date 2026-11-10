@@ -85,7 +85,92 @@ h1, .subtitle, .dolphin, .welcome {
             background: rgba(255,255,255,0.12);
             border-radius: 20px;
         }
-    </style>
+   /* Dolphin chat window */
+.chat-container {
+    width: 90%;
+    max-width: 550px;
+    margin: 30px auto 60px;
+    background: rgba(5, 30, 75, 0.85);
+    border: 1px solid rgba(103, 232, 249, 0.5);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(103, 232, 249, 0.2);
+}
+
+.chat-header {
+    background: rgba(8, 145, 178, 0.5);
+    padding: 18px;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.chat-header p {
+    font-size: 0.85rem;
+    font-weight: normal;
+    margin-bottom: 0;
+    color: #cffafe;
+}
+
+.chat-messages {
+    height: 280px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    overflow-y: auto;
+}
+
+.message {
+    padding: 12px 16px;
+    border-radius: 16px;
+    max-width: 80%;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.dolphin-message {
+    background: #075985;
+    color: white;
+}
+
+.user-message {
+    background: #67e8f9;
+    color: #082f49;
+    align-self: flex-end;
+}
+
+.chat-input {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    background: rgba(255,255,255,0.08);
+}
+
+.chat-input input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    outline: none;
+    font-size: 1rem;
+}
+
+.chat-input button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 12px;
+    background: #67e8f9;
+    color: #082f49;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.chat-input button:hover {
+    background: #a5f3fc;
+}
+            </style>
 </head>
 
 <body>
