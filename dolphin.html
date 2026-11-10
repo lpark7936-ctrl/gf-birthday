@@ -103,11 +103,33 @@ h1, .subtitle, .dolphin, .welcome {
 
     <div class="dolphin">🐬</div>
 
-    <div class="welcome">
-         <h2>Hello! ❤️</h2>
-        <p>I'm your friendly dolphin companion!</p>
-        <p>Soon, we'll be able to talk about anything and everything.</p>
+  <div class="welcome">
+    <h2>Hello! ❤️</h2>
+    <p>I'm your friendly dolphin companion!</p>
+    <p>Ask me anything. I'm always happy to chat!</p>
+</div>
+
+<div class="chat-container">
+    <div class="chat-header">
+        🐬 Dolphin Chat
+        <p>Your friendly ocean companion</p>
     </div>
+
+    <div id="chatMessages" class="chat-messages">
+        <div class="message dolphin-message">
+            Hello there! What would you like to talk about? 🌊
+        </div>
+    </div>
+
+    <div class="chat-input">
+        <input
+            type="text"
+            id="userInput"
+            placeholder="Talk to your dolphin..."
+        >
+        <button id="sendButton" type="button">Send</button>
+    </div>
+</div>
 
 </body>
 </html>
