@@ -172,6 +172,13 @@ footer {
     font-size: .85rem;
   }
 }
+
+/* Darken only map imagery; keep diamonds, hearts, labels and controls clear. */
+#map.night-map .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(.72) contrast(1.12) saturate(.85);
+}
+#map .leaflet-tile-pane { transition: filter .35s ease; }
+
 </style>
 </head>
 
@@ -251,53 +258,26 @@ footer {
     maxZoom: 19
   }).setView([24, 0], 2);
 
-  // Reliable default map, with a dark option and automatic tile fallback.
+  // Both themes use the same public OpenStreetMap tiles.
+  // Night mode is a CSS color treatment, so no dark-map API key is needed.
   const MAP_THEME_KEY = "ocean-world-map-theme-v1";
-  const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>';
-  const cartoAttribution = osmAttribution + ' &copy; <a href="https://carto.com/attributions">CARTO</a>';
   const osmTiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19, attribution: osmAttribution
-  });
-  const lightTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-    subdomains: "abcd", maxZoom: 19, attribution: cartoAttribution
-  });
-  const darkTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-    subdomains: "abcd", maxZoom: 19, attribution: cartoAttribution
-  });
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+  }).addTo(map);
+
   let mapTheme = "light";
   try {
     if (localStorage.getItem(MAP_THEME_KEY) === "dark") mapTheme = "dark";
   } catch (error) {}
 
-  let activeTiles = null;
-  let fallbackTimer = null;
-  function activateTiles(layer) {
-    if (fallbackTimer) clearTimeout(fallbackTimer);
-    if (activeTiles && map.hasLayer(activeTiles)) map.removeLayer(activeTiles);
-    activeTiles = layer;
-    layer.addTo(map);
-    layer.bringToBack();
-    map.invalidateSize();
-  }
-  function useOSMFallback() {
-    if (activeTiles === osmTiles) return;
-    activateTiles(osmTiles);
-    status.textContent = "🐬 The special map style could not load, so I switched to the regular map. Your diamonds are safe!";
-  }
-  // If a custom map fails, the regular OpenStreetMap view is used instead.
-  lightTiles.on("tileerror", useOSMFallback);
-  darkTiles.on("tileerror", useOSMFallback);
   function applyMapTheme() {
+    const dark = mapTheme === "dark";
+    document.getElementById("map").classList.toggle("night-map", dark);
     const themeButton = document.getElementById("mapTheme");
-    themeButton.textContent = mapTheme === "dark" ? "☀️ Day Map" : "🌙 Night Map";
-    themeButton.setAttribute("aria-pressed", String(mapTheme === "dark"));
-    // Default to OpenStreetMap for daytime reliability.
-    activateTiles(mapTheme === "dark" ? darkTiles : osmTiles);
-    if (mapTheme === "dark") {
-      fallbackTimer = setTimeout(() => {
-        if (activeTiles === darkTiles && darkTiles._tiles && !Object.values(darkTiles._tiles).some(t => t.loaded && t.el && t.el.complete && t.el.naturalWidth > 0)) useOSMFallback();
-      }, 6500);
-    }
+    themeButton.textContent = dark ? "☀️ Day Map" : "🌙 Night Map";
+    themeButton.setAttribute("aria-pressed", String(dark));
+    map.invalidateSize();
   }
   applyMapTheme();
   document.getElementById("mapTheme").addEventListener("click", () => {
