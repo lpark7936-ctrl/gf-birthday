@@ -700,6 +700,39 @@ main { padding-top: 170px; }
     margin-top: 22px;
 }
 
+
+/* A quiet corner for difficult days */
+.comfort-corner {
+    border-color: rgba(140, 232, 255, .6);
+    background: linear-gradient(145deg, rgba(13, 30, 73, .92), rgba(46, 34, 94, .88), rgba(8, 88, 112, .82));
+}
+.comfort-corner details { margin-top: 20px; }
+.comfort-corner summary {
+    display: inline-block;
+    cursor: pointer;
+    padding: 15px 25px;
+    border: 1px solid #9afaff;
+    border-radius: 40px;
+    background: linear-gradient(100deg, #168da9, #7352b8);
+    color: white;
+    font-size: 1rem;
+}
+.comfort-corner summary:hover, .comfort-corner summary:focus-visible {
+    box-shadow: 0 0 22px rgba(91, 238, 255, .4);
+}
+.comfort-letter {
+    margin: 24px auto 0;
+    max-width: 640px;
+    padding: 22px;
+    border-radius: 18px;
+    background: rgba(8, 20, 54, .55);
+    text-align: left;
+    line-height: 1.9;
+    color: #f0edff;
+}
+.comfort-letter p { margin: 0 0 18px; }
+.comfort-letter p:last-child { margin-bottom: 0; }
+
 </style>
 </head>
 
@@ -894,6 +927,35 @@ main { padding-top: 170px; }
 
         <p class="signature">With all my love, always ♡</p>
 
+    </section>
+
+    <!-- A gentle place to return to on difficult days -->
+    <section class="letter-card comfort-corner" aria-label="A little shelter from the storm">
+        <p class="small-title">A Little Shelter From the Storm</p>
+        <div class="diamond" aria-hidden="true">🌧️🌊</div>
+        <h2>For the Days When the Ocean Feels Stormy</h2>
+        <p class="intro">
+            Hon, you don't have to be happy every day. Whenever things feel heavy,
+            this little corner is here for you. 💙
+        </p>
+        <details>
+            <summary>Open a Little Comfort 💌</summary>
+            <div class="comfort-letter">
+                <p>My love,</p>
+                <p>If today has been difficult, I hope you can be gentle with yourself.
+                You don't need to pretend you're okay or have everything figured out.
+                It's alright to rest, to feel what you feel, and to take things one moment at a time.</p>
+                <p>I made this little ocean because you mean so much to me.
+                I hope it brings you a smile, a peaceful moment, or a reminder
+                that you are cherished for exactly who you are.</p>
+                <p>Even when the waves feel high, you don't have to face everything alone.
+                You deserve care and support, from me and from people you trust.
+                If things ever feel too heavy, please reach out to someone who can be there with you.</p>
+                <p>There is no pressure to feel better right away. This little world
+                will be waiting whenever you want to visit. 🌊</p>
+                <p class="signature">With all my love, Leo 💙</p>
+            </div>
+        </details>
     </section>
 
     <!-- A personal dedication from Leo to Virginia -->
