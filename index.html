@@ -3,7 +3,6 @@
 <html lang="en">
 <head>
     <script src="ocean-gate.js"></script>
-<script src="ocean-gate.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A Little World Made for You 🌊</title>
@@ -792,6 +791,16 @@ main { padding-top: 170px; }
     <span class="holiday-ocean-arrow" aria-hidden="true">➜</span>
 </a>
 
+<!-- Our Little World: 50-country diamond treasure hunt -->
+<a href="world.html" class="holiday-ocean-button" aria-label="Explore Our Little World diamond treasure hunt">
+    <span class="holiday-ocean-icon" aria-hidden="true">🌎💎🐬</span>
+    <span class="holiday-ocean-copy">
+        <strong>Our Little World</strong>
+        <small>50 countries, 50 diamonds, and little messages waiting for you 💜</small>
+    </span>
+    <span class="holiday-ocean-arrow" aria-hidden="true">➜</span>
+</a>
+
 <a href="dolphin.html" class="dolphin-button">
     🐬 Need Help Studying?
 </a>
@@ -1037,6 +1046,30 @@ function flipMemoryCard(card) {
 }
 </script>
 <script>
+// Little ocean companions: give each button a working response.
+const buddyMessages = {
+    sealBuddy: ["🦭 Sending you the biggest little seal hug! 💜", "🦭 You're a treasure, hon! 💎"],
+    dolphinBuddy: ["🐬 A little dolphin says I love you! 💙", "🐬 Across every ocean, you're special to me! 🌊"]
+};
+Object.entries(buddyMessages).forEach(([id, messages]) => {
+    const buddy = document.getElementById(id);
+    if (!buddy) return;
+    let next = 0;
+    buddy.addEventListener("click", () => {
+        const message = messages[next % messages.length];
+        next++;
+        let note = document.getElementById("buddyMessage");
+        if (!note) {
+            note = document.createElement("div");
+            note.id = "buddyMessage";
+            note.setAttribute("role", "status");
+            note.style.cssText = "position:fixed;bottom:105px;left:50%;transform:translateX(-50%);z-index:10000;max-width:85vw;padding:13px 20px;border:1px solid #9afaff;border-radius:20px;background:#1c2356;color:white;box-shadow:0 0 20px #55dfff88;pointer-events:none";
+            document.body.appendChild(note);
+        }
+        note.textContent = message;
+    });
+});
+
 // The Amor Octopus shares a different message with each click.
 const amorMessages = [
     "If you hurt me, I will seek to forgive while respecting our boundaries. 💜",
