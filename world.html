@@ -238,7 +238,7 @@ footer {
 
   if (typeof L === "undefined") {
     status.textContent =
-      "Map library failed to load. Please refresh with an internet connection.";
+      "The interactive map library did not load. Please check your connection and refresh the page.";
     return;
   }
 
@@ -251,28 +251,53 @@ footer {
     maxZoom: 19
   }).setView([24, 0], 2);
 
-  // Light and dark map tiles, with the preference saved on this device.
+  // Reliable default map, with a dark option and automatic tile fallback.
   const MAP_THEME_KEY = "ocean-world-map-theme-v1";
-  const mapAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
-  const lightTiles = L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    { subdomains: "abcd", maxZoom: 19, attribution: mapAttribution }
-  );
-  const darkTiles = L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    { subdomains: "abcd", maxZoom: 19, attribution: mapAttribution }
-  );
+  const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>';
+  const cartoAttribution = osmAttribution + ' &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  const osmTiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19, attribution: osmAttribution
+  });
+  const lightTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    subdomains: "abcd", maxZoom: 19, attribution: cartoAttribution
+  });
+  const darkTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    subdomains: "abcd", maxZoom: 19, attribution: cartoAttribution
+  });
   let mapTheme = "light";
   try {
     if (localStorage.getItem(MAP_THEME_KEY) === "dark") mapTheme = "dark";
   } catch (error) {}
+
+  let activeTiles = null;
+  let fallbackTimer = null;
+  function activateTiles(layer) {
+    if (fallbackTimer) clearTimeout(fallbackTimer);
+    if (activeTiles && map.hasLayer(activeTiles)) map.removeLayer(activeTiles);
+    activeTiles = layer;
+    layer.addTo(map);
+    layer.bringToBack();
+    map.invalidateSize();
+  }
+  function useOSMFallback() {
+    if (activeTiles === osmTiles) return;
+    activateTiles(osmTiles);
+    status.textContent = "🐬 The special map style could not load, so I switched to the regular map. Your diamonds are safe!";
+  }
+  // If a custom map fails, the regular OpenStreetMap view is used instead.
+  lightTiles.on("tileerror", useOSMFallback);
+  darkTiles.on("tileerror", useOSMFallback);
   function applyMapTheme() {
-    if (map.hasLayer(lightTiles)) map.removeLayer(lightTiles);
-    if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
-    (mapTheme === "dark" ? darkTiles : lightTiles).addTo(map).bringToBack();
     const themeButton = document.getElementById("mapTheme");
     themeButton.textContent = mapTheme === "dark" ? "☀️ Day Map" : "🌙 Night Map";
     themeButton.setAttribute("aria-pressed", String(mapTheme === "dark"));
+    // Default to OpenStreetMap for daytime reliability.
+    activateTiles(mapTheme === "dark" ? darkTiles : osmTiles);
+    if (mapTheme === "dark") {
+      fallbackTimer = setTimeout(() => {
+        if (activeTiles === darkTiles && darkTiles._tiles && !Object.values(darkTiles._tiles).some(t => t.loaded && t.el && t.el.complete && t.el.naturalWidth > 0)) useOSMFallback();
+      }, 6500);
+    }
   }
   applyMapTheme();
   document.getElementById("mapTheme").addEventListener("click", () => {
@@ -280,6 +305,7 @@ footer {
     try { localStorage.setItem(MAP_THEME_KEY, mapTheme); } catch (error) {}
     applyMapTheme();
   });
+  window.addEventListener("load", () => map.invalidateSize());
 
   function heart(emoji) {
     return L.divIcon({
