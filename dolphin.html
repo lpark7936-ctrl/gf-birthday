@@ -1,349 +1,490 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talk to Your Dolphin 🐬</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dolphin — Your Ocean Companion 🐬</title>
 
-    <style>
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            color: white;
-            text-align: center;
-            background: linear-gradient(
-                180deg,
-                #071b49,
-                #075985,
-                #0891b2
-            );
-                        overflow-x: hidden;
-        }
+<style>
+* { box-sizing: border-box; }
 
-        .ocean {
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: linear-gradient(160deg, #061331, #075985, #0891b2);
+    overflow-x: hidden;
+}
+
+.ocean {
     position: fixed;
     inset: 0;
-    pointer-events: none;
     overflow: hidden;
+    pointer-events: none;
     z-index: 0;
 }
 
-h1, .subtitle, .dolphin, .welcome {
+.bubble {
+    position: absolute;
+    bottom: -60px;
+    border: 2px solid #ffffff55;
+    border-radius: 50%;
+    animation: rise 10s linear infinite;
+}
+
+.bubble:nth-child(1) { left: 10%; width: 20px; height: 20px; }
+.bubble:nth-child(2) { left: 30%; width: 13px; height: 13px; animation-delay: 2s; }
+.bubble:nth-child(3) { left: 55%; width: 26px; height: 26px; animation-delay: 5s; }
+.bubble:nth-child(4) { left: 75%; width: 16px; height: 16px; animation-delay: 3s; }
+.bubble:nth-child(5) { left: 90%; width: 22px; height: 22px; animation-delay: 7s; }
+
+@keyframes rise {
+    to { transform: translateY(-115vh); opacity: 0; }
+}
+
+main {
     position: relative;
     z-index: 1;
+    max-width: 850px;
+    margin: auto;
+    padding: 24px 15px;
 }
 
-        .bubble {
-            position: absolute;
-            bottom: -50px;
-            width: 15px;
-            height: 15px;
-            border: 2px solid rgba(255,255,255,0.5);
-            border-radius: 50%;
-            animation: rise 8s infinite ease-in;
-        }
-
-        .bubble:nth-child(1) { left: 10%; animation-delay: 0s; }
-        .bubble:nth-child(2) { left: 30%; animation-delay: 2s; }
-        .bubble:nth-child(3) { left: 55%; animation-delay: 4s; }
-        .bubble:nth-child(4) { left: 75%; animation-delay: 1s; }
-        .bubble:nth-child(5) { left: 90%; animation-delay: 3s; }
-
-        @keyframes rise {
-            to {
-                transform: translateY(-110vh);
-                opacity: 0;
-            }
-        }
-
-        h1 {
-            margin-top: 55px;
-            font-size: 2.5rem;
-            text-shadow: 0 0 15px #67e8f9;
-        }
-
-        .subtitle {
-            color: #cffafe;
-            font-size: 1.1rem;
-        }
-
-        .dolphin {
-            font-size: 9rem;
-            margin-top: 35px;
-            animation: swim 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 25px #67e8f9);
-        }
-
-        @keyframes swim {
-            0%, 100% { transform: translateY(0) rotate(-5deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-
-        .welcome {
-            margin: 20px auto;
-            max-width: 500px;
-            padding: 20px;
-            background: rgba(255,255,255,0.12);
-            border-radius: 20px;
-        }
-   /* Dolphin chat window */
-.chat-container {
-    width: 90%;
-    max-width: 550px;
-    margin: 30px auto 60px;
-    background: rgba(5, 30, 75, 0.85);
-    border: 1px solid rgba(103, 232, 249, 0.5);
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 0 30px rgba(103, 232, 249, 0.2);
+h1 {
+    text-align: center;
+    text-shadow: 0 0 18px #67e8f9;
+    margin-bottom: 8px;
 }
 
-.chat-header {
-    background: rgba(8, 145, 178, 0.5);
-    padding: 18px;
-    font-size: 1.3rem;
-    font-weight: bold;
-}
-
-.chat-header p {
-    font-size: 0.85rem;
-    font-weight: normal;
-    margin-bottom: 0;
+.subtitle {
+    text-align: center;
     color: #cffafe;
 }
 
+.dolphin {
+    text-align: center;
+    font-size: 90px;
+    margin: 15px;
+    animation: swim 3s ease-in-out infinite;
+}
+
+@keyframes swim {
+    50% { transform: translateY(-15px) rotate(7deg); }
+}
+
+.chat-container {
+    background: rgba(3, 24, 57, 0.94);
+    border: 1px solid #67e8f980;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 0 35px #67e8f933;
+}
+
+.chat-header {
+    padding: 18px;
+    background: #075985;
+    text-align: center;
+}
+
+.chat-header h2 { margin: 0 0 8px; }
+
+#status {
+    font-size: 13px;
+    color: #cffafe;
+    overflow-wrap: anywhere;
+}
+
+.progress {
+    height: 5px;
+    background: #164e63;
+}
+
+#progressBar {
+    height: 100%;
+    width: 0%;
+    background: #67e8f9;
+    transition: width .2s;
+}
+
 .chat-messages {
-    height: 280px;
-    padding: 20px;
+    height: 380px;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-    overflow-y: auto;
+    padding: 20px;
 }
 
 .message {
+    max-width: 85%;
     padding: 12px 16px;
-    border-radius: 16px;
-    max-width: 80%;
+    border-radius: 17px;
     line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
     text-align: left;
 }
 
-.dolphin-message {
+.bot {
     background: #075985;
     color: white;
 }
 
-.user-message {
+.user {
+    align-self: flex-end;
     background: #67e8f9;
     color: #082f49;
-    align-self: flex-end;
 }
 
 .chat-input {
     display: flex;
     gap: 10px;
     padding: 15px;
-    background: rgba(255,255,255,0.08);
+    background: #ffffff12;
 }
 
-.chat-input input {
+#userInput {
     flex: 1;
     min-width: 0;
-    padding: 12px;
     border: none;
     border-radius: 12px;
-    outline: none;
-    font-size: 1rem;
+    padding: 13px;
+    font-size: 15px;
 }
 
-.chat-input button {
-    padding: 12px 18px;
+button {
     border: none;
     border-radius: 12px;
+    padding: 12px 18px;
     background: #67e8f9;
     color: #082f49;
     font-weight: bold;
     cursor: pointer;
 }
 
-.chat-input button:hover {
-    background: #a5f3fc;
+button:disabled {
+    opacity: .55;
+    cursor: wait;
 }
-            </style>
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px;
+}
+
+.actions button {
+    background: #164e63;
+    color: white;
+}
+
+.note {
+    text-align: center;
+    font-size: 12px;
+    color: #cffafe;
+    padding: 12px;
+}
+
+@media(max-width: 500px) {
+    .dolphin { font-size: 65px; }
+    .chat-messages { height: 50vh; }
+    .chat-input { padding: 10px; }
+    button { padding: 10px; }
+}
+</style>
 </head>
 
 <body>
+<div class="ocean">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+</div>
 
-    <div class="ocean">
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-    </div>
-
+<main>
     <h1>Meet Your Ocean Friend! 🌊</h1>
-    <p class="subtitle">A little dolphin, always ready to listen.</p>
+    <p class="subtitle">
+        A little dolphin with a world of curiosity.
+    </p>
 
     <div class="dolphin">🐬</div>
 
-  <div class="welcome">
-    <h2>Hello! ❤️</h2>
-    <p>I'm your friendly dolphin companion!</p>
-    <p>Ask me anything. I'm always happy to chat!</p>
-</div>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>🐬 Dolphin AI</h2>
+            <div id="status">Checking your browser...</div>
+        </div>
 
-<div class="chat-container">
-    <div class="chat-header">
-        🐬 Dolphin Chat
-        <p>Your friendly ocean companion</p>
-    </div>
+        <div class="progress">
+            <div id="progressBar"></div>
+        </div>
 
-    <div id="chatMessages" class="chat-messages">
-        <div class="message dolphin-message">
-            Hello there! What would you like to talk about? 🌊
+        <div id="chatMessages" class="chat-messages">
+            <div class="message bot">
+                Hey Hon! 💙 I'm your ocean companion!
+
+                Ask me about science, history, school,
+                philosophy, or anything on your mind! 🐬
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <input id="userInput"
+                type="text"
+                placeholder="Ask your dolphin anything..."
+                autocomplete="off">
+            <button id="sendButton" disabled>Send</button>
+        </div>
+
+        <div class="actions">
+            <button id="loadButton">Wake Up Dolphin 🐬</button>
+            <button id="clearButton">New Chat</button>
+        </div>
+
+        <div class="note">
+            Dolphin runs AI locally in your browser.
+            The first download may take several minutes.
+            Responses may contain mistakes.
         </div>
     </div>
+</main>
 
-    <div class="chat-input">
-        <input
-            type="text"
-            id="userInput"
-            placeholder="Talk to your dolphin..."
-        >
-        <button id="sendButton" type="button">Send</button>
-    </div>
-</div>
-  
-<script>
-   
 <script type="module">
-import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
-
-const userInput = document.getElementById("userInput");
-const sendButton = document.getElementById("sendButton");
-const chatMessages = document.getElementById("chatMessages");
-const chatStatus = document.querySelector(".chat-header p");
+import { CreateMLCEngine } from
+    "https://esm.run/@mlc-ai/web-llm";
 
 const MODEL = "Llama-3.2-1B-Instruct-q4f16_1-MLC";
 
+const status = document.getElementById("status");
+const progressBar = document.getElementById("progressBar");
+const messages = document.getElementById("chatMessages");
+const input = document.getElementById("userInput");
+const sendButton = document.getElementById("sendButton");
+const loadButton = document.getElementById("loadButton");
+const clearButton = document.getElementById("clearButton");
+
 let engine = null;
-let isLoading = false;
+let busy = false;
+let loading = false;
 
-const conversation = [
-    {
-        role: "system",
-        content: `You are Dolphin, a friendly, playful and caring
-        dolphin companion living in a magical underwater world.
-        You are helpful, intelligent, patient and encouraging.
-        Answer questions naturally, tell stories, and offer advice.
-        Use occasional dolphin emojis. Never pretend to know
-        something you do not know.`
-    }
-];
+const systemPrompt = `
+You are Dolphin, a friendly and intelligent AI dolphin
+living in a magical underwater world.
 
-function addMessage(text, className) {
+Your personality:
+- Warm, playful, patient, caring and curious.
+- Friendly and respectful to the person chatting with you.
+- Occasionally use ocean and dolphin emojis.
+- Never pretend to know something you don't know.
+
+Your abilities:
+- Explain science, biology, chemistry and physics.
+- Discuss world history and civilizations.
+- Help with mathematics, showing steps when useful.
+- Explain philosophy and ethical questions.
+- Help with writing, grammar and education.
+- Assist with programming and technology.
+- Tell stories, jokes and creative adventures.
+- Have thoughtful everyday conversations.
+- Provide general guidance while acknowledging uncertainty.
+
+For educational questions, be clear and accurate.
+For complex questions, explain ideas step by step.
+For emotional conversations, be kind and supportive.
+For factual questions, never invent sources or facts.
+You cannot browse the internet or know live events.
+
+You are a helpful AI companion, not a human.
+`;
+
+let conversation = [];
+
+function resetConversation() {
+    conversation = [
+        { role: "system", content: systemPrompt }
+    ];
+}
+
+resetConversation();
+
+function addMessage(text, type) {
     const bubble = document.createElement("div");
-    bubble.className = "message " + className;
+    bubble.className = "message " + type;
     bubble.textContent = text;
-    chatMessages.appendChild(bubble);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    messages.appendChild(bubble);
+    messages.scrollTop = messages.scrollHeight;
     return bubble;
 }
 
-async function initializeAI() {
-    if (engine) return engine;
+function setStatus(text) {
+    status.textContent = text;
+}
 
-    chatStatus.textContent = "Preparing Dolphin's brain... 🧠";
+function updateButtons() {
+    sendButton.disabled = !engine || busy;
+    loadButton.disabled = loading || !!engine;
+}
 
-    engine = await CreateMLCEngine(MODEL, {
-        initProgressCallback: (progress) => {
-            chatStatus.textContent =
-                progress.text || "Loading Dolphin...";
-        }
-    });
+async function loadAI() {
+    if (engine || loading) return;
 
-    chatStatus.textContent = "Dolphin is ready to chat! 🐬";
-    return engine;
+    if (!navigator.gpu) {
+        setStatus("WebGPU isn't available in this browser.");
+        addMessage(
+            "I need a WebGPU-compatible browser and device to wake up! 🐬",
+            "bot"
+        );
+        return;
+    }
+
+    loading = true;
+    loadButton.textContent = "Waking up...";
+    updateButtons();
+
+    try {
+        setStatus("Downloading Dolphin's AI brain...");
+
+        engine = await CreateMLCEngine(MODEL, {
+            initProgressCallback: (progress) => {
+                if (progress.text) {
+                    setStatus(progress.text);
+                }
+
+                if (typeof progress.progress === "number") {
+                    progressBar.style.width =
+                        Math.round(progress.progress * 100) + "%";
+                }
+            }
+        });
+
+        progressBar.style.width = "100%";
+        setStatus("Dolphin is awake and ready! 🐬");
+        loadButton.textContent = "Dolphin is awake!";
+
+        addMessage(
+            "I'm awake! 🌊 What shall we explore together?",
+            "bot"
+        );
+
+    } catch (error) {
+        console.error("Model loading failed:", error);
+        setStatus("Could not load Dolphin's AI.");
+
+        addMessage(
+            "My brain couldn't start: " + error.message,
+            "bot"
+        );
+
+        loadButton.textContent = "Try Again 🐬";
+        progressBar.style.width = "0%";
+    } finally {
+        loading = false;
+        updateButtons();
+    }
 }
 
 async function sendMessage() {
-    const message = userInput.value.trim();
+    const text = input.value.trim();
 
-    if (!message || isLoading) return;
+    if (!text || !engine || busy) return;
 
-    isLoading = true;
-    sendButton.disabled = true;
-    sendButton.textContent = "Thinking...";
+    busy = true;
+    updateButtons();
 
-    addMessage(message, "user-message");
-    userInput.value = "";
+    addMessage(text, "user");
+    input.value = "";
 
-    const thinkingBubble = addMessage(
-        "Let me think about that... 🐬",
-        "dolphin-message"
+    const replyBubble = addMessage(
+        "Thinking beneath the waves... 🫧",
+        "bot"
     );
 
+    conversation.push({
+        role: "user",
+        content: text
+    });
+
     try {
-        const ai = await initializeAI();
+        setStatus("Dolphin is thinking...");
 
-        conversation.push({
-            role: "user",
-            content: message
+        // Keep recent turns to fit the model context.
+        const recent = conversation.slice(1).slice(-12);
+        const context = [conversation[0], ...recent];
+
+        const result = await engine.chat.completions.create({
+            messages: context,
+            temperature: 0.6,
+            max_tokens: 400
         });
 
-        const response = await ai.chat.completions.create({
-            messages: conversation,
-            temperature: 0.7,
-            max_tokens: 350
-        });
-
-        const reply = response.choices[0]?.message?.content;
+        const reply =
+            result.choices[0]?.message?.content?.trim();
 
         if (!reply) {
-            throw new Error("Dolphin couldn't generate a reply.");
+            throw new Error("No response was generated.");
         }
 
-        thinkingBubble.textContent = reply;
+        replyBubble.textContent = reply;
 
         conversation.push({
             role: "assistant",
             content: reply
         });
 
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        setStatus("Dolphin is ready! 🐬");
 
     } catch (error) {
-        console.error("Dolphin AI error:", error);
+        console.error("Chat error:", error);
 
-        thinkingBubble.textContent =
-            "Oh no! My brain had a little hiccup! 🐬 " +
-            error.message;
+        replyBubble.textContent =
+            "Oops! Something went wrong: " + error.message;
 
-        chatStatus.textContent =
-            "Dolphin needs a little help starting up.";
+        // Remove the failed user turn from model history.
+        conversation.pop();
+
+        setStatus("Dolphin encountered an error.");
     } finally {
-        isLoading = false;
-        sendButton.disabled = false;
-        sendButton.textContent = "Send";
-        userInput.focus();
+        busy = false;
+        updateButtons();
+        messages.scrollTop = messages.scrollHeight;
+        input.focus();
     }
 }
 
+loadButton.addEventListener("click", loadAI);
 sendButton.addEventListener("click", sendMessage);
 
-userInput.addEventListener("keydown", function(event) {
+input.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
         sendMessage();
     }
 });
 
-chatStatus.textContent = "Dolphin is ready to initialize! 🐬";
-</script>
+clearButton.addEventListener("click", () => {
+    if (busy) return;
 
+    resetConversation();
+    messages.innerHTML = "";
+
+    addMessage(
+        "A fresh ocean adventure! What would you like to discuss? 🐬",
+        "bot"
+    );
+});
+
+if (navigator.gpu) {
+    setStatus("Press Wake Up Dolphin to start! 🐬");
+} else {
+    setStatus("This browser may not support WebGPU.");
+}
+
+updateButtons();
 </script>
 </body>
 </html>
