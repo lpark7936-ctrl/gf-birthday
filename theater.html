@@ -1,98 +1,1204 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101638">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Our Little Ocean Theater 🎬🐬</title>
+
 <style>
-:root{--light:#a6f5ff;--gold:#ffe6a4;--purple:#cbb8ff;--panel:rgba(13,28,69,.91)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 8%,#4d357e,transparent 40%),radial-gradient(ellipse at 85% 65%,#096e87,transparent 48%),linear-gradient(150deg,#090d2b,#172c66,#064b69);background-attachment:fixed;color:#f6f3ff;font-family:Georgia,serif}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}a{color:var(--light)}.shell{max-width:1170px;margin:auto;padding:22px 18px 90px;position:relative;z-index:1}.back{display:inline-block;padding:12px 18px;text-decoration:none;border:1px solid #8ceaff;border-radius:40px;background:#112d5a}header{text-align:center;padding:22px 0 15px}h1{font-size:clamp(2rem,5vw,3.5rem);color:var(--light);margin:12px 0}h2{color:var(--gold);margin:0 0 14px}.subtitle{color:#d9c9ff;line-height:1.6}.panel{background:var(--panel);border:1px solid #86eaff77;border-radius:25px;padding:22px;margin:24px 0;box-shadow:0 14px 40px #02071e88;backdrop-filter:blur(10px)}.screen-area{position:relative;max-width:1000px;margin:auto}.screen{position:relative;aspect-ratio:16/9;background:#030a19;border:7px solid #263d71;border-radius:19px;overflow:hidden;box-shadow:0 0 0 1px #84e9ff55,0 0 40px #3ba6e733}.screen iframe{width:100%;height:100%;border:0;display:block}.screen-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:radial-gradient(circle,#17386a,#050c24);padding:20px;text-align:center}.screen-placeholder span{font-size:clamp(3rem,10vw,7rem)}.screen-placeholder p{color:#d4d9fa}.screen:has(iframe) .screen-placeholder{display:none}.screen.fullscreen{width:100vw;height:100vh;max-width:none;border:0;border-radius:0;aspect-ratio:auto}.toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin-top:17px}.btn{border:1px solid #a6f5ff88;border-radius:16px;padding:12px 17px;color:white;background:linear-gradient(120deg,#087e9e,#7050a6);transition:transform .2s,filter .2s}.btn:hover{filter:brightness(1.2);transform:translateY(-2px)}.btn.secondary{background:#1a376b}.btn.danger{background:#67385f;border-color:#e3a2ca}.now-playing{text-align:center;color:#fff0b7;margin:14px 0 0;overflow-wrap:anywhere}.helper{font-size:.9rem;color:#c4d5f5;line-height:1.6}.input-row{display:flex;gap:9px;flex-wrap:wrap}.input-row input{flex:1;min-width:180px}.field{width:100%;padding:13px 15px;border-radius:13px;border:1px solid #91e7f3;background:#0e2754;color:white}.field::placeholder{color:#b6c7df}.collection{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:18px}.video-card{background:#1b376b;border:1px solid #74cbe777;border-radius:17px;padding:12px;display:flex;flex-direction:column;gap:9px;min-width:0}.video-card.current{border-color:var(--gold);box-shadow:0 0 17px #ffe6a433}.thumb{aspect-ratio:16/9;background:#091b38;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}.thumb img{width:100%;height:100%;object-fit:cover}.card-title{font-size:1rem;line-height:1.4;overflow-wrap:anywhere;margin:0}.card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto}.card-actions .btn{font-size:.85rem;padding:9px 12px}.empty{text-align:center;color:#d9c9ff;padding:25px 5px}.stage{position:relative}.companion{position:absolute;right:0;bottom:-16px;z-index:3;display:flex;align-items:flex-end;gap:7px;pointer-events:none}.dolphin-button{position:relative;border:0;background:none;padding:0;margin:0;pointer-events:auto;filter:drop-shadow(0 6px 9px #0008);animation:float 4s ease-in-out infinite}.dolphin-emoji{font-size:clamp(3.5rem,7vw,6rem);display:block;transform:scaleX(-1)}.dolphin-eye{position:absolute;left:42%;top:36%;font-size:12px;color:#122446;background:white;width:8px;height:10px;border-radius:50%;animation:blink 7s infinite}.companion-bubble{background:#f8f2ff;color:#27365b;border-radius:16px 16px 3px 16px;padding:10px 13px;font:14px/1.35 Georgia,serif;max-width:210px;box-shadow:0 4px 15px #0005;pointer-events:none}.companion-bubble[hidden]{display:none}.companion.sleeping .dolphin-button{animation-duration:8s;opacity:.8}.companion.sleeping .dolphin-eye{height:2px;top:42%;animation:none}.companion.sleeping .dolphin-button:after{content:'💤';position:absolute;right:0;top:0;font-size:1.3rem}.dimmed:before{content:"";position:fixed;inset:0;background:#000a;z-index:0;pointer-events:none}.dimmed .panel{background:rgba(5,11,28,.97)}.dimmed .screen{box-shadow:0 0 55px #409dd755}.bubbles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}.bubble{position:absolute;bottom:-30px;width:17px;height:17px;border:1px solid #7be9ff77;border-radius:50%;animation:rise 14s linear infinite}.bubble:nth-child(1){left:10%;animation-delay:-4s}.bubble:nth-child(2){left:35%;animation-delay:-10s}.bubble:nth-child(3){left:68%;animation-delay:-6s}.bubble:nth-child(4){left:88%;animation-delay:-13s}@keyframes rise{to{transform:translateY(-115vh);opacity:0}}@keyframes float{50%{transform:translateY(-11px)}}@keyframes blink{0%,93%,97%,100%{transform:scaleY(1)}95%{transform:scaleY(.12)}}footer{text-align:center;color:#c5b9e7;margin-top:35px}.status{min-height:1.4em;color:#ffe6a4;font-size:.9rem}.companion-note{text-align:right;font-size:.8rem;color:#c8c4e7;margin-top:20px}@media(max-width:620px){.shell{padding:15px 11px 70px}.panel{padding:13px;border-radius:18px}.screen{border-width:4px;border-radius:11px}.companion{bottom:-10px}.companion-bubble{max-width:125px;font-size:11px;padding:7px}.dolphin-emoji{font-size:3.5rem}.toolbar .btn{flex:1 1 135px}.collection{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}}
+:root {
+    --cyan: #8df2ff;
+    --purple: #c4a7ff;
+    --gold: #ffe3a3;
+    --panel: rgba(15, 30, 76, 0.88);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 20% 15%, #51408a, transparent 40%),
+        radial-gradient(circle at 85% 75%, #087d94, transparent 45%),
+        linear-gradient(145deg, #080e2e, #182c65, #07577a);
+    background-attachment: fixed;
+    color: white;
+    font-family: Georgia, serif;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+body.lights-off {
+    background: #030713;
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+}
+
+main {
+    position: relative;
+    z-index: 1;
+    max-width: 1250px;
+    margin: auto;
+    padding: 25px 18px 90px;
+}
+
+h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--cyan);
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: var(--gold);
+}
+
+p {
+    line-height: 1.7;
+}
+
+.subtitle {
+    color: #dccbff;
+}
+
+.back {
+    display: inline-block;
+    margin: 12px;
+    padding: 12px 22px;
+    color: white;
+    text-decoration: none;
+    border: 1px solid var(--cyan);
+    border-radius: 30px;
+}
+
+.panel {
+    margin: 25px 0;
+    padding: 24px;
+    background: var(--panel);
+    border: 1px solid rgba(141, 242, 255, 0.35);
+    border-radius: 25px;
+    box-shadow: 0 0 30px rgba(66, 211, 255, 0.08);
+}
+
+.btn {
+    padding: 12px 18px;
+    margin: 5px;
+    border: 1px solid var(--cyan);
+    border-radius: 18px;
+    background: linear-gradient(120deg, #127eaa, #7051b3);
+    color: white;
+    transition: transform 0.2s, filter 0.2s;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    filter: brightness(1.15);
+}
+
+input, select {
+    padding: 13px;
+    border: 1px solid #89ddea;
+    border-radius: 12px;
+    background: #152d61;
+    color: white;
+    max-width: 100%;
+}
+
+.search-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.search-row input {
+    flex: 1;
+    min-width: 190px;
+    max-width: 650px;
+}
+
+.player-shell {
+    max-width: 1050px;
+    margin: auto;
+    padding: 12px;
+    border: 2px solid #8eeaff;
+    border-radius: 24px;
+    background: #050c23;
+    box-shadow: 0 0 35px rgba(113, 245, 255, 0.2);
+}
+
+.player {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #030918;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.player iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.player-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #ccecff;
+}
+
+.player-placeholder span {
+    font-size: 4rem;
+}
+
+.player-controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 15px 0;
+}
+
+#nowPlaying {
+    color: var(--gold);
+    overflow-wrap: anywhere;
+}
+
+.category-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 25px;
+}
+
+.video-card {
+    background: #17396c;
+    border: 1px solid rgba(141, 242, 255, 0.4);
+    border-radius: 18px;
+    overflow: hidden;
+    text-align: left;
+}
+
+.thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    background: #07122d;
+}
+
+.video-info {
+    padding: 14px;
+}
+
+.video-title {
+    font-weight: bold;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.video-channel {
+    color: #b9d8ed;
+    font-size: 0.85rem;
+}
+
+.video-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.video-actions .btn {
+    margin: 0;
+    padding: 9px 12px;
+    font-size: 0.85rem;
+}
+
+.api-note {
+    font-size: 0.9rem;
+    color: #d2c9ee;
+}
+
+.api-note a {
+    color: var(--cyan);
+}
+
+#status {
+    color: var(--cyan);
+    min-height: 1.5em;
+}
+
+.companion {
+    position: fixed;
+    right: 20px;
+    bottom: 18px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    pointer-events: none;
+}
+
+.dolphin {
+    pointer-events: auto;
+    font-size: 4rem;
+    border: 0;
+    padding: 8px;
+    background: rgba(18, 52, 103, 0.55);
+    border-radius: 50%;
+    animation: dolphinFloat 5s ease-in-out infinite;
+}
+
+.dolphin.sleeping {
+    animation: none;
+    opacity: 0.85;
+}
+
+.dolphin-message {
+    max-width: 235px;
+    padding: 11px 14px;
+    margin-bottom: 10px;
+    background: #20275d;
+    border: 1px solid var(--cyan);
+    border-radius: 16px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    pointer-events: none;
+}
+
+.dolphin-message[hidden] {
+    display: none;
+}
+
+@keyframes dolphinFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(-4deg);
+    }
+    50% {
+        transform: translateY(-12px) rotate(4deg);
+    }
+}
+
+body.lights-off .panel:not(.theater-panel) {
+    opacity: 0.75;
+}
+
+body.lights-off .player-shell {
+    box-shadow: 0 0 50px rgba(70, 110, 255, 0.18);
+}
+
+@media (max-width: 850px) {
+    .video-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 550px) {
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .panel {
+        padding: 15px;
+    }
+
+    .dolphin {
+        font-size: 2.7rem;
+    }
+
+    .companion {
+        right: 8px;
+        bottom: 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
 </style>
 </head>
+
 <body>
-<div class="bubbles" aria-hidden="true"><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i></div>
-<div class="shell">
-<a class="back" href="index.html">← Back to Our Little World</a>
-<header><h1>🎬 Our Little Ocean Theater 🐬</h1><p class="subtitle">Your cozy corner of the ocean. Pick a video, settle in, and enjoy the show with a tiny friend. 💜</p></header>
-<section class="panel stage" aria-label="Video theater">
-<div class="screen-area"><div class="screen" id="screen"><div class="screen-placeholder" id="placeholder"><span>🍿🐬</span><strong>Your theater is ready!</strong><p>Choose a saved video or add a YouTube link below.</p></div></div></div>
-<p class="now-playing" id="nowPlaying">Nothing playing yet ✨</p>
-<div class="toolbar"><button class="btn" id="fullscreenBtn" type="button">⛶ Fullscreen</button><button class="btn secondary" id="lightsBtn" type="button" aria-pressed="false">🌙 Dim the Lights</button><button class="btn secondary" id="stopBtn" type="button">⏹ Stop Video</button></div>
-<div class="companion" id="companion"><div class="companion-bubble" id="companionBubble" hidden role="status"></div><button type="button" class="dolphin-button" id="dolphinBtn" title="Tap your quiet companion" aria-label="Tap the dolphin for a sweet message"><span class="dolphin-emoji" aria-hidden="true">🐬</span><span class="dolphin-eye" aria-hidden="true"></span></button></div>
-<p class="companion-note">🐬 Your dolphin stays quiet unless you tap it.</p>
-</section>
-<section class="panel"><h2>💎 Add a Video</h2><p class="helper">Paste a YouTube watch link, Shorts link, share link, or video ID. Give it a name and save it to your personal theater.</p>
-<form id="addForm"><div class="input-row"><input class="field" id="videoUrl" placeholder="https://www.youtube.com/watch?v=..." aria-label="YouTube link" required><input class="field" id="videoTitle" placeholder="A name for this video" aria-label="Video title" maxlength="100" required></div><div class="toolbar"><button class="btn" type="submit">💜 Save to My Theater</button><button class="btn secondary" type="button" id="previewBtn">▶ Play This Link</button></div></form><p class="status" id="status" role="status"></p></section>
-<section class="panel"><h2>🍿 My Video Collection</h2><input class="field" id="search" type="search" placeholder="🔎 Search saved videos..." aria-label="Search saved videos"><div class="collection" id="collection"></div><p class="helper">Saved videos stay in this browser. They don't automatically sync to other devices.</p></section>
-<footer>Made with love, across every ocean. 🌊💜</footer>
+
+<main>
+    <a class="back" href="index.html">
+        ← Back to Our Little World
+    </a>
+
+    <h1>🎬 Our Little Ocean Theater 🐬</h1>
+
+    <p class="subtitle">
+        A cozy little cinema beneath the waves,
+        where every video is another adventure. 💜
+    </p>
+
+    <section class="panel theater-panel">
+        <h2>🍿 Your Private Ocean Cinema</h2>
+
+        <div class="player-shell" id="playerShell">
+            <div class="player" id="player">
+                <div class="player-placeholder" id="placeholder">
+                    <span>🐬🍿</span>
+                    <h2>Welcome to Movie Night!</h2>
+                    <p>Discover a video below to begin.</p>
+                </div>
+
+                <iframe
+                    id="youtubePlayer"
+                    title="Ocean Theater YouTube Player"
+                    src="about:blank"
+                    allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                    allowfullscreen
+                    referrerpolicy="strict-origin-when-cross-origin">
+                </iframe>
+            </div>
+        </div>
+
+        <h3 id="nowPlaying">Nothing playing yet 🌙</h3>
+
+        <div class="player-controls">
+            <button class="btn" id="lightsButton">
+                🌙 Dim the Lights
+            </button>
+
+            <button class="btn" id="fullscreenButton">
+                ⛶ Fullscreen Theater
+            </button>
+
+            <button class="btn" id="stopButton">
+                ⏹ Stop Video
+            </button>
+
+            <button class="btn" id="favoriteCurrent">
+                💎 Save Current Video
+            </button>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>🌍 Live YouTube Discovery</h2>
+
+        <p>
+            Search YouTube or let the ocean choose
+            something completely unexpected!
+        </p>
+
+        <div class="search-row">
+            <input
+                type="search"
+                id="searchInput"
+                placeholder="Search anything on YouTube..."
+                aria-label="Search YouTube">
+
+            <button class="btn" id="searchButton">
+                🔎 Search
+            </button>
+
+            <button class="btn" id="randomButton">
+                🎲 Random YouTube Videos!
+            </button>
+        </div>
+
+        <h3>Explore Categories</h3>
+
+        <div class="category-row" id="categories"></div>
+
+        <p id="status" role="status"></p>
+
+        <div class="video-grid" id="videoGrid"></div>
+    </section>
+
+    <section class="panel">
+        <h2>💎 Favorite Videos</h2>
+        <p class="subtitle">
+            Keep the videos you love for another movie night.
+        </p>
+
+        <div class="video-grid" id="favoritesGrid"></div>
+    </section>
+
+    <section class="panel">
+        <h2>🔑 Connect YouTube Discovery</h2>
+
+        <p>
+            Enter your YouTube Data API v3 key
+            to enable real video discovery.
+        </p>
+
+        <div class="search-row">
+            <input
+                type="password"
+                id="apiKeyInput"
+                placeholder="Paste your restricted API key"
+                aria-label="YouTube API key"
+                autocomplete="off">
+
+            <button class="btn" id="connectButton">
+                Connect YouTube
+            </button>
+
+            <button class="btn" id="disconnectButton">
+                Disconnect
+            </button>
+        </div>
+
+        <p id="apiStatus" class="api-note"></p>
+
+        <p class="api-note">
+            Create a key at
+            <a href="https://console.cloud.google.com/apis/credentials"
+               target="_blank" rel="noopener noreferrer">
+                Google Cloud Console
+            </a>.
+            Enable YouTube Data API v3 and restrict your key
+            to this website and that API.
+        </p>
+
+        <p class="api-note">
+            The key is kept in this browser tab's session storage,
+            not saved to your GitHub repository.
+            It is still visible to the browser and should
+            always have website and API restrictions.
+        </p>
+    </section>
+
+    <footer>
+        <p>Made with love, across every ocean. 🌊💜</p>
+    </footer>
+</main>
+
+<div class="companion">
+    <div class="dolphin-message" id="dolphinMessage" hidden
+         aria-live="polite"></div>
+
+    <button
+        class="dolphin"
+        id="dolphinBuddy"
+        aria-label="Talk to your quiet dolphin companion"
+        title="Tap for a little ocean hug">
+        🐬
+    </button>
 </div>
+
 <script>
-(function(){
-'use strict';
-const $=id=>document.getElementById(id);
-const storageKey='ocean_theater_v1';
-let videos=[];
-try{const parsed=JSON.parse(localStorage.getItem(storageKey));if(Array.isArray(parsed))videos=parsed.filter(v=>v&&typeof v.id==='string'&&typeof v.title==='string'&&typeof v.key==='string'&&/^[A-Za-z0-9_-]{11}$/.test(v.key));}catch(e){}
-let currentId=null;
-const dolphinLines=['I brought you some imaginary popcorn! 🍿💜','I will be right here, quietly keeping you company. 🌊','You look so cozy! Enjoy your movie. 🐬','Tiny dolphin hug, then back to the show! 💙','Even the ocean is quiet for movie time. ✨','You can tap me whenever you need a smile. 💎'];
-let lineIndex=-1;
-function say(message){$('status').textContent=message;}
-function save(){try{localStorage.setItem(storageKey,JSON.stringify(videos));return true}catch(e){say('Could not save: browser storage may be unavailable or full.');return false}}
-function youtubeId(raw){
- const input=String(raw||'').trim();if(/^[A-Za-z0-9_-]{11}$/.test(input))return input;
- let url;try{url=new URL(input)}catch(e){return null}
- const host=url.hostname.toLowerCase().replace(/^www\./,'').replace(/^m\./,'');
- let id=null;
- if(host==='youtu.be')id=url.pathname.split('/').filter(Boolean)[0];
- else if(host==='youtube.com'||host==='youtube-nocookie.com'){
-  const segments=url.pathname.split('/').filter(Boolean);
-  if(segments[0]==='watch')id=url.searchParams.get('v');
-  else if(['shorts','embed','live','v'].includes(segments[0]))id=segments[1];
- }
- return id&&/^[A-Za-z0-9_-]{11}$/.test(id)?id:null;
+"use strict";
+
+/* ==========================================
+   OCEAN THEATER — COMPLETE JAVASCRIPT
+========================================== */
+
+const $ = id => document.getElementById(id);
+
+const API_BASE =
+    "https://www.googleapis.com/youtube/v3/search";
+
+const topics = [
+    "cute animals",
+    "funny cats",
+    "funny dogs",
+    "ocean wildlife",
+    "deep sea creatures",
+    "Minecraft",
+    "Roblox",
+    "gaming adventures",
+    "funny gaming moments",
+    "beautiful nature",
+    "travel adventures",
+    "world history",
+    "ancient civilizations",
+    "space exploration",
+    "astronomy",
+    "science experiments",
+    "interesting facts",
+    "amazing inventions",
+    "art and drawing",
+    "animation",
+    "short films",
+    "music performances",
+    "relaxing piano",
+    "lofi music",
+    "cooking",
+    "baking",
+    "street food",
+    "architecture",
+    "wildlife documentary",
+    "underwater exploration",
+    "photography",
+    "comedy sketches",
+    "technology",
+    "adventure stories",
+    "fantasy worlds",
+    "beautiful landscapes",
+    "crafts",
+    "dancing",
+    "marine biology",
+    "animal rescue"
+];
+
+const variations = [
+    "",
+    " amazing",
+    " interesting",
+    " beautiful",
+    " funny",
+    " relaxing",
+    " incredible",
+    " documentary",
+    " adventure",
+    " compilation"
+];
+
+const categories = [
+    ["🎮 Gaming", "gaming"],
+    ["🐬 Ocean", "ocean wildlife"],
+    ["🐱 Cute Animals", "cute animals"],
+    ["🎵 Music", "music"],
+    ["🌍 Travel", "travel"],
+    ["🚀 Space", "space"],
+    ["📚 History", "history"],
+    ["😂 Comedy", "comedy"],
+    ["🎨 Art", "art"],
+    ["🍳 Cooking", "cooking"],
+    ["🌿 Nature", "nature"],
+    ["🎬 Short Films", "short films"]
+];
+
+let apiKey = "";
+let favorites = [];
+let currentVideo = null;
+let currentResults = [];
+let searchController = null;
+let requestNumber = 0;
+let lastTopic = "";
+let lastDolphinMessage = -1;
+
+try {
+    apiKey = sessionStorage.getItem("oceanYoutubeKey") || "";
+} catch (error) {
+    apiKey = "";
 }
-function createButton(text,callback,extraClass=''){
- const b=document.createElement('button');b.type='button';b.className='btn '+extraClass;b.textContent=text;b.addEventListener('click',callback);return b;
+
+try {
+    const saved = JSON.parse(
+        localStorage.getItem("oceanTheaterFavorites") || "[]"
+    );
+
+    if (Array.isArray(saved)) {
+        favorites = saved.filter(isValidVideo);
+    }
+} catch (error) {
+    favorites = [];
 }
-function render(){
- const query=$('search').value.trim().toLowerCase();const list=$('collection');list.replaceChildren();
- const filtered=videos.filter(v=>v.title.toLowerCase().includes(query));
- if(!filtered.length){const p=document.createElement('p');p.className='empty';p.textContent=videos.length?'No videos match your search.':'No videos yet. Add your first favorite above! 🐬';list.append(p);return;}
- filtered.forEach(v=>{
-  const card=document.createElement('article');card.className='video-card'+(v.id===currentId?' current':'');
-  const thumb=document.createElement('div');thumb.className='thumb';const img=document.createElement('img');img.src='https://i.ytimg.com/vi/'+v.key+'/hqdefault.jpg';img.alt='Thumbnail for '+v.title;img.loading='lazy';thumb.append(img);
-  const title=document.createElement('h3');title.className='card-title';title.textContent=v.title;
-  const actions=document.createElement('div');actions.className='card-actions';
-  actions.append(createButton('▶ Watch',()=>play(v.key,v.title,v.id)),createButton('✕ Remove',()=>{if(confirm('Remove "'+v.title+'" from your theater?')){videos=videos.filter(x=>x.id!==v.id);save();render();}},'danger'));
-  card.append(thumb,title,actions);list.append(card);
- });
+
+/* ==========================================
+   HELPERS
+========================================== */
+
+function randomItem(array) {
+    return array[Math.floor(Math.random() * array.length)];
 }
-function play(key,title,id=null){
- const screen=$('screen');screen.querySelectorAll('iframe').forEach(f=>f.remove());
- const frame=document.createElement('iframe');
- frame.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(key)+'?autoplay=1&rel=0';
- frame.title=title;frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';
- screen.append(frame);currentId=id;$('nowPlaying').textContent='🎞️ Now showing: '+title;render();screen.scrollIntoView({behavior:'smooth',block:'center'});
+
+function shuffle(array) {
+    const copy = [...array];
+
+    for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+
+    return copy;
 }
-function stop(){const screen=$('screen');screen.querySelectorAll('iframe').forEach(f=>f.remove());currentId=null;$('nowPlaying').textContent='Nothing playing yet ✨';render();}
-$('addForm').addEventListener('submit',e=>{
- e.preventDefault();const key=youtubeId($('videoUrl').value),title=$('videoTitle').value.trim();
- if(!key){say('Please paste a valid YouTube video link or 11-character video ID.');return;}
- if(!title){say('Please give your video a name.');return;}
- if(videos.some(v=>v.key===key)){say('That video is already in your collection.');return;}
- const video={id:String(Date.now())+'-'+Math.random().toString(36).slice(2),key,title};videos.unshift(video);save();render();$('addForm').reset();say('Saved! Your new video is ready to watch. 💜');
+
+function isValidVideo(video) {
+    return video &&
+        typeof video.id === "string" &&
+        /^[a-zA-Z0-9_-]{11}$/.test(video.id) &&
+        typeof video.title === "string";
+}
+
+function setStatus(message) {
+    $("status").textContent = message;
+}
+
+function saveFavorites() {
+    try {
+        localStorage.setItem(
+            "oceanTheaterFavorites",
+            JSON.stringify(favorites)
+        );
+    } catch (error) {
+        setStatus("Could not save favorites in this browser.");
+    }
+}
+
+function isFavorite(id) {
+    return favorites.some(video => video.id === id);
+}
+
+/* ==========================================
+   RANDOM YOUTUBE DISCOVERY
+========================================== */
+
+function randomQuery() {
+    let topic = randomItem(topics);
+
+    if (topics.length > 1 && topic === lastTopic) {
+        topic = topics[
+            (topics.indexOf(topic) + 1) % topics.length
+        ];
+    }
+
+    lastTopic = topic;
+
+    return topic + randomItem(variations);
+}
+
+async function discoverVideos(query) {
+    if (!apiKey) {
+        setStatus(
+            "🔑 Connect your YouTube API key below to discover real videos."
+        );
+
+        $("apiKeyInput").focus();
+        return;
+    }
+
+    if (searchController) {
+        searchController.abort();
+    }
+
+    searchController = new AbortController();
+
+    const thisRequest = ++requestNumber;
+
+    $("videoGrid").replaceChildren();
+
+    setStatus("🐬 Searching the ocean for videos...");
+
+    $("searchButton").disabled = true;
+    $("randomButton").disabled = true;
+
+    try {
+        const params = new URLSearchParams({
+            part: "snippet",
+            type: "video",
+            videoEmbeddable: "true",
+            maxResults: "30",
+            q: query,
+            safeSearch: "moderate",
+            key: apiKey
+        });
+
+        const response = await fetch(
+            API_BASE + "?" + params.toString(),
+            { signal: searchController.signal }
+        );
+
+        const data = await response.json();
+
+        if (thisRequest !== requestNumber) {
+            return;
+        }
+
+        if (!response.ok) {
+            const message =
+                data.error?.message ||
+                "YouTube could not complete the request.";
+
+            throw new Error(message);
+        }
+
+        const videos = (data.items || [])
+            .map(item => ({
+                id: item.id?.videoId,
+                title: item.snippet?.title || "Untitled Video",
+                channel: item.snippet?.channelTitle || "YouTube",
+                thumbnail:
+                    item.snippet?.thumbnails?.medium?.url ||
+                    item.snippet?.thumbnails?.default?.url ||
+                    ""
+            }))
+            .filter(isValidVideo);
+
+        currentResults = shuffle(videos);
+
+        renderVideoGrid(currentResults, $("videoGrid"), false);
+
+        setStatus(
+            "🎬 Found " + currentResults.length +
+            " videos for: " + query
+        );
+
+        if (!currentResults.length) {
+            setStatus(
+                "No videos found. Try another topic or press Random again."
+            );
+        }
+
+    } catch (error) {
+        if (error.name !== "AbortError") {
+            setStatus(
+                "⚠️ " + error.message +
+                " Check your API key, API restrictions, and quota."
+            );
+        }
+    } finally {
+        if (thisRequest === requestNumber) {
+            $("searchButton").disabled = false;
+            $("randomButton").disabled = false;
+        }
+    }
+}
+
+function discoverRandom() {
+    const query = randomQuery();
+    $("searchInput").value = query;
+    discoverVideos(query);
+}
+
+function searchVideos() {
+    const query = $("searchInput").value.trim();
+
+    if (!query) {
+        setStatus("Enter a search term first.");
+        return;
+    }
+
+    discoverVideos(query);
+}
+
+/* ==========================================
+   YOUTUBE PLAYER
+========================================== */
+
+function playVideo(video) {
+    if (!isValidVideo(video)) {
+        return;
+    }
+
+    currentVideo = video;
+
+    const iframe = $("youtubePlayer");
+
+    const params = new URLSearchParams({
+        autoplay: "1",
+        rel: "0",
+        playsinline: "1"
+    });
+
+    iframe.src =
+        "https://www.youtube-nocookie.com/embed/" +
+        encodeURIComponent(video.id) +
+        "?" + params.toString();
+
+    $("placeholder").hidden = true;
+
+    $("nowPlaying").textContent =
+        "🎬 Now Playing: " + video.title;
+
+    $("playerShell").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+}
+
+function stopVideo() {
+    $("youtubePlayer").src = "about:blank";
+
+    $("placeholder").hidden = false;
+
+    currentVideo = null;
+
+    $("nowPlaying").textContent =
+        "Nothing playing yet 🌙";
+}
+
+function fullscreenTheater() {
+    const player = $("playerShell");
+
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    } else if (player.requestFullscreen) {
+        player.requestFullscreen().catch(() => {
+            setStatus("Fullscreen could not be enabled.");
+        });
+    }
+}
+
+function toggleLights() {
+    document.body.classList.toggle("lights-off");
+
+    const off = document.body.classList.contains("lights-off");
+
+    $("lightsButton").textContent = off
+        ? "☀️ Turn Lights On"
+        : "🌙 Dim the Lights";
+}
+
+/* ==========================================
+   VIDEO CARDS
+========================================== */
+
+function makeVideoCard(video, favoriteMode) {
+    const card = document.createElement("article");
+    card.className = "video-card";
+
+    const img = document.createElement("img");
+    img.className = "thumbnail";
+    img.alt = "";
+    img.loading = "lazy";
+
+    if (video.thumbnail) {
+        img.src = video.thumbnail;
+    } else {
+        img.src =
+            "https://i.ytimg.com/vi/" +
+            encodeURIComponent(video.id) +
+            "/mqdefault.jpg";
+    }
+
+    const info = document.createElement("div");
+    info.className = "video-info";
+
+    const title = document.createElement("div");
+    title.className = "video-title";
+    title.textContent = video.title;
+
+    const channel = document.createElement("p");
+    channel.className = "video-channel";
+    channel.textContent = video.channel || "YouTube";
+
+    const actions = document.createElement("div");
+    actions.className = "video-actions";
+
+    const play = document.createElement("button");
+    play.className = "btn";
+    play.type = "button";
+    play.textContent = "▶ Watch";
+
+    play.addEventListener("click", () => {
+        playVideo(video);
+    });
+
+    const favorite = document.createElement("button");
+    favorite.className = "btn";
+    favorite.type = "button";
+
+    favorite.textContent = favoriteMode
+        ? "🗑 Remove"
+        : isFavorite(video.id)
+            ? "💎 Saved"
+            : "♡ Save";
+
+    favorite.addEventListener("click", () => {
+        if (isFavorite(video.id)) {
+            favorites = favorites.filter(v => v.id !== video.id);
+        } else {
+            favorites.push(video);
+        }
+
+        saveFavorites();
+        renderFavorites();
+
+        if (!favoriteMode) {
+            renderVideoGrid(
+                currentResults,
+                $("videoGrid"),
+                false
+            );
+        }
+    });
+
+    actions.append(play, favorite);
+    info.append(title, channel, actions);
+    card.append(img, info);
+
+    return card;
+}
+
+function renderVideoGrid(videos, container, favoriteMode) {
+    container.replaceChildren();
+
+    if (!videos.length) {
+        const empty = document.createElement("p");
+
+        empty.textContent = favoriteMode
+            ? "No favorite videos yet. Save something you love! 💜"
+            : "No videos to display yet.";
+
+        container.append(empty);
+        return;
+    }
+
+    videos.forEach(video => {
+        container.append(
+            makeVideoCard(video, favoriteMode)
+        );
+    });
+}
+
+function renderFavorites() {
+    renderVideoGrid(
+        favorites,
+        $("favoritesGrid"),
+        true
+    );
+}
+
+function saveCurrentVideo() {
+    if (!currentVideo) {
+        setStatus("Play a video first, then save it!");
+        return;
+    }
+
+    if (!isFavorite(currentVideo.id)) {
+        favorites.push(currentVideo);
+        saveFavorites();
+    }
+
+    renderFavorites();
+
+    renderVideoGrid(
+        currentResults,
+        $("videoGrid"),
+        false
+    );
+
+    setStatus("💎 Saved to your favorite videos!");
+}
+
+/* ==========================================
+   YOUTUBE API CONNECTION
+========================================== */
+
+function connectYouTube() {
+    const value = $("apiKeyInput").value.trim();
+
+    if (!value) {
+        $("apiStatus").textContent =
+            "Please enter your API key.";
+        return;
+    }
+
+    apiKey = value;
+
+    try {
+        sessionStorage.setItem("oceanYoutubeKey", apiKey);
+    } catch (error) {
+        $("apiStatus").textContent =
+            "Key connected for this page, but session storage is unavailable.";
+    }
+
+    $("apiKeyInput").value = "";
+
+    $("apiStatus").textContent =
+        "🔑 Key saved for this browser tab. Testing with a search...";
+
+    discoverRandom();
+}
+
+function disconnectYouTube() {
+    apiKey = "";
+
+    if (searchController) {
+        searchController.abort();
+    }
+
+    ++requestNumber;
+
+    try {
+        sessionStorage.removeItem("oceanYoutubeKey");
+    } catch (error) {}
+
+    $("apiKeyInput").value = "";
+
+    $("apiStatus").textContent =
+        "YouTube discovery disconnected.";
+
+    setStatus("Connect an API key to discover videos.");
+}
+
+function renderCategories() {
+    const container = $("categories");
+
+    categories.forEach(([label, query]) => {
+        const button = document.createElement("button");
+
+        button.className = "btn";
+        button.type = "button";
+        button.textContent = label;
+
+        button.addEventListener("click", () => {
+            $("searchInput").value = query;
+            discoverVideos(query);
+        });
+
+        container.append(button);
+    });
+}
+
+/* ==========================================
+   QUIET DOLPHIN COMPANION
+========================================== */
+
+const dolphinLines = [
+    "I'm right here beside you, hon! 🐬💜",
+    "Enjoy your movie! I'll be quiet. 🌙",
+    "Sending a tiny ocean hug! 🌊",
+    "You can watch as long as you like. 🫧",
+    "I'll keep you company through every adventure. 💎",
+    "You look cozy! 🍿",
+    "I'll be your little movie buddy. 💙",
+    "The ocean is peaceful tonight. ✨",
+    "I hope this video makes you smile! 🐬",
+    "Even the smallest dolphin can give the biggest hugs. 💜"
+];
+
+let dolphinMessageTimeout = null;
+
+function talkToDolphin() {
+    let index = Math.floor(
+        Math.random() * dolphinLines.length
+    );
+
+    if (index === lastDolphinMessage) {
+        index = (index + 1) % dolphinLines.length;
+    }
+
+    lastDolphinMessage = index;
+
+    $("dolphinMessage").textContent =
+        dolphinLines[index];
+
+    $("dolphinMessage").hidden = false;
+
+    clearTimeout(dolphinMessageTimeout);
+
+    dolphinMessageTimeout = setTimeout(() => {
+        $("dolphinMessage").hidden = true;
+    }, 4500);
+}
+
+/* ==========================================
+   BUTTON EVENTS
+========================================== */
+
+$("searchButton").addEventListener(
+    "click",
+    searchVideos
+);
+
+$("randomButton").addEventListener(
+    "click",
+    discoverRandom
+);
+
+$("searchInput").addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+        searchVideos();
+    }
 });
-$('previewBtn').addEventListener('click',()=>{const key=youtubeId($('videoUrl').value);if(!key){say('Please enter a valid YouTube link first.');return;}play(key,$('videoTitle').value.trim()||'A little ocean video');say('Playing without saving.');});
-$('search').addEventListener('input',render);
-$('stopBtn').addEventListener('click',stop);
-$('lightsBtn').addEventListener('click',()=>{const dim=document.body.classList.toggle('dimmed');$('lightsBtn').textContent=dim?'☀️ Turn the Lights On':'🌙 Dim the Lights';$('lightsBtn').setAttribute('aria-pressed',String(dim));});
-$('fullscreenBtn').addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else if($('screen').requestFullscreen){await $('screen').requestFullscreen()}else{say('Fullscreen is not available in this browser.');}}catch(e){say('Fullscreen could not be started.');}});
-$('dolphinBtn').addEventListener('click',()=>{lineIndex=(lineIndex+1)%dolphinLines.length;$('companionBubble').textContent=dolphinLines[lineIndex];$('companionBubble').hidden=false;});
-let sleeping=false;
-setInterval(()=>{sleeping=!sleeping;$('companion').classList.toggle('sleeping',sleeping);},45000);
-render();
-})();
+
+$("lightsButton").addEventListener(
+    "click",
+    toggleLights
+);
+
+$("fullscreenButton").addEventListener(
+    "click",
+    fullscreenTheater
+);
+
+$("stopButton").addEventListener(
+    "click",
+    stopVideo
+);
+
+$("favoriteCurrent").addEventListener(
+    "click",
+    saveCurrentVideo
+);
+
+$("connectButton").addEventListener(
+    "click",
+    connectYouTube
+);
+
+$("disconnectButton").addEventListener(
+    "click",
+    disconnectYouTube
+);
+
+$("dolphinBuddy").addEventListener(
+    "click",
+    talkToDolphin
+);
+
+/* ==========================================
+   INITIALIZE THE THEATER
+========================================== */
+
+renderCategories();
+renderFavorites();
+
+$("placeholder").hidden = false;
+
+if (apiKey) {
+    $("apiStatus").textContent =
+        "🔑 YouTube key restored for this browser tab.";
+
+    discoverRandom();
+} else {
+    $("apiStatus").textContent =
+        "Connect your YouTube API key to enable live discovery.";
+
+    setStatus(
+        "🐬 Your theater is ready! Connect YouTube below to discover videos."
+    );
+}
+
 </script>
+
 </body>
 </html>
