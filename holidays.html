@@ -275,7 +275,63 @@ let customs=readStore("ocean_customs_v3");
 let countryHolidays=[];
 let countryCode="US";
 let countryRequest=0;
-const notified=new Set();
+
+const NOTIFIED_KEY = "holiday_ocean_notified_v1";
+let savedNotified = [];
+
+try {
+  const parsed = JSON.parse(
+    localStorage.getItem(NOTIFIED_KEY) || "[]"
+  );
+  if (Array.isArray(parsed)) savedNotified = parsed;
+} catch (e) {}
+
+const notified = new Set(savedNotified);
+
+function recordNotified(key) {
+  notified.add(key);
+  try {
+    localStorage.setItem(
+      NOTIFIED_KEY,
+      JSON.stringify([...notified].slice(-500))
+    );
+  } catch (e) {}
+}
+
+async function showOceanNotification(title, body, tag) {
+  if (!("Notification" in window) ||
+      Notification.permission !== "granted") {
+    return false;
+  }
+
+  const options = {
+    body: body,
+    tag: tag,
+    icon: "holiday-icon.svg"
+  };
+
+  try {
+    if ("serviceWorker" in navigator) {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg && typeof reg.showNotification === "function") {
+        await reg.showNotification(title, options);
+        return true;
+      }
+    }
+
+    new Notification(title, options);
+    return true;
+  } catch (e) {
+    console.warn("Notification failed:", e);
+    return false;
+  }
+}
+
+if ("serviceWorker" in navigator && window.isSecureContext) {
+  navigator.serviceWorker.register("holiday-sw.js")
+    .catch(e => console.info("Service worker unavailable:", e));
+}
+
 
 function readStore(key){
  try{const v=JSON.parse(localStorage.getItem(key));return Array.isArray(v)?v:[]}
