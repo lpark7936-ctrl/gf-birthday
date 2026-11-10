@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#102553">
+<link rel="manifest" href="holiday-manifest.webmanifest">
 <title>Our Holiday Ocean 🌊💜</title>
 <style>
 :root{
@@ -215,7 +216,7 @@ input[type=number]{width:110px}
   <label class="btn" for="importData">Import Backup</label>
   <input id="importData" type="file" accept=".json,application/json" hidden>
  </div>
- <p class="notice">Reminders are stored in this browser only. Browser notifications work while this page is open and permission is granted; closed-browser push alerts require an additional service. Export backups to keep your reminders safe.</p>
+ <p class="notice">Reminders stay on this device. On supported phones, add this website to your Home Screen, then enable notifications. Alerts are checked while the calendar is open or when you return; GitHub Pages cannot send scheduled alerts while the site is closed. Times follow the phone’s local time zone. Export backups to keep your reminders safe.</p>
 </section>
 
 <section class="panel">
@@ -749,35 +750,36 @@ $("customForm").addEventListener("submit",e=>{
 });
 
 $("notifyPermission").addEventListener("click",async()=>{
+ if(!window.isSecureContext){$("notificationStatus").textContent="Notifications require HTTPS.";return}
  if(!("Notification" in window)){
-  $("notificationStatus").textContent="This browser does not support notifications.";return;
+  $("notificationStatus").textContent="Notifications aren't available in this browser. On iPhone (iOS 16.4+), open in Safari and Add to Home Screen first.";return;
  }
  try{
   const result=await Notification.requestPermission();
-  $("notificationStatus").textContent="Notification permission: "+result+
-  ". Keep this page open for scheduled alerts.";
+  $("notificationStatus").textContent=result==="granted"
+   ?"🔔 Notifications enabled! Reminders appear when this page is open or when you return. Closed-site scheduled delivery isn't available on GitHub Pages."
+   :result==="denied"?"Notifications blocked. Change permission in your device or browser settings.":"Notification permission not granted.";
+  if(result==="granted")checkReminders();
  }catch(e){$("notificationStatus").textContent="Notifications could not be enabled."}
 });
-function checkReminders(){
+async function checkReminders(){
  const now=new Date();
  const y=now.getFullYear(),m=now.getMonth(),d=now.getDate();
  const hh=String(now.getHours()).padStart(2,"0");
  const mm=String(now.getMinutes()).padStart(2,"0");
  const currentTime=hh+":"+mm;
  const due=remindersFor(y,m,d).filter(r=>r.time<=currentTime);
- due.forEach(r=>{
+ for(const r of due){
   const key=r.id+"|"+dateKey(y,m,d);
-  if(notified.has(key))return;
-  notified.add(key);
-  if("Notification" in window&&Notification.permission==="granted"){
-   try{new Notification("🌊 Ocean Reminder: "+r.title,{body:r.note||"A little reminder made with love 💜"});}
-   catch(e){$("notificationStatus").textContent="A reminder is due: "+r.title}
-  }else{
-   $("notificationStatus").textContent="🔔 Reminder due: "+r.title;
-  }
- });
+  if(notified.has(key))continue;
+  const success=await showOceanNotification("🌊 Ocean Reminder: "+r.title,r.note||"A little reminder made with love 💜","ocean-"+key);
+  if(success){recordNotified(key)}
+  else{$("notificationStatus").textContent="🔔 Reminder due: "+r.title;}
+ }
 }
 setInterval(checkReminders,30000);
+window.addEventListener("focus",checkReminders);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkReminders()});
 
 $("exportData").addEventListener("click",()=>{
  const data=JSON.stringify({reminders,customs},null,2);
