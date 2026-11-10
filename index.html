@@ -339,6 +339,26 @@ footer {
         opacity: 0;
     }
 }
+
+.dolphin-button {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 16px 30px;
+    border: 1px solid #9afaff;
+    border-radius: 40px;
+    background: linear-gradient(100deg, #168da9, #7352b8);
+    color: white;
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.dolphin-button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 25px rgba(91, 238, 255, 0.4);
+}
+
 </style>
 </head>
 
@@ -391,6 +411,15 @@ footer {
         <button id="gameButton" onclick="openMemoryGame()">
     Play a Little Game ♡
 </button>
+   
+<a href="dolphin.html" class="dolphin-button">
+    🐬 Need Help Studying?
+</a>
+<p class="intro">
+    This can be your little area to help you study,
+    research, and discover new things. 💙
+</p>
+
     </section>
 <section id="memoryGame" class="letter-card" hidden>
     <p class="small-title">A little challenge for you</p>
