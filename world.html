@@ -5,6 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Our Little World — 50 Diamonds 💎</title>
+<meta name="theme-color" content="#102553">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23075985'/%3E%3Cpath d='M32 52 L12 32 C-1 17 19 5 32 20 C45 5 65 17 52 32 Z' fill='%239ceeff'/%3E%3C/svg%3E">
 
 <script src="ocean-gate.js"></script>
 
@@ -591,10 +593,12 @@ footer {
   };
 
   document.getElementById("hint").onclick = () => {
-    const t = treasures.find(x => !found.has(x.id));
+    const t = treasures.find(x => !found.has(x.id) && (active === "all" || x.type === active));
 
     if (!t) {
-      status.textContent = "🐬 You found them all!";
+      status.textContent = found.size === 50
+        ? "🐬 You found them all!"
+        : "🐬 No undiscovered diamonds in this category. Choose All 50 or another category!";
       return;
     }
 
