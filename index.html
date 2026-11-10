@@ -359,6 +359,181 @@ footer {
     box-shadow: 0 0 25px rgba(91, 238, 255, 0.4);
 }
 
+/* Cute underwater wildlife */
+.sea-creature {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.8;
+    filter: drop-shadow(0 0 9px rgba(100, 240, 255, 0.3));
+    will-change: transform;
+}
+
+/* Fish swim from left to right */
+.fish {
+    left: -100px;
+    font-size: 2.2rem;
+    animation: fishSwim 22s linear infinite;
+}
+
+.fish-one {
+    top: 12%;
+    animation-duration: 21s;
+}
+
+.fish-two {
+    top: 28%;
+    animation-duration: 27s;
+    animation-delay: -9s;
+}
+
+.fish-three {
+    top: 44%;
+    animation-duration: 19s;
+    animation-delay: -13s;
+}
+
+.fish-four {
+    top: 61%;
+    animation-duration: 30s;
+    animation-delay: -20s;
+}
+
+.fish-five {
+    top: 78%;
+    animation-duration: 24s;
+    animation-delay: -7s;
+}
+
+.fish-six {
+    top: 90%;
+    animation-duration: 32s;
+    animation-delay: -17s;
+}
+
+@keyframes fishSwim {
+    0% {
+        transform: translateX(-100px) translateY(0);
+    }
+    25% {
+        transform: translateX(30vw) translateY(-18px);
+    }
+    50% {
+        transform: translateX(60vw) translateY(15px);
+    }
+    75% {
+        transform: translateX(90vw) translateY(-12px);
+    }
+    100% {
+        transform: translateX(120vw) translateY(0);
+    }
+}
+
+/* Slow and peaceful sea turtle */
+.turtle {
+    top: 68%;
+    left: -100px;
+    font-size: 3.5rem;
+    animation: turtleSwim 38s linear infinite;
+}
+
+@keyframes turtleSwim {
+    0% {
+        transform: translateX(-100px) translateY(0) rotate(-8deg);
+    }
+    50% {
+        transform: translateX(55vw) translateY(-45px) rotate(8deg);
+    }
+    100% {
+        transform: translateX(120vw) translateY(0) rotate(-8deg);
+    }
+}
+
+/* Playful octopus */
+.octopus {
+    top: 83%;
+    right: 10%;
+    font-size: 3rem;
+    animation: octopusFloat 7s ease-in-out infinite;
+}
+
+@keyframes octopusFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(-8deg);
+    }
+    50% {
+        transform: translateY(-35px) rotate(8deg);
+    }
+}
+
+/* Cute pufferfish */
+.pufferfish {
+    top: 37%;
+    right: 7%;
+    font-size: 2.8rem;
+    animation: pufferFloat 6s ease-in-out infinite;
+}
+
+@keyframes pufferFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-22px) scale(1.12);
+    }
+}
+
+/* Floating jellyfish */
+.jelly {
+    bottom: -100px;
+    font-size: 2.8rem;
+    animation: jellyRise 23s linear infinite;
+}
+
+.jelly-one {
+    left: 17%;
+    animation-delay: -4s;
+}
+
+.jelly-two {
+    left: 54%;
+    animation-duration: 29s;
+    animation-delay: -16s;
+}
+
+.jelly-three {
+    left: 82%;
+    animation-duration: 26s;
+    animation-delay: -10s;
+}
+
+@keyframes jellyRise {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+    15% {
+        opacity: 0.75;
+    }
+    50% {
+        transform: translateY(-55vh) translateX(35px);
+    }
+    85% {
+        opacity: 0.75;
+    }
+    100% {
+        transform: translateY(-115vh) translateX(-20px);
+        opacity: 0;
+    }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .sea-creature {
+        animation: none !important;
+    }
+}
+
 </style>
 </head>
 
