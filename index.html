@@ -629,6 +629,49 @@ footer {
     }
 }
 
+
+/* Holiday Ocean: year-round calendar entrance */
+.holiday-ocean-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: min(490px, 100%);
+    margin: 26px auto 12px;
+    padding: 19px 22px;
+    border: 2px solid #a5f3fc;
+    border-radius: 24px;
+    background: linear-gradient(125deg, #075985, #7046ac 55%, #0891b2);
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 0 22px rgba(103,232,249,.28), 0 0 35px rgba(167,139,250,.16);
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+.holiday-ocean-button:hover,
+.holiday-ocean-button:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 0 30px rgba(103,232,249,.55);
+}
+.holiday-ocean-button:focus-visible { outline: 3px solid #ffe7a5; outline-offset: 4px; }
+.holiday-ocean-icon { font-size: 2.2rem; flex-shrink: 0; animation: holidayFloat 3s ease-in-out infinite; }
+.holiday-ocean-copy { display: flex; flex-direction: column; gap: 5px; text-align: left; }
+.holiday-ocean-copy strong { font-size: 1.13rem; }
+.holiday-ocean-copy small { font-size: .84rem; color: #e2f8ff; line-height: 1.45; }
+.holiday-ocean-arrow { font-size: 1.5rem; color: #ffe7a5; margin-left: auto; }
+@keyframes holidayFloat { 50% { transform: translateY(-6px); } }
+@media (max-width: 480px) {
+    .holiday-ocean-button { padding: 15px 12px; gap: 10px; }
+    .holiday-ocean-icon { font-size: 1.7rem; }
+    .holiday-ocean-copy strong { font-size: 1rem; }
+    .holiday-ocean-copy small { font-size: .75rem; }
+}
+/* Ensure native hidden state wins over styled sections. */
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+    .holiday-ocean-icon { animation: none; }
+    .holiday-ocean-button { transition: none; }
+}
+
 </style>
 </head>
 
@@ -725,6 +768,16 @@ footer {
     Play a Little Game ♡
 </button>
    
+<!-- A separate year-round calendar, saved as holidays.html in this repository -->
+<a href="holidays.html" class="holiday-ocean-button" aria-label="Visit Our Holiday Ocean calendar">
+    <span class="holiday-ocean-icon" aria-hidden="true">🎄🌊🎁</span>
+    <span class="holiday-ocean-copy">
+        <strong>Our Holiday Ocean</strong>
+        <small>12 months of surprises, celebrations, and little reminders 💜</small>
+    </span>
+    <span class="holiday-ocean-arrow" aria-hidden="true">➜</span>
+</a>
+
 <a href="dolphin.html" class="dolphin-button">
     🐬 Need Help Studying?
 </a>
@@ -837,6 +890,7 @@ surpriseButton.addEventListener("click", function() {
         width="0"
         height="0"
         src=""
+        title="Our birthday song"
         allow="autoplay; encrypted-media">
     </iframe>
 </div>
@@ -844,6 +898,7 @@ surpriseButton.addEventListener("click", function() {
 <script>
 function playBirthdayMusic() {
     const player = document.getElementById("birthdayMusic");
+    if (player.src.includes("CAeAt5kPZ7c")) return;
 
     player.src =
         "https://www.youtube.com/embed/CAeAt5kPZ7c?autoplay=1&loop=1&playlist=CAeAt5kPZ7c";
@@ -857,6 +912,7 @@ const memorySymbols = ["❤️", "❤️", "💎", "💎", "🌸", "🌸", "🌙
 let flippedCards = [];
 let matchedPairs = 0;
 let lockBoard = false;
+let memoryFlipTimer = null;
 
 function openMemoryGame() {
     document.querySelector(".welcome").hidden = true;
@@ -870,6 +926,10 @@ function openMemoryGame() {
 }
 
 function closeMemoryGame() {
+    if (memoryFlipTimer !== null) {
+        clearTimeout(memoryFlipTimer);
+        memoryFlipTimer = null;
+    }
     document.getElementById("memoryGame").hidden = true;
     document.querySelector(".welcome").hidden = false;
 
@@ -879,10 +939,18 @@ function closeMemoryGame() {
 }
 
 function startMemoryGame() {
+    if (memoryFlipTimer !== null) {
+        clearTimeout(memoryFlipTimer);
+        memoryFlipTimer = null;
+    }
     const board = document.getElementById("memoryBoard");
     const gameWin = document.getElementById("gameWin");
 
-    let shuffledCards = [...memorySymbols].sort(() => Math.random() - 0.5);
+    let shuffledCards = [...memorySymbols];
+    for (let i = shuffledCards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledCards[i], shuffledCards[j]] = [shuffledCards[j], shuffledCards[i]];
+    }
 
     flippedCards = [];
     matchedPairs = 0;
@@ -941,7 +1009,8 @@ function flipMemoryCard(card) {
         } else {
             lockBoard = true;
 
-            setTimeout(() => {
+            memoryFlipTimer = setTimeout(() => {
+                memoryFlipTimer = null;
                 flippedCards.forEach(card => {
                     card.textContent = "❔";
                 });
