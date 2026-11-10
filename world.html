@@ -191,6 +191,8 @@ footer {
   <button id="zoet">💜 Your City</button>
   <button id="world">🌍 Whole World</button>
   <button id="hint">🐬 Dolphin Hint</button>
+  <button id="mapTheme" type="button" aria-pressed="false">🌙 Night Map</button>
+  <button id="resetAdventure" type="button" hidden>🦭 Baby Seal Says: Play Again! 💎</button>
   <a class="home" href="index.html">🏠 Our Ocean</a>
 </div>
 
@@ -249,14 +251,35 @@ footer {
     maxZoom: 19
   }).setView([24, 0], 2);
 
-  L.tileLayer(
-    "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-    }
-  ).addTo(map);
+  // Light and dark map tiles, with the preference saved on this device.
+  const MAP_THEME_KEY = "ocean-world-map-theme-v1";
+  const mapAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  const lightTiles = L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    { subdomains: "abcd", maxZoom: 19, attribution: mapAttribution }
+  );
+  const darkTiles = L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    { subdomains: "abcd", maxZoom: 19, attribution: mapAttribution }
+  );
+  let mapTheme = "light";
+  try {
+    if (localStorage.getItem(MAP_THEME_KEY) === "dark") mapTheme = "dark";
+  } catch (error) {}
+  function applyMapTheme() {
+    if (map.hasLayer(lightTiles)) map.removeLayer(lightTiles);
+    if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
+    (mapTheme === "dark" ? darkTiles : lightTiles).addTo(map).bringToBack();
+    const themeButton = document.getElementById("mapTheme");
+    themeButton.textContent = mapTheme === "dark" ? "☀️ Day Map" : "🌙 Night Map";
+    themeButton.setAttribute("aria-pressed", String(mapTheme === "dark"));
+  }
+  applyMapTheme();
+  document.getElementById("mapTheme").addEventListener("click", () => {
+    mapTheme = mapTheme === "light" ? "dark" : "light";
+    try { localStorage.setItem(MAP_THEME_KEY, mapTheme); } catch (error) {}
+    applyMapTheme();
+  });
 
   function heart(emoji) {
     return L.divIcon({
@@ -409,6 +432,8 @@ footer {
   } catch (error) {}
 
   const layers = types.map(() => L.layerGroup());
+  const resetButton = document.getElementById("resetAdventure");
+  let gemMarkers = [];
 
   function gemIcon(t) {
     return L.divIcon({
@@ -445,6 +470,8 @@ footer {
 
     document.getElementById("progress")
       .setAttribute("aria-valuenow", String(found.size));
+
+    resetButton.hidden = found.size !== treasures.length;
 
     document.getElementById("breakdown").textContent =
       types.map((c,i) =>
@@ -487,7 +514,25 @@ footer {
       marker.setPopupContent(popup(t));
     });
 
+    gemMarkers.push({marker, treasure:t});
     layers[t.type].addLayer(marker);
+  });
+
+  resetButton.addEventListener("click", () => {
+    if (found.size !== treasures.length) return;
+    if (!confirm("🦭 Baby Seal wants to hide all 50 diamonds again! Ready for another ocean adventure? 💙")) return;
+    found.clear();
+    try { localStorage.removeItem(SAVE); } catch (error) {}
+    gemMarkers.forEach(({marker,treasure}) => {
+      marker.setIcon(gemIcon(treasure));
+      marker.setPopupContent(popup(treasure));
+    });
+    update();
+    show("all");
+    stop();
+    map.closePopup();
+    map.flyTo([24,0],2,{duration:1.4});
+    status.textContent = "🦭 Squeak! Baby Seal hid all 50 diamonds again! Let’s find them together! 💎💙";
   });
 
   layers.forEach(layer => layer.addTo(map));
