@@ -281,10 +281,10 @@ h1, .subtitle, .dolphin, .welcome {
 
         } catch (error) {
             console.error(error);
-            addMessage(
-                "Oh no! I couldn't reach my AI brain. Please try again! 🐬",
-                "dolphin-message"
-            );
+addMessage(
+    "Connection error: " + error.message,
+    "dolphin-message"
+);
         } finally {
             sendButton.disabled = false;
             sendButton.textContent = "Send";
