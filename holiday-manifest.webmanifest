@@ -1,0 +1,18 @@
+
+{
+  "name": "Our Holiday Ocean",
+  "short_name": "Holiday Ocean",
+  "start_url": "./holidays.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#102553",
+  "theme_color": "#102553",
+  "icons": [
+    {
+      "src": "holiday-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
