@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our Little World 🌎💎</title>
+<script src="ocean-gate.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#100d35,#25185a,#075c83);color:#f3f4ff;font-family:Georgia,serif;text-align:center}header{padding:24px 16px 12px}h1{color:#8df2ff;margin:10px 0;font-size:clamp(2rem,5vw,3rem)}p{line-height:1.6}.subtitle{color:#d9c5ff;max-width:680px;margin:0 auto 16px}.toolbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:8px 12px 18px}button,.home{background:linear-gradient(100deg,#168da9,#7352b8);color:white;border:1px solid #9afaff;border-radius:30px;padding:12px 18px;cursor:pointer;font:inherit;text-decoration:none}button:hover,.home:hover{filter:brightness(1.15)}#map{height:min(68vh,680px);min-height:390px;width:min(1100px,96%);margin:0 auto 20px;border:2px solid #8df2ff;border-radius:20px;box-shadow:0 0 35px #4cdcfb33;overflow:hidden;background:#0c214b}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#16204e;color:white}.leaflet-popup-content{font:15px/1.5 Georgia,serif}.leaflet-popup-content strong{color:#aaf6ff}.leaflet-container{font-family:Georgia,serif}.heart-pin,.gem-pin{font-size:29px;filter:drop-shadow(0 0 7px #7cf5ff);text-align:center}.gem-pin{font-size:25px}.hint{color:#d9c5ff;padding:0 15px 22px}.status{color:#ffe8a3;min-height:1.5em;padding:0 15px 16px}.leaflet-control-attribution{font-size:11px!important}footer{padding:12px 20px 30px;color:#d9c5ff}
+</style>
+</head>
+<body>
+<header><h1>🌎 Our Little World 💎</h1><p class="subtitle">Two hearts, one world. Explore the oceans, visit our cities, and discover little surprises hidden among the waves. 💜</p></header>
+<div class="toolbar"><button id="journey">💞 Find My Way to You</button><button id="reset">🌍 See the Whole World</button><button id="hint">🐬 Dolphin Hint</button><a class="home" href="index.html">🏠 Back to Our Ocean</a></div>
+<div id="map" role="application" aria-label="Interactive world map with Lake Forest, Zoetermeer, and hidden diamonds"></div>
+<p id="status" class="status" aria-live="polite">Tap the hearts to explore our two sides of the ocean. ❤️</p>
+<p class="hint">💎 There are five hidden diamonds around the world. Can you find them all?</p>
+<footer>Made with love, across every ocean. 🌙</footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+if(typeof L === 'undefined'){
+ document.getElementById('status').textContent='The map library could not load. Please check your internet connection and refresh.';
+}else{
+ const lake=[42.2514,-87.8406], zoet=[52.0575,4.4931];
+ const map=L.map('map',{worldCopyJump:true,minZoom:2}).setView([39,-36],3);
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+ const pin=(emoji,cls='heart-pin')=>L.divIcon({html:emoji,className:cls,iconSize:[36,36],iconAnchor:[18,18]});
+ const lakeMarker=L.marker(lake,{icon:pin('💙')}).addTo(map).bindPopup('<strong>Lake Forest, Illinois 🇺🇸</strong><br>My side of the ocean. No matter how far away I am, you are always close to my heart. 💙');
+ const zoetMarker=L.marker(zoet,{icon:pin('💜')}).addTo(map).bindPopup('<strong>Zoetermeer, Netherlands 🇳🇱</strong><br>Your side of the ocean, and a very special place in my world. 💜');
+ // A visual connection, not an actual travel route.
+ const connection=L.polyline([lake,[46,-65],[49,-40],[51,-18],zoet],{color:'#a5f3fc',weight:3,opacity:.85,dashArray:'8,12'}).addTo(map);
+ const treasures=[
+  {pos:[64.15,-21.94],name:'Iceland',message:'Even in the coldest places, thinking of you brings warmth. ❄️💜'},
+  {pos:[35.68,139.69],name:'Japan',message:'There are countless beautiful places in this world, and I hope we discover many together. 🌸'},
+  {pos:[-22.91,-43.17],name:'Brazil',message:'Across every ocean, my love for you keeps finding its way. 🌊❤️'},
+  {pos:[-33.87,151.21],name:'Australia',message:'Even on the other side of the world, you would still be my favorite person. 🐨💎'},
+  {pos:[30.04,31.24],name:'Egypt',message:'Some treasures last for ages. You are my rarest diamond. 💎'}
+ ];
+ const found=new Set();
+ treasures.forEach((t,i)=>{
+  const marker=L.marker(t.pos,{icon:pin('💎','gem-pin')}).addTo(map);
+  marker.on('click',()=>{
+   found.add(i);
+   marker.bindPopup('<strong>💎 Secret found: '+t.name+'</strong><br>'+t.message).openPopup();
+   document.getElementById('status').textContent='💎 Diamonds discovered: '+found.size+' / '+treasures.length+(found.size===treasures.length?' — You found every treasure! My favorite treasure is you. ❤️':'');
+  });
+ });
+ const journey=document.getElementById('journey');
+ let travelTimer;
+ journey.addEventListener('click',()=>{
+  clearTimeout(travelTimer);
+  map.flyTo(lake,7,{duration:1.5});
+  document.getElementById('status').textContent='💙 Starting in Lake Forest… then crossing the ocean to you!';
+  travelTimer=setTimeout(()=>{
+   map.flyTo(zoet,7,{duration:4});
+   travelTimer=setTimeout(()=>{
+    zoetMarker.openPopup();
+    document.getElementById('status').textContent='💜 An ocean may separate our worlds, but it could never separate our hearts.';
+   },4300);
+  },1900);
+ });
+ document.getElementById('reset').addEventListener('click',()=>{
+  clearTimeout(travelTimer);map.closePopup();map.setView([39,-36],3);document.getElementById('status').textContent='🌎 The whole world is waiting for us.';
+ });
+ document.getElementById('hint').addEventListener('click',()=>{
+  const remaining=treasures.findIndex((_,i)=>!found.has(i));
+  document.getElementById('status').textContent=remaining<0?'🐬 You found every diamond! 💜':'🐬 Psst! Try exploring near '+treasures[remaining].name+'!';
+ });
+}
+</script>
+</body>
+</html>
