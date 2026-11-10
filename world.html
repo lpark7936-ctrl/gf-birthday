@@ -1,73 +1,729 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Our Little World 🌎💎</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Our Little World — 195 Ocean Diamonds 💎</title>
+
 <script src="ocean-gate.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#100d35,#25185a,#075c83);color:#f3f4ff;font-family:Georgia,serif;text-align:center}header{padding:24px 16px 12px}h1{color:#8df2ff;margin:10px 0;font-size:clamp(2rem,5vw,3rem)}p{line-height:1.6}.subtitle{color:#d9c5ff;max-width:680px;margin:0 auto 16px}.toolbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:8px 12px 18px}button,.home{background:linear-gradient(100deg,#168da9,#7352b8);color:white;border:1px solid #9afaff;border-radius:30px;padding:12px 18px;cursor:pointer;font:inherit;text-decoration:none}button:hover,.home:hover{filter:brightness(1.15)}#map{height:min(68vh,680px);min-height:390px;width:min(1100px,96%);margin:0 auto 20px;border:2px solid #8df2ff;border-radius:20px;box-shadow:0 0 35px #4cdcfb33;overflow:hidden;background:#0c214b}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#16204e;color:white}.leaflet-popup-content{font:15px/1.5 Georgia,serif}.leaflet-popup-content strong{color:#aaf6ff}.leaflet-container{font-family:Georgia,serif}.heart-pin,.gem-pin{font-size:29px;filter:drop-shadow(0 0 7px #7cf5ff);text-align:center}.gem-pin{font-size:25px}.hint{color:#d9c5ff;padding:0 15px 22px}.status{color:#ffe8a3;min-height:1.5em;padding:0 15px 16px}.leaflet-control-attribution{font-size:11px!important}footer{padding:12px 20px 30px;color:#d9c5ff}
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #f3f4ff;
+  font-family: Georgia, serif;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 20% 5%, #354b8b, transparent 35%),
+    linear-gradient(140deg, #080e2e, #21194e 55%, #075c83);
+}
+
+header { padding: 25px 15px 5px; }
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: #8df2ff;
+  margin: 10px 0;
+}
+
+p { line-height: 1.6; }
+
+.subtitle {
+  color: #e0d2ff;
+  max-width: 760px;
+  margin: 0 auto 15px;
+}
+
+.toolbar, .filters {
+  display: flex;
+  gap: 9px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+}
+
+.toolbar { padding-bottom: 12px; }
+
+button, .home {
+  background: linear-gradient(100deg, #168da9, #7352b8);
+  color: white;
+  border: 1px solid #9afaff;
+  border-radius: 24px;
+  padding: 11px 16px;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+}
+
+button:hover, .home:hover {
+  filter: brightness(1.17);
+}
+
+button:focus-visible, .home:focus-visible {
+  outline: 3px solid #ffe7a5;
+  outline-offset: 2px;
+}
+
+.filter {
+  background: #142b58;
+  border-color: #536c9a;
+  font-size: .9rem;
+  padding: 8px 12px;
+}
+
+.filter[aria-pressed="true"] {
+  border-color: #f7e3a7;
+  box-shadow: 0 0 13px #a5f3fc88;
+}
+
+.stats {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 12px auto;
+  color: #ffe6a5;
+}
+
+.progress {
+  width: min(600px, 88%);
+  height: 10px;
+  background: #0e214d;
+  border: 1px solid #587bb0;
+  border-radius: 20px;
+  margin: 8px auto 18px;
+  overflow: hidden;
+}
+
+.progress > div {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #35d8ef, #a58aff, #f5ce75);
+  transition: width .4s;
+}
+
+#map {
+  height: min(70vh, 740px);
+  min-height: 440px;
+  width: min(1250px, 96%);
+  margin: 0 auto 16px;
+  border: 2px solid #8df2ff;
+  border-radius: 20px;
+  box-shadow: 0 0 45px #4cdcfb44;
+  overflow: hidden;
+  background: #0b2646;
+}
+
+.leaflet-container { font-family: Georgia, serif; }
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #142149;
+  color: white;
+}
+
+.leaflet-popup-content {
+  font: 15px/1.55 Georgia, serif;
+  min-width: 190px;
+}
+
+.leaflet-popup-content strong { color: #aaf6ff; }
+.leaflet-control-attribution { font-size: 10px !important; }
+
+.heart-pin {
+  font-size: 33px;
+  filter: drop-shadow(0 0 9px white);
+  text-align: center;
+  line-height: 40px;
+}
+
+.gem-pin {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  border-radius: 50%;
+  background: #102a53d9;
+  border: 1px solid var(--gem);
+  box-shadow: 0 0 13px var(--gem);
+  color: var(--gem);
+  text-shadow: 0 0 6px var(--gem);
+}
+
+.gem-pin.found {
+  background: #ffffffea;
+  color: #33425f;
+  opacity: .85;
+}
+
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+  background: #28b6d188 !important;
+}
+
+.marker-cluster div {
+  background: #132d63 !important;
+  color: white !important;
+  border: 1px solid #a6edff;
+}
+
+.status {
+  min-height: 2em;
+  color: #ffe6a5;
+  padding: 0 16px;
+}
+
+.hint { color: #d9c5ff; padding: 0 18px; }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 8px 15px 20px;
+}
+
+.legend span { font-size: .85rem; color: #d9c5ff; }
+.legend b { font-size: 1.1rem; }
+
+footer {
+  padding: 18px 15px 30px;
+  color: #d9c5ff;
+}
+
+@media (max-width: 600px) {
+  #map { min-height: 430px; height: 62vh; }
+  .toolbar button, .toolbar a {
+    font-size: .85rem;
+    padding: 10px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress > div { transition: none; }
+}
 </style>
 </head>
+
 <body>
-<header><h1>🌎 Our Little World 💎</h1><p class="subtitle">Two hearts, one world. Explore the oceans, visit our cities, and discover little surprises hidden among the waves. 💜</p></header>
-<div class="toolbar"><button id="journey">💞 Find My Way to You</button><button id="reset">🌍 See the Whole World</button><button id="hint">🐬 Dolphin Hint</button><a class="home" href="index.html">🏠 Back to Our Ocean</a></div>
-<div id="map" role="application" aria-label="Interactive world map with Lake Forest, Zoetermeer, and hidden diamonds"></div>
-<p id="status" class="status" aria-live="polite">Tap the hearts to explore our two sides of the ocean. ❤️</p>
-<p class="hint">💎 There are five hidden diamonds around the world. Can you find them all?</p>
+<header>
+  <h1>🌎 Our Little World 💎</h1>
+  <p class="subtitle">
+    Two hearts, one world. Explore 195 colorful ocean diamonds
+    scattered across the Earth. Every discovery carries a
+    little message for you. 💜
+  </p>
+</header>
+
+<div class="toolbar">
+  <button id="journey">💞 Find My Way to You</button>
+  <button id="reset">🌍 Whole World</button>
+  <button id="hint">🐬 Dolphin Hint</button>
+  <button id="style">🌙 Night Map</button>
+  <a class="home" href="index.html">🏠 Back to Our Ocean</a>
+</div>
+
+<div class="filters" id="filters" aria-label="Diamond color filters"></div>
+
+<div class="stats">
+  <strong id="counter">💎 0 / 195 found</strong>
+  <span id="categoryStats">Explore all five ocean colors</span>
+</div>
+
+<div class="progress" id="progress"
+     role="progressbar"
+     aria-label="Diamonds discovered"
+     aria-valuemin="0"
+     aria-valuemax="195"
+     aria-valuenow="0">
+  <div id="progressFill"></div>
+</div>
+
+<div id="map" role="application"
+     aria-label="Interactive world map with two city hearts and 195 discoverable diamonds"></div>
+
+<p id="status" class="status" aria-live="polite">
+  Tap a diamond to discover its secret.
+  Zoom in to reveal clustered treasures! 💎
+</p>
+
+<p class="hint">
+  🐬 The diamonds are hidden in five ocean colors.
+  Your progress is saved in this browser.
+  Locations are playful treasure spots, not real-world addresses.
+</p>
+
+<div class="legend" id="legend"></div>
+
 <footer>Made with love, across every ocean. 🌙</footer>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
 <script>
-if(typeof L === 'undefined'){
- document.getElementById('status').textContent='The map library could not load. Please check your internet connection and refresh.';
-}else{
- const lake=[42.2514,-87.8406], zoet=[52.0575,4.4931];
- const map=L.map('map',{worldCopyJump:true,minZoom:2}).setView([39,-36],3);
- L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
- const pin=(emoji,cls='heart-pin')=>L.divIcon({html:emoji,className:cls,iconSize:[36,36],iconAnchor:[18,18]});
- const lakeMarker=L.marker(lake,{icon:pin('💙')}).addTo(map).bindPopup('<strong>Lake Forest, Illinois 🇺🇸</strong><br>My side of the ocean. No matter how far away I am, you are always close to my heart. 💙');
- const zoetMarker=L.marker(zoet,{icon:pin('💜')}).addTo(map).bindPopup('<strong>Zoetermeer, Netherlands 🇳🇱</strong><br>Your side of the ocean, and a very special place in my world. 💜');
- // A visual connection, not an actual travel route.
- const connection=L.polyline([lake,[46,-65],[49,-40],[51,-18],zoet],{color:'#a5f3fc',weight:3,opacity:.85,dashArray:'8,12'}).addTo(map);
- const treasures=[
-  {pos:[64.15,-21.94],name:'Iceland',message:'Even in the coldest places, thinking of you brings warmth. ❄️💜'},
-  {pos:[35.68,139.69],name:'Japan',message:'There are countless beautiful places in this world, and I hope we discover many together. 🌸'},
-  {pos:[-22.91,-43.17],name:'Brazil',message:'Across every ocean, my love for you keeps finding its way. 🌊❤️'},
-  {pos:[-33.87,151.21],name:'Australia',message:'Even on the other side of the world, you would still be my favorite person. 🐨💎'},
-  {pos:[30.04,31.24],name:'Egypt',message:'Some treasures last for ages. You are my rarest diamond. 💎'}
- ];
- const found=new Set();
- treasures.forEach((t,i)=>{
-  const marker=L.marker(t.pos,{icon:pin('💎','gem-pin')}).addTo(map);
-  marker.on('click',()=>{
-   found.add(i);
-   marker.bindPopup('<strong>💎 Secret found: '+t.name+'</strong><br>'+t.message).openPopup();
-   document.getElementById('status').textContent='💎 Diamonds discovered: '+found.size+' / '+treasures.length+(found.size===treasures.length?' — You found every treasure! My favorite treasure is you. ❤️':'');
+(() => {
+  "use strict";
+
+  const status = document.getElementById("status");
+
+  if (typeof L === "undefined") {
+    status.textContent =
+      "The map could not load. Please check your internet connection and refresh.";
+    return;
+  }
+
+  const lake = [42.2514, -87.8406];
+  const zoet = [52.0575, 4.4931];
+
+  const colors = [
+    { name: "Coral Reef", hex: "#35d8ef", icon: "🪸" },
+    { name: "Deep Ocean", hex: "#2384ff", icon: "🌊" },
+    { name: "Moonlit Tide", hex: "#a58aff", icon: "🌙" },
+    { name: "Sea Glass", hex: "#34d4a3", icon: "🐚" },
+    { name: "Sunken Gold", hex: "#f5ce75", icon: "✨" }
+  ];
+
+  const map = L.map("map", {
+    worldCopyJump: true,
+    minZoom: 2,
+    maxZoom: 18
+  }).setView([28, -30], 2);
+
+  const voyager = L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    {
+      subdomains: "abcd",
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap contributors &copy; CARTO"
+    }
+  );
+
+  const dark = L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    {
+      subdomains: "abcd",
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap contributors &copy; CARTO"
+    }
+  );
+
+  voyager.addTo(map);
+  let night = false;
+
+  function heartIcon(emoji) {
+    return L.divIcon({
+      html: emoji,
+      className: "heart-pin",
+      iconSize: [42, 42],
+      iconAnchor: [21, 21]
+    });
+  }
+
+  L.marker(lake, {
+    icon: heartIcon("💙"),
+    zIndexOffset: 1000
+  }).addTo(map).bindPopup(
+    "<strong>💙 Lake Forest, Illinois 🇺🇸</strong><br>" +
+    "My side of the ocean. Wherever I go, you have a place in my heart."
+  );
+
+  const zoetMarker = L.marker(zoet, {
+    icon: heartIcon("💜"),
+    zIndexOffset: 1000
+  }).addTo(map).bindPopup(
+    "<strong>💜 Zoetermeer, Netherlands 🇳🇱</strong><br>" +
+    "Your side of the ocean, and a beautiful part of my world."
+  );
+
+  L.polyline([
+    lake,
+    [47, -70],
+    [51, -45],
+    [53, -20],
+    zoet
+  ], {
+    color: "#52dce9",
+    weight: 4,
+    opacity: .85,
+    dashArray: "7,11",
+    interactive: false
+  }).addTo(map);
+
+  // Five original surprise destinations.
+  const originals = [
+    {
+      pos: [64.15, -21.94],
+      place: "Iceland",
+      message: "Even in the coldest places, thinking of you brings warmth. ❄️💜"
+    },
+    {
+      pos: [35.68, 139.69],
+      place: "Japan",
+      message: "There are countless beautiful places in this world, and I hope we discover many together. 🌸"
+    },
+    {
+      pos: [-22.91, -43.17],
+      place: "Brazil",
+      message: "Across every ocean, my love for you keeps finding its way. 🌊❤️"
+    },
+    {
+      pos: [-33.87, 151.21],
+      place: "Australia",
+      message: "Even on the other side of the world, you would still be my favorite person. 🐨💎"
+    },
+    {
+      pos: [30.04, 31.24],
+      place: "Egypt",
+      message: "Some treasures last for ages. You are my rarest diamond. 💎"
+    }
+  ];
+
+  // 38 unique message beginnings.
+  const beginnings = [
+    "Every wave reminds me that distance cannot erase a connection.",
+    "The world is wide, but my gratitude for you is wider.",
+    "I hope today gives you a reason to smile.",
+    "Some of the best adventures begin with a simple hello.",
+    "Even quiet moments can become precious memories.",
+    "There is beauty in the little things we share.",
+    "I love how your kindness makes ordinary days brighter.",
+    "A new horizon always brings another possibility.",
+    "I hope you always feel free to be yourself.",
+    "Every ocean has hidden wonders worth discovering.",
+    "You deserve gentleness on your difficult days.",
+    "I am grateful for every conversation we get to have.",
+    "A thousand miles cannot measure what someone means.",
+    "The stars look different everywhere, but they still shine.",
+    "I hope we find new favorite places together.",
+    "You make this little corner of the internet feel special.",
+    "Like sea glass, beautiful things are shaped over time.",
+    "Even a small light can guide someone through darkness.",
+    "I treasure your laughter more than any gemstone.",
+    "One day, I hope we can watch a sunset side by side.",
+    "A good relationship leaves room for both people to grow.",
+    "The ocean changes with the tide, and love grows with care.",
+    "I hope you know how much your presence matters.",
+    "There are so many stories we have yet to tell.",
+    "My favorite discoveries are the ones we make together.",
+    "May your future be full of wonder and peace.",
+    "You bring warmth to moments that would otherwise feel cold.",
+    "I want to keep learning how to love you well.",
+    "Every little memory deserves a place in our story.",
+    "I hope our adventures are full of laughter.",
+    "A gentle heart can be stronger than a storm.",
+    "No map can show every meaningful place.",
+    "I hope you never have to hide your true self.",
+    "The brightest treasures are not always made of gold.",
+    "Your dreams deserve space to become real.",
+    "Sometimes the best gift is simply being there.",
+    "May each new day bring something worth remembering.",
+    "The distance is real, but so is the care between us.",
+    "This diamond is a tiny reminder that you are cherished."
+  ];
+
+  const endings = [
+    "💙 Keep shining, my love.",
+    "🌊 Across every ocean, always.",
+    "💜 Here is another little piece of my heart.",
+    "🐚 This treasure belongs to you.",
+    "✨ Our story is still unfolding."
+  ];
+
+  // Repeatable random locations.
+  let seed = 20260725;
+
+  function rand() {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    return seed / 4294967296;
+  }
+
+  const regions = [
+    { name: "North Atlantic", lat: [5,65], lng: [-75,-8] },
+    { name: "South Atlantic", lat: [-55,5], lng: [-55,10] },
+    { name: "Pacific Ocean", lat: [-55,60], lng: [-175,-85] },
+    { name: "Western Pacific", lat: [-48,55], lng: [115,178] },
+    { name: "Indian Ocean", lat: [-45,22], lng: [42,110] },
+    { name: "Europe", lat: [37,67], lng: [-8,35] },
+    { name: "North America", lat: [16,65], lng: [-135,-65] },
+    { name: "South America", lat: [-53,10], lng: [-80,-35] },
+    { name: "Africa", lat: [-34,35], lng: [-17,46] },
+    { name: "Asia", lat: [5,62], lng: [45,145] },
+    { name: "Oceania", lat: [-45,-9], lng: [110,177] }
+  ];
+
+  const treasures = originals.map((t, i) => ({
+    ...t,
+    id: i,
+    category: i
+  }));
+
+  // Add 190 new diamonds.
+  for (let i = 0; i < 190; i++) {
+    const r = regions[i % regions.length];
+
+    const lat = r.lat[0] + rand() * (r.lat[1] - r.lat[0]);
+    const lng = r.lng[0] + rand() * (r.lng[1] - r.lng[0]);
+
+    treasures.push({
+      id: i + 5,
+      pos: [+lat.toFixed(4), +lng.toFixed(4)],
+      place: r.name + " · Treasure " + (i + 1),
+      message: beginnings[Math.floor(i / 5)] + " " + endings[i % 5],
+      category: (i + 5) % 5
+    });
+  }
+
+  const STORAGE = "our-little-world-diamonds-v2";
+  let found = new Set();
+
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE));
+    if (Array.isArray(saved)) {
+      found = new Set(
+        saved.filter(n =>
+          Number.isInteger(n) && n >= 0 && n < 195
+        )
+      );
+    }
+  } catch (error) {}
+
+  const groups = colors.map(() =>
+    typeof L.markerClusterGroup === "function"
+      ? L.markerClusterGroup({
+          showCoverageOnHover: false,
+          maxClusterRadius: 43,
+          spiderfyOnMaxZoom: true
+        })
+      : L.layerGroup()
+  );
+
+  const markers = [];
+  let active = "all";
+
+  function gemIcon(t) {
+    const c = colors[t.category];
+
+    return L.divIcon({
+      className: "",
+      html:
+        '<div class="gem-pin ' +
+        (found.has(t.id) ? "found" : "") +
+        '" style="--gem:' + c.hex +
+        '" title="' + c.name + ' diamond">◆</div>',
+      iconSize: [30,30],
+      iconAnchor: [15,15]
+    });
+  }
+
+  function popupText(t) {
+    const c = colors[t.category];
+
+    return (
+      "<strong>" + c.icon + " " + c.name +
+      " Diamond #" + (t.id + 1) + "</strong><br>" +
+      t.place + "<br><br>" +
+      t.message + "<br><small>" +
+      (found.has(t.id) ? "✓ Discovered" : "Click to discover") +
+      "</small>"
+    );
+  }
+
+  function update() {
+    document.getElementById("counter").textContent =
+      "💎 " + found.size + " / 195 found";
+
+    document.getElementById("progressFill").style.width =
+      (found.size / 195 * 100) + "%";
+
+    document.getElementById("progress")
+      .setAttribute("aria-valuenow", String(found.size));
+
+    document.getElementById("categoryStats").textContent =
+      colors.map((c, i) =>
+        c.icon + " " +
+        treasures.filter(t =>
+          t.category === i && found.has(t.id)
+        ).length + "/39"
+      ).join(" · ");
+  }
+
+  function discover(t, marker) {
+    if (!found.has(t.id)) {
+      found.add(t.id);
+
+      try {
+        localStorage.setItem(STORAGE, JSON.stringify([...found]));
+      } catch (error) {}
+
+      marker.setIcon(gemIcon(t));
+      update();
+
+      status.textContent =
+        colors[t.category].icon + " Diamond " +
+        (t.id + 1) + " found! " +
+        found.size + " of 195 discovered.";
+
+      if (found.size === 195) {
+        status.textContent =
+          "💎 You found every diamond! My rarest treasure is you. ❤️";
+      }
+    }
+
+    marker.setPopupContent(popupText(t));
+  }
+
+  treasures.forEach(t => {
+    const m = L.marker(t.pos, {
+      icon: gemIcon(t),
+      title: colors[t.category].name + " diamond " + (t.id + 1)
+    }).bindPopup(popupText(t));
+
+    m.on("click", () => discover(t, m));
+
+    markers[t.id] = m;
+    groups[t.category].addLayer(m);
   });
- });
- const journey=document.getElementById('journey');
- let travelTimer;
- journey.addEventListener('click',()=>{
-  clearTimeout(travelTimer);
-  map.flyTo(lake,7,{duration:1.5});
-  document.getElementById('status').textContent='💙 Starting in Lake Forest… then crossing the ocean to you!';
-  travelTimer=setTimeout(()=>{
-   map.flyTo(zoet,7,{duration:4});
-   travelTimer=setTimeout(()=>{
-    zoetMarker.openPopup();
-    document.getElementById('status').textContent='💜 An ocean may separate our worlds, but it could never separate our hearts.';
-   },4300);
-  },1900);
- });
- document.getElementById('reset').addEventListener('click',()=>{
-  clearTimeout(travelTimer);map.closePopup();map.setView([39,-36],3);document.getElementById('status').textContent='🌎 The whole world is waiting for us.';
- });
- document.getElementById('hint').addEventListener('click',()=>{
-  const remaining=treasures.findIndex((_,i)=>!found.has(i));
-  document.getElementById('status').textContent=remaining<0?'🐬 You found every diamond! 💜':'🐬 Psst! Try exploring near '+treasures[remaining].name+'!';
- });
-}
+
+  groups.forEach(g => map.addLayer(g));
+  update();
+
+  const filters = document.getElementById("filters");
+
+  function addFilter(label, value) {
+    const b = document.createElement("button");
+    b.className = "filter";
+    b.textContent = label;
+    b.setAttribute("aria-pressed", value === active ? "true" : "false");
+
+    b.addEventListener("click", () => {
+      active = value;
+
+      groups.forEach((g, i) => {
+        if (value === "all" || value === i) {
+          if (!map.hasLayer(g)) map.addLayer(g);
+        } else if (map.hasLayer(g)) {
+          map.removeLayer(g);
+        }
+      });
+
+      filters.querySelectorAll("button").forEach(x =>
+        x.setAttribute("aria-pressed", "false")
+      );
+
+      b.setAttribute("aria-pressed", "true");
+
+      status.textContent = value === "all"
+        ? "🌊 Showing all 195 diamonds."
+        : colors[value].icon + " Showing 39 " +
+          colors[value].name + " diamonds.";
+    });
+
+    filters.appendChild(b);
+  }
+
+  addFilter("💎 All 195", "all");
+
+  colors.forEach((c, i) =>
+    addFilter(c.icon + " " + c.name, i)
+  );
+
+  const legend = document.getElementById("legend");
+
+  colors.forEach(c => {
+    const s = document.createElement("span");
+    s.innerHTML =
+      '<b style="color:' + c.hex + '">◆</b> ' +
+      c.name + " (39)";
+    legend.appendChild(s);
+  });
+
+  let timer1, timer2;
+
+  function clearJourney() {
+    clearTimeout(timer1);
+    clearTimeout(timer2);
+    map.stop();
+  }
+
+  document.getElementById("journey")
+    .addEventListener("click", () => {
+      clearJourney();
+
+      map.flyTo(lake, 8, { duration: 1.6 });
+
+      status.textContent =
+        "💙 Starting in Lake Forest… then crossing the ocean to you!";
+
+      timer1 = setTimeout(() => {
+        map.flyTo(zoet, 8, { duration: 4.5 });
+
+        timer2 = setTimeout(() => {
+          zoetMarker.openPopup();
+
+          status.textContent =
+            "💜 An ocean may separate our worlds, but it could never separate our hearts.";
+        }, 4700);
+      }, 1850);
+    });
+
+  document.getElementById("reset")
+    .addEventListener("click", () => {
+      clearJourney();
+      map.closePopup();
+      map.setView([28,-30], 2);
+
+      status.textContent =
+        "🌍 The whole world is waiting for us.";
+    });
+
+  document.getElementById("hint")
+    .addEventListener("click", () => {
+      const t = treasures.find(t => !found.has(t.id));
+
+      if (!t) {
+        status.textContent =
+          "🐬 You found every diamond! 💜";
+        return;
+      }
+
+      if (active !== "all" && active !== t.category) {
+        filters.querySelector("button").click();
+      }
+
+      clearJourney();
+      map.flyTo(t.pos, 6, { duration: 1.5 });
+
+      status.textContent =
+        "🐬 Psst! Search near " + t.place +
+        " for a " + colors[t.category].name + " diamond!";
+    });
+
+  document.getElementById("style")
+    .addEventListener("click", e => {
+      night = !night;
+
+      if (night) {
+        map.removeLayer(voyager);
+        dark.addTo(map);
+        e.currentTarget.textContent = "☀️ Day Map";
+      } else {
+        map.removeLayer(dark);
+        voyager.addTo(map);
+        e.currentTarget.textContent = "🌙 Night Map";
+      }
+    });
+})();
 </script>
 </body>
 </html>
