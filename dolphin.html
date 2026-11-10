@@ -220,6 +220,130 @@ h1, .subtitle, .dolphin, .welcome {
   
 <script>
    
+<script type="module">
+import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
+
+const userInput = document.getElementById("userInput");
+const sendButton = document.getElementById("sendButton");
+const chatMessages = document.getElementById("chatMessages");
+const chatStatus = document.querySelector(".chat-header p");
+
+const MODEL = "Llama-3.2-1B-Instruct-q4f16_1-MLC";
+
+let engine = null;
+let isLoading = false;
+
+const conversation = [
+    {
+        role: "system",
+        content: `You are Dolphin, a friendly, playful and caring
+        dolphin companion living in a magical underwater world.
+        You are helpful, intelligent, patient and encouraging.
+        Answer questions naturally, tell stories, and offer advice.
+        Use occasional dolphin emojis. Never pretend to know
+        something you do not know.`
+    }
+];
+
+function addMessage(text, className) {
+    const bubble = document.createElement("div");
+    bubble.className = "message " + className;
+    bubble.textContent = text;
+    chatMessages.appendChild(bubble);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return bubble;
+}
+
+async function initializeAI() {
+    if (engine) return engine;
+
+    chatStatus.textContent = "Preparing Dolphin's brain... 🧠";
+
+    engine = await CreateMLCEngine(MODEL, {
+        initProgressCallback: (progress) => {
+            chatStatus.textContent =
+                progress.text || "Loading Dolphin...";
+        }
+    });
+
+    chatStatus.textContent = "Dolphin is ready to chat! 🐬";
+    return engine;
+}
+
+async function sendMessage() {
+    const message = userInput.value.trim();
+
+    if (!message || isLoading) return;
+
+    isLoading = true;
+    sendButton.disabled = true;
+    sendButton.textContent = "Thinking...";
+
+    addMessage(message, "user-message");
+    userInput.value = "";
+
+    const thinkingBubble = addMessage(
+        "Let me think about that... 🐬",
+        "dolphin-message"
+    );
+
+    try {
+        const ai = await initializeAI();
+
+        conversation.push({
+            role: "user",
+            content: message
+        });
+
+        const response = await ai.chat.completions.create({
+            messages: conversation,
+            temperature: 0.7,
+            max_tokens: 350
+        });
+
+        const reply = response.choices[0]?.message?.content;
+
+        if (!reply) {
+            throw new Error("Dolphin couldn't generate a reply.");
+        }
+
+        thinkingBubble.textContent = reply;
+
+        conversation.push({
+            role: "assistant",
+            content: reply
+        });
+
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    } catch (error) {
+        console.error("Dolphin AI error:", error);
+
+        thinkingBubble.textContent =
+            "Oh no! My brain had a little hiccup! 🐬 " +
+            error.message;
+
+        chatStatus.textContent =
+            "Dolphin needs a little help starting up.";
+    } finally {
+        isLoading = false;
+        sendButton.disabled = false;
+        sendButton.textContent = "Send";
+        userInput.focus();
+    }
+}
+
+sendButton.addEventListener("click", sendMessage);
+
+userInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+});
+
+chatStatus.textContent = "Dolphin is ready to initialize! 🐬";
+</script>
+
 </script>
 </body>
 </html>
