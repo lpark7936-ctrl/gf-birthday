@@ -1,53 +1,811 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Our Year of Ocean Surprises 🌊</title><meta name="theme-color" content="#101f54"><style>
-:root{color-scheme:dark;--sky:#b3faff;--gold:#ffe4a0;--purple:#d9c0ff;--panel:rgba(18,30,76,.78)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:Georgia,serif;color:#f7f6ff;text-align:center;background:radial-gradient(ellipse at 14% 10%,#543c94 0,transparent 40%),radial-gradient(ellipse at 80% 65%,#087d9b 0,transparent 50%),linear-gradient(145deg,#100d35,#1d2862,#06587b);background-attachment:fixed;overflow-x:hidden}
-.bubbles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}.bubble{position:absolute;bottom:-60px;border:1px solid #8ceaff99;border-radius:50%;width:18px;height:18px;animation:rise 12s linear infinite}.bubble:nth-child(1){left:8%;animation-delay:-3s}.bubble:nth-child(2){left:27%;width:30px;height:30px;animation-delay:-8s}.bubble:nth-child(3){left:49%;animation-delay:-1s}.bubble:nth-child(4){left:72%;width:23px;height:23px;animation-delay:-5s}.bubble:nth-child(5){left:90%;animation-delay:-10s}@keyframes rise{to{transform:translateY(-115vh);opacity:0}}
-.wrap{position:relative;z-index:1;width:min(1050px,94%);margin:auto;padding:30px 0 65px}.back{display:inline-block;text-decoration:none;color:var(--sky);border:1px solid #85eaf6;padding:11px 20px;border-radius:30px;background:#182d64a6}.back:hover{background:#31548d}.hero{padding:30px 16px 22px}.eyebrow{color:var(--gold);text-transform:uppercase;letter-spacing:3px;font-size:.8rem}h1{font-size:clamp(2.3rem,7vw,4.5rem);margin:12px 0;color:#92f7fa;text-shadow:0 0 28px #60e5ff55}.lead{max-width:700px;margin:0 auto;line-height:1.8;color:#e7dcff;font-size:1.1rem}.note{margin:15px auto 0;color:#ffecb9;font-size:.93rem}.tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:27px 0}.tab{cursor:pointer;font:inherit;font-weight:bold;border:1px solid #9ceafa;border-radius:40px;background:#243568;color:#fff;padding:14px 24px}.tab[aria-selected="true"]{background:linear-gradient(110deg,#139eb0,#7952bf);box-shadow:0 0 20px #78e4f455}.panel{background:var(--panel);border:1px solid #8de6f955;border-radius:28px;padding:25px 18px 35px;backdrop-filter:blur(10px);box-shadow:0 12px 45px #02071c55}.panel[hidden]{display:none}.panel h2{font-size:clamp(1.65rem,4vw,2.4rem);color:var(--gold);margin:0 0 8px}.details{color:#d7d4ff;line-height:1.6;max-width:700px;margin:0 auto 12px}.status{color:#9bf9fa;min-height:26px;margin:10px 0 24px}.calendar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}.day{min-height:137px;position:relative;border:1px solid #8de8fa80;border-radius:19px;background:linear-gradient(160deg,#204d80bb,#392d7abb);color:white;cursor:pointer;padding:13px 5px 10px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;transition:transform .2s,box-shadow .2s}.day:hover:not(:disabled){transform:translateY(-5px);box-shadow:0 0 22px #88f4ff77}.day:focus-visible,.tab:focus-visible,.close:focus-visible{outline:3px solid #ffe09c;outline-offset:3px}.day:disabled{cursor:not-allowed;opacity:.57;filter:saturate(.6)}.day.today{border:2px solid #ffe19b;box-shadow:0 0 18px #ffe09b55}.day .num{position:absolute;top:8px;left:12px;font-size:.77rem;color:#fff4c3}.day .animal{font-size:clamp(2rem,4.8vw,3.3rem);line-height:1.25;filter:drop-shadow(0 4px 5px #090f3188)}.day .tiny{font-size:.78rem;color:#d6f9ff}.day .lock{font-size:2rem}.day.final{background:linear-gradient(145deg,#9b6e36a8,#5c3d9eaa);border-color:#ffdf90}.day.final .animal{font-size:3.8rem}.day .face{font-size:.85rem;color:#ffcfef}.hint{color:#d1c7ed;font-size:.9rem;margin-top:18px}.overlay{position:fixed;inset:0;background:#060a22d9;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}.overlay[hidden]{display:none}.surprise{width:min(540px,96vw);max-height:90vh;overflow:auto;position:relative;background:radial-gradient(circle at 50% 10%,#7863b3,#28366f 58%,#114b72);border:2px solid #a5f4ff;border-radius:30px;padding:28px 20px 34px;box-shadow:0 0 60px #6ceeff55}.close{position:absolute;right:12px;top:12px;background:#182c5b;border:1px solid #b5ecff;color:white;border-radius:50%;width:40px;height:40px;font-size:1.4rem;cursor:pointer}.surprise h3{font-size:1.45rem;color:#ffe9ac;margin:12px 0}.stage{height:215px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.star{position:absolute;inset:0;font-size:2.1rem;pointer-events:none;animation:spark 1.3s ease-in-out infinite alternate}.star span{position:absolute}.star span:nth-child(1){left:12%;top:24%}.star span:nth-child(2){right:13%;top:18%}.star span:nth-child(3){left:23%;bottom:18%}.star span:nth-child(4){right:22%;bottom:15%}@keyframes spark{to{transform:scale(1.15) rotate(8deg);opacity:.65}}.creature{font-size:8rem;line-height:1;display:inline-block;filter:drop-shadow(0 9px 13px #07143c);position:relative}.creature .eyes{position:absolute;top:41%;left:50%;transform:translateX(-50%);display:flex;gap:13px}.creature .eye{background:white;border-radius:50%;width:16px;height:20px;box-shadow:inset -5px -3px 0 #2a2048}.creature .smile{position:absolute;top:63%;left:50%;transform:translateX(-50%);font-size:19px;color:#ffe6fa;text-shadow:0 2px 2px #371f66}.creature.big{font-size:11rem}.creature.big .eyes{gap:20px}.creature.big .eye{width:22px;height:26px}.stunt-spin{animation:spin .9s ease-in-out}.stunt-hop{animation:hop .9s ease-in-out}.stunt-wiggle{animation:wiggle 1s ease-in-out}.stunt-zoom{animation:zoom 1s ease-in-out}.stunt-flip{animation:flip 1s ease-in-out}.stunt-dance{animation:dance 1s ease-in-out}@keyframes spin{to{transform:rotate(360deg)}}@keyframes hop{40%{transform:translateY(-60px)}70%{transform:translateY(0)}85%{transform:translateY(-18px)}}@keyframes wiggle{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-18deg)}40%,80%{transform:rotate(18deg)}}@keyframes zoom{0%{transform:scale(.25)}65%{transform:scale(1.35)}100%{transform:scale(1)}}@keyframes flip{50%{transform:rotateY(180deg)}100%{transform:rotateY(360deg)}}@keyframes dance{20%{transform:translateX(-30px) rotate(-15deg)}40%{transform:translateX(30px) rotate(15deg)}60%{transform:translateX(-25px) rotate(-10deg)}80%{transform:translateX(25px) rotate(10deg)}}.message{color:#fff3fe;font-size:1.12rem;line-height:1.7;min-height:58px}.stunt-name{color:#9df8ff;min-height:22px}.again{background:linear-gradient(110deg,#1397aa,#7856bb);border:1px solid #a9faff;border-radius:28px;padding:12px 23px;color:white;font:inherit;cursor:pointer}.again:hover{filter:brightness(1.15)}.footer{padding:28px;color:#d8c7f5;font-size:.9rem}
-@media(max-width:650px){.calendar{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.day{min-height:112px;border-radius:15px}.day .animal{font-size:2.5rem}.day.final .animal{font-size:3rem}.day .tiny{font-size:.7rem}.panel{padding:22px 10px}.stage{height:190px}.creature{font-size:7rem}.creature.big{font-size:9rem}}
-@media(max-width:350px){.calendar{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;scroll-behavior:auto!important}}
 
-.month-picker{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:24px auto;max-width:900px}.month-button{border:1px solid #9ceafa77;border-radius:14px;background:#233b72b8;color:#fff;padding:12px 5px;cursor:pointer;font:inherit}.month-button[aria-pressed="true"]{background:linear-gradient(110deg,#139eb0,#7952bf);border-color:#ffe09c}.month-button:focus-visible{outline:3px solid #ffe09c}.month-emoji{display:block;font-size:1.65rem;margin-bottom:4px}.month-label{font-size:.84rem}.year-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin:10px}.year-nav button{border:1px solid #9ceafa;border-radius:20px;background:#243568;color:white;padding:8px 15px;cursor:pointer}.year-nav button:disabled{opacity:.4;cursor:not-allowed}.year-nav strong{font-size:1.3rem;color:#ffe4a0}.panel{margin-top:15px}@media(max-width:650px){.month-picker{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.month-button{padding:9px 4px}}
-</style></head><body>
-<div class="bubbles" aria-hidden="true"><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i></div>
-<div class="wrap"><a class="back" href="index.html">← Back to Our Little Ocean</a>
-<header class="hero"><div class="eyebrow">A whole year of tiny ocean adventures</div><h1>Our Holiday Ocean 🌊💜</h1><p class="lead">Pick any month to visit its holiday reef. Each day leading to the celebration unlocks a new ocean friend with a silly surprise. On the big day, meet a giant cuddle buddy! 💎</p><p class="note">The surprises unlock using your device's local date and return automatically each year.</p></header>
-<div class="year-nav"><button type="button" id="prevYear" aria-label="Previous year">◀</button><strong id="yearLabel"></strong><button type="button" id="nextYear" aria-label="Next year">▶</button></div>
-<nav class="month-picker" id="monthPicker" aria-label="Choose a month"></nav>
-<section class="panel" aria-labelledby="holidayTitle"><h2 id="holidayTitle"></h2><p class="details" id="holidayDetails"></p><p class="status" id="holidayStatus" aria-live="polite"></p><div class="calendar" id="holidayCalendar"></div><p class="hint">Tap an unlocked friend for a new stunt. Locked days are waiting for their special date. 🫧</p></section>
-<footer class="footer">Made with love, across every ocean. 🌊💜</footer></div>
-<div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="surpriseTitle"><div class="surprise"><button class="close" id="close" type="button" aria-label="Close surprise">×</button><div class="eyebrow" id="dayLabel"></div><h3 id="surpriseTitle"></h3><div class="stage"><div class="star" aria-hidden="true"><span>✨</span><span>💫</span><span>💛</span><span>🫧</span></div><div class="creature" id="creature" aria-label="Cute ocean animal"><span id="creatureEmoji"></span><span class="eyes" aria-hidden="true"><span class="eye"></span><span class="eye"></span></span><span class="smile" aria-hidden="true">ᴗ</span></div></div><p class="stunt-name" id="stuntName"></p><p class="message" id="surpriseMessage"></p><button class="again" id="again" type="button">🐙 Do another silly stunt!</button></div></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102553">
+<title>Our Holiday Ocean 🌊💜</title>
+<style>
+:root{
+  color-scheme:dark;
+  --blue:#9ceeff;--gold:#ffe5a6;--purple:#e3caff;
+  --panel:rgba(15,35,82,.87);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;color:white;
+  font-family:Arial,sans-serif;text-align:center;
+  background:radial-gradient(circle at 15% 10%,#67459a,transparent 38%),
+  radial-gradient(circle at 85% 70%,#087c9a,transparent 48%),
+  linear-gradient(150deg,#0e123b,#163b75,#075d7e);
+  background-attachment:fixed;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,
+textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+a{color:var(--blue)}
+.wrap{max-width:1120px;margin:auto;padding:24px 15px 75px;position:relative}
+.back{display:inline-block;padding:12px 20px;border:1px solid var(--blue);border-radius:30px;text-decoration:none}
+h1{font-size:clamp(2.1rem,6vw,4rem);color:var(--blue);margin-bottom:8px}
+h2{color:var(--gold)}
+.subtitle{color:#e7d8ff;line-height:1.7}
+.panel{
+  background:var(--panel);border:1px solid #9ceeff66;
+  border-radius:24px;padding:22px;margin:22px 0;
+  box-shadow:0 12px 35px #020a2766;
+}
+.controls{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap}
+.btn{
+  color:white;background:linear-gradient(110deg,#147eab,#7152af);
+  border:1px solid #9ceeff88;border-radius:15px;padding:11px 15px;
+}
+.btn:hover:not(:disabled){filter:brightness(1.2)}
+input,textarea,select{
+  background:#162f61;color:white;border:1px solid #83ddef;
+  border-radius:10px;padding:10px;max-width:100%;
+}
+input[type=number]{width:110px}
+.months{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:20px}
+.month{
+  background:#223f78;border:1px solid #80cce2;color:white;
+  border-radius:14px;padding:12px 4px;
+}
+.month.active{background:#7651a9;border-color:var(--gold)}
+.month span{display:block;font-size:1.6rem;margin-bottom:4px}
+.weekdays,.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}
+.weekdays{margin:15px 0 8px;color:#b8eaff;font-size:.8rem}
+.day{
+  position:relative;min-height:95px;background:#214878;
+  border:1px solid #6cbfd8;border-radius:13px;
+  color:white;padding:8px 3px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;
+}
+.day:hover{background:#355b91}
+.day.today{border:2px solid var(--gold)}
+.day.holiday{background:#59467d}
+.day.final{background:linear-gradient(140deg,#82633d,#75489d)}
+.day .number{position:absolute;top:5px;left:7px;font-size:.8rem}
+.day .animal{font-size:2rem}
+.day .label{font-size:.64rem;overflow-wrap:anywhere;max-width:100%}
+.day .dot{font-size:.7rem;color:var(--gold)}
+.day .lock{font-size:1.6rem}
+.empty{min-height:1px}
+.legend{font-size:.85rem;color:#d8d5fa;line-height:1.8}
+.status{color:var(--blue)}
+.section-title{margin-top:30px}
+.list{display:grid;gap:9px;text-align:left}
+.entry{padding:12px;background:#203f74;border-radius:12px;line-height:1.5}
+.entry small{color:#c9eaff}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left}
+.field{display:flex;flex-direction:column;gap:5px}
+.full{grid-column:1/-1}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.overlay{
+  position:fixed;inset:0;background:#050d28e8;z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:15px;
+}
+.overlay[hidden]{display:none}
+.modal{
+  background:radial-gradient(circle at top,#7661ae,#243b74 65%,#145777);
+  border:2px solid var(--blue);border-radius:25px;
+  padding:26px 18px;max-width:540px;width:100%;
+  max-height:92vh;overflow:auto;position:relative;
+}
+.close{position:absolute;right:12px;top:10px;border:0;border-radius:50%;background:#203f72;color:white;font-size:1.4rem;width:38px;height:38px}
+.creature{display:inline-block;font-size:7rem;position:relative;line-height:1.3}
+.creature.big{font-size:10rem}
+.face{position:absolute;top:42%;left:50%;transform:translateX(-50%);font-size:1.3rem;color:#ffe4fb;text-shadow:0 2px 4px #141038}
+.spin{animation:spin 1s}.hop{animation:hop 1s}.wiggle{animation:wiggle 1s}
+.flip{animation:flip 1s}.dance{animation:dance 1s}.zoom{animation:zoom 1s}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes hop{50%{transform:translateY(-55px)}}
+@keyframes wiggle{25%,75%{transform:rotate(-17deg)}50%{transform:rotate(17deg)}}
+@keyframes flip{to{transform:rotateY(360deg)}}
+@keyframes dance{25%{transform:translateX(-25px) rotate(-12deg)}75%{transform:translateX(25px) rotate(12deg)}}
+@keyframes zoom{0%{transform:scale(.2)}65%{transform:scale(1.3)}100%{transform:scale(1)}}
+.bubbles{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.bubble{position:absolute;bottom:-40px;width:22px;height:22px;border:1px solid #b2faff88;border-radius:50%;animation:rise 13s linear infinite}
+.bubble:nth-child(1){left:10%;animation-delay:-3s}
+.bubble:nth-child(2){left:35%;animation-delay:-9s}
+.bubble:nth-child(3){left:60%;animation-delay:-5s}
+.bubble:nth-child(4){left:85%;animation-delay:-11s}
+@keyframes rise{to{transform:translateY(-115vh);opacity:0}}
+.notice{font-size:.85rem;color:#d6d1f3;line-height:1.7}
+@media(max-width:700px){
+ .months{grid-template-columns:repeat(3,1fr)}
+ .calendar,.weekdays{gap:3px}
+ .day{min-height:79px;border-radius:8px}
+ .day .animal{font-size:1.5rem}
+ .day .label{font-size:.53rem}
+ .form-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{animation-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="bubbles" aria-hidden="true">
+ <i class="bubble"></i><i class="bubble"></i>
+ <i class="bubble"></i><i class="bubble"></i>
+</div>
+
+<main class="wrap">
+<a class="back" href="index.html">← Back to Our Little Ocean</a>
+<h1>Our Holiday Ocean 🌊💜</h1>
+<p class="subtitle">A whole world of celebrations, tiny ocean friends, special memories, and little surprises made with love across every ocean. 💎</p>
+
+<section class="panel">
+ <h2>📅 Travel Through Time</h2>
+ <div class="controls">
+  <button class="btn" id="prevYear">◀ Previous</button>
+  <strong id="yearLabel"></strong>
+  <button class="btn" id="nextYear">Next ▶</button>
+ </div>
+ <p>
+  <label for="yearInput">Jump to year:</label>
+  <input id="yearInput" type="number" step="1">
+  <button class="btn" id="jumpYear">Go! 🚀</button>
+ </p>
+ <p class="notice" id="yearRange"></p>
+ <div class="months" id="monthPicker"></div>
+</section>
+
+<section class="panel">
+ <h2 id="monthTitle"></h2>
+ <p class="subtitle" id="monthTheme"></p>
+ <p class="status" id="monthStatus"></p>
+ <div class="weekdays">
+  <span>Sun</span><span>Mon</span><span>Tue</span>
+  <span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+ </div>
+ <div class="calendar" id="calendar"></div>
+ <p class="legend">🐬 Tap an unlocked animal for a silly stunt. 📌 Tap any date to add a reminder. 🔒 Future animal surprises unlock on their dates. Holidays and reminders appear on the calendar.</p>
+</section>
+
+<section class="panel">
+ <h2>🌍 Holidays Around the World</h2>
+ <p class="subtitle">Explore public holidays from different countries, plus worldwide observances and your own celebrations.</p>
+ <div class="controls">
+  <select id="country" aria-label="Select country"></select>
+  <button class="btn" id="loadHolidays">Load Country Holidays 🌏</button>
+ </div>
+ <p class="notice" id="countryStatus"></p>
+ <div class="list" id="holidayList"></div>
+</section>
+
+<section class="panel">
+ <h2>⏰ My Ocean Reminders</h2>
+ <p class="subtitle">Save appointments, anniversaries, important dates, and sweet little reminders.</p>
+ <form id="reminderForm">
+  <div class="form-grid">
+   <label class="field">Reminder title
+    <input id="remTitle" required maxlength="120" placeholder="A special day 💜">
+   </label>
+   <label class="field">Date
+    <input id="remDate" type="date" required>
+   </label>
+   <label class="field">Notification time
+    <input id="remTime" type="time" value="09:00" required>
+   </label>
+   <label class="field">Repeat
+    <select id="remRepeat">
+     <option value="none">One time</option>
+     <option value="yearly">Every year</option>
+    </select>
+   </label>
+   <label class="field full">Optional note
+    <textarea id="remNote" rows="3" placeholder="Something to remember..."></textarea>
+   </label>
+  </div>
+  <div class="actions">
+   <button class="btn" type="submit" id="saveReminder">💾 Save Reminder</button>
+   <button class="btn" type="button" id="cancelEdit">Cancel Editing</button>
+   <button class="btn" type="button" id="notifyPermission">🔔 Enable Notifications</button>
+  </div>
+ </form>
+ <p class="notice" id="notificationStatus"></p>
+ <h3>Saved Reminders</h3>
+ <div class="list" id="reminderList"></div>
+ <div class="actions">
+  <button class="btn" id="exportData" type="button">Export Backup</button>
+  <label class="btn" for="importData">Import Backup</label>
+  <input id="importData" type="file" accept=".json,application/json" hidden>
+ </div>
+ <p class="notice">Reminders are stored in this browser only. Browser notifications work while this page is open and permission is granted; closed-browser push alerts require an additional service. Export backups to keep your reminders safe.</p>
+</section>
+
+<section class="panel">
+ <h2>✨ Our Own Special Holidays</h2>
+ <form id="customForm">
+  <div class="form-grid">
+   <label class="field">Celebration name
+    <input id="customTitle" required maxlength="100" placeholder="Our special day 💎">
+   </label>
+   <label class="field">Date
+    <input id="customDate" type="date" required>
+   </label>
+   <label class="field">Repeat
+    <select id="customRepeat">
+     <option value="yearly">Every year</option>
+     <option value="none">Only this year</option>
+    </select>
+   </label>
+  </div>
+  <div class="actions"><button class="btn">Add Special Holiday 💜</button></div>
+ </form>
+ <div class="list" id="customList"></div>
+</section>
+<p class="subtitle">Made with love, across every ocean. 🌊💜</p>
+</main>
+
+<div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="surpriseTitle">
+ <div class="modal">
+  <button class="close" id="closeSurprise" aria-label="Close">×</button>
+  <h2 id="surpriseTitle"></h2>
+  <div class="creature" id="creature">
+   <span id="creatureEmoji">🐬</span>
+   <span class="face" aria-hidden="true">•ᴗ•</span>
+  </div>
+  <p id="stuntName"></p>
+  <p id="surpriseMessage"></p>
+  <button class="btn" id="again">🐙 Another Silly Stunt!</button>
+ </div>
+</div>
+
 <script>
 (function(){
-'use strict';
-const now=new Date(),currentYear=now.getFullYear(),currentMonth=now.getMonth(),currentDay=now.getDate();
-const holidays=[
-{name:'January',holiday:"New Year's Day",icon:'🎆',month:0,day:y=>1,final:'🐧',theme:'A fresh year of little adventures'},
-{name:'February',holiday:"Valentine's Day",icon:'💝',month:1,day:y=>14,final:'🐙',theme:'A whole ocean of love'},
-{name:'March',holiday:"St. Patrick's Day",icon:'🍀',month:2,day:y=>17,final:'🐢',theme:'A lucky little reef'},
-{name:'April',holiday:'Earth Day',icon:'🌎',month:3,day:y=>22,final:'🐬',theme:'Our beautiful blue planet'},
-{name:'May',holiday:"Mother's Day",icon:'🌷',month:4,day:y=>nthWeekday(y,4,0,2),final:'🦦',theme:'A celebration of love and care'},
-{name:'June',holiday:'World Oceans Day',icon:'🐚',month:5,day:y=>8,final:'🪼',theme:'Magic beneath the waves'},
-{name:'July',holiday:'Independence Day',icon:'🎇',month:6,day:y=>4,final:'🐡',theme:'A splash of fireworks and freedom'},
-{name:'August',holiday:'International Cat Day',icon:'🐱',month:7,day:y=>8,final:'🦭',theme:'Playful little sea friends'},
-{name:'September',holiday:'International Day of Peace',icon:'🕊️',month:8,day:y=>21,final:'🦭',theme:'Peaceful waves and gentle hearts'},
-{name:'October',holiday:'Halloween',icon:'🎃',month:9,day:y=>31,final:'🐙',theme:'A spooky-cute underwater party'},
-{name:'November',holiday:'Thanksgiving',icon:'🍂',month:10,day:y=>nthWeekday(y,10,4,4),final:'🦦',theme:'Little moments worth being thankful for'},
-{name:'December',holiday:'Christmas',icon:'🎄',month:11,day:y=>25,final:'🐋',theme:'The biggest, cuddliest Christmas surprise'}
+"use strict";
+
+const $=id=>document.getElementById(id);
+const today=new Date();
+const thisYear=today.getFullYear();
+const minYear=thisYear-5,maxYear=thisYear+250;
+let year=thisYear,month=today.getMonth();
+let editing=null,activeSurprise=null,lastStunt=-1;
+let reminders=readStore("ocean_reminders_v3");
+let customs=readStore("ocean_customs_v3");
+let countryHolidays=[];
+let countryCode="US";
+let countryRequest=0;
+const notified=new Set();
+
+function readStore(key){
+ try{const v=JSON.parse(localStorage.getItem(key));return Array.isArray(v)?v:[]}
+ catch(e){return []}
+}
+function saveStore(){
+ try{
+  localStorage.setItem("ocean_reminders_v3",JSON.stringify(reminders));
+  localStorage.setItem("ocean_customs_v3",JSON.stringify(customs));
+ }catch(e){alert("Could not save to browser storage. Export a backup instead.")}
+}
+function dateKey(y,m,d){
+ return String(y).padStart(4,"0")+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+}
+function parseDate(s){
+ const p=String(s).split("-").map(Number);
+ return p.length===3&&p.every(Number.isFinite)?p:null;
+}
+function validDate(s){
+ const p=parseDate(s);if(!p)return false;
+ const d=new Date(p[0],p[1]-1,p[2]);
+ return d.getFullYear()===p[0]&&d.getMonth()===p[1]-1&&d.getDate()===p[2];
+}
+function nthWeekday(y,m,weekday,n){
+ return 1+(weekday-new Date(y,m,1).getDay()+7)%7+(n-1)*7;
+}
+function lastWeekday(y,m,weekday){
+ const last=new Date(y,m+1,0);
+ return last.getDate()-(last.getDay()-weekday+7)%7;
+}
+function easter(y){
+ const a=y%19,b=Math.floor(y/100),c=y%100;
+ const d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25);
+ const g=Math.floor((b-f+1)/3);
+ const h=(19*a+b-d-g+15)%30;
+ const i=Math.floor(c/4),k=c%4;
+ const l=(32+2*e+2*i-h-k+7)%7;
+ const m=Math.floor((a+11*h+22*l)/451);
+ const n=Math.floor((h+l-7*m+114)/31);
+ const day=(h+l-7*m+114)%31+1;
+ return new Date(y,n-1,day);
+}
+function offsetDate(d,offset){
+ const copy=new Date(d.getFullYear(),d.getMonth(),d.getDate()+offset);
+ return copy;
+}
+function dateObjectKey(d){return dateKey(d.getFullYear(),d.getMonth(),d.getDate())}
+function fixed(m,d,name){return {m,d,name}}
+function calculated(d,name){return {m:d.getMonth(),d:d.getDate(),name}}
+
+const months=[
+ ["January","🎆","New Year's Day","🐧","New beginnings"],
+ ["February","💝","Valentine's Day","🐙","An ocean of love"],
+ ["March","🍀","St. Patrick's Day","🐢","Lucky little waves"],
+ ["April","🌎","Earth Day","🐬","Our beautiful blue planet"],
+ ["May","🌷","Mother's Day","🦦","Love and care"],
+ ["June","🐚","World Oceans Day","🪼","Magic beneath the waves"],
+ ["July","🎇","Independence Day","🐡","Freedom and celebration"],
+ ["August","🐱","International Cat Day","🦭","Playful little friends"],
+ ["September","🕊️","International Day of Peace","🦭","Gentle hearts"],
+ ["October","🎃","Halloween","🐙","Spooky-cute surprises"],
+ ["November","🍂","Thanksgiving","🦦","Warm gratitude"],
+ ["December","🎄","Christmas","🐋","A giant holiday hug"]
 ];
-function nthWeekday(y,m,weekday,n){const first=new Date(y,m,1).getDay();return 1+(weekday-first+7)%7+(n-1)*7;}
-const animals=['🐬','🐠','🐟','🐡','🐢','🦭','🐙','🦦','🪼','🦀','🐳','🦈','🐚'];
-const lines=['A tiny ocean hug, just for you! 💜','You make even the deepest ocean feel warm. 🌊','A little bubble of happiness is swimming your way! 🫧','You deserve all the soft and silly smiles today. 💎','This ocean friend traveled far to say: you are cherished! 🐬','Even across the waves, you are close to my heart. 💙','A little dance, a little giggle, and a lot of love! ✨'];
-const stunts=[{name:'A spectacular little spin! 🌀',cls:'stunt-spin'},{name:'Boing! A happy bubble hop! 🫧',cls:'stunt-hop'},{name:'Wiggle wiggle wiggle! 💜',cls:'stunt-wiggle'},{name:'A dramatic grand entrance! ✨',cls:'stunt-zoom'},{name:'A silly underwater flip! 🐠',cls:'stunt-flip'},{name:'The tiniest dance party! 🎶',cls:'stunt-dance'}];
-let year=currentYear,month=currentMonth,active=null,lastStunt=-1,returnFocus=null;
-const picker=document.getElementById('monthPicker'),calendar=document.getElementById('holidayCalendar'),overlay=document.getElementById('overlay'),creature=document.getElementById('creature');
-function unlocked(m,d){if(year<currentYear)return true;if(year>currentYear)return false;return m<currentMonth||(m===currentMonth&&d<=currentDay);}
-function animal(m,d){const h=holidays[m];return d===h.day(year)?h.final:animals[(d*7+m*3)%animals.length];}
-function render(){document.getElementById('yearLabel').textContent=year;document.getElementById('nextYear').disabled=year>=currentYear+50;document.getElementById('prevYear').disabled=year<=currentYear-5;picker.replaceChildren();holidays.forEach((h,i)=>{const b=document.createElement('button');b.className='month-button';b.type='button';b.setAttribute('aria-pressed',String(i===month));b.setAttribute('aria-label',h.name+' '+h.holiday);const emoji=document.createElement('span');emoji.className='month-emoji';emoji.textContent=h.icon;const label=document.createElement('span');label.className='month-label';label.textContent=h.name;b.append(emoji,label);b.addEventListener('click',()=>{month=i;render()});picker.append(b)});
-const h=holidays[month],end=h.day(year);document.getElementById('holidayTitle').textContent=h.icon+' '+h.holiday;document.getElementById('holidayDetails').textContent=h.theme+' · '+h.name+' '+end+', '+year+' · Surprises begin '+h.name+' 1.';calendar.replaceChildren();let count=0;for(let d=1;d<=end;d++){const open=unlocked(month,d),final=d===end;if(open)count++;const b=document.createElement('button');b.type='button';b.className='day'+(final?' final':'')+(year===currentYear&&month===currentMonth&&d===currentDay?' today':'');b.disabled=!open;b.setAttribute('aria-label',h.name+' '+d+': '+(open?'open surprise':'locked'));const num=document.createElement('span');num.className='num';num.textContent=h.name.slice(0,3)+' '+d;const figure=document.createElement('span');figure.className=open?'animal':'lock';figure.textContent=open?animal(month,d):'🔒';const label=document.createElement('span');label.className='tiny';label.textContent=!open?'Coming soon':final?'Grand finale!':'Tap to say hi ♡';b.append(num,figure,label);if(open)b.addEventListener('click',()=>openSurprise(month,d));calendar.append(b)}document.getElementById('holidayStatus').textContent=count===0?'This reef opens '+h.name+' 1, '+year+'! 🫧':count===end?'All '+end+' friends have arrived! 💜':count+' of '+end+' ocean friends unlocked!';}
-function openSurprise(m,d){returnFocus=document.activeElement;active={m,d};const h=holidays[m],final=d===h.day(year);document.getElementById('dayLabel').textContent=h.name+' '+d+', '+year;document.getElementById('surpriseTitle').textContent=final?'The giant holiday cuddle buddy is here! '+h.icon:'A new little ocean friend! 💜';document.getElementById('creatureEmoji').textContent=animal(m,d);creature.classList.toggle('big',final);overlay.hidden=false;document.body.style.overflow='hidden';performStunt();document.getElementById('close').focus();}
-function performStunt(){if(!active)return;let i=Math.floor(Math.random()*stunts.length);if(i===lastStunt)i=(i+1+Math.floor(Math.random()*(stunts.length-1)))%stunts.length;lastStunt=i;creature.classList.remove(...stunts.map(s=>s.cls));void creature.offsetWidth;creature.classList.add(stunts[i].cls);document.getElementById('stuntName').textContent=stunts[i].name;const h=holidays[active.m],final=active.d===h.day(year);document.getElementById('surpriseMessage').textContent=final?'Happy '+h.holiday+', hon! Here is the biggest ocean hug, sent with all my love across every wave. 🌊💜💎':lines[Math.floor(Math.random()*lines.length)];}
-function closeSurprise(){overlay.hidden=true;document.body.style.overflow='';active=null;if(returnFocus&&returnFocus.focus)returnFocus.focus();}
-document.getElementById('again').addEventListener('click',performStunt);document.getElementById('close').addEventListener('click',closeSurprise);overlay.addEventListener('click',e=>{if(e.target===overlay)closeSurprise()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)closeSurprise();if(e.key==='Tab'&&!overlay.hidden){const controls=[document.getElementById('close'),document.getElementById('again')];if(e.shiftKey&&document.activeElement===controls[0]){e.preventDefault();controls[1].focus()}else if(!e.shiftKey&&document.activeElement===controls[1]){e.preventDefault();controls[0].focus()}}});
-document.getElementById('prevYear').addEventListener('click',()=>{if(year>currentYear-5){year--;render()}});document.getElementById('nextYear').addEventListener('click',()=>{if(year<currentYear+50){year++;render()}});render();
+function finaleDay(m,y){
+ if(m===4)return nthWeekday(y,4,0,2);
+ if(m===10)return nthWeekday(y,10,4,4);
+ return [1,14,17,22,0,8,4,8,21,31,0,25][m];
+}
+function getFinale(m,y){
+ if(m===4)return finaleDay(m,y);
+ if(m===10)return finaleDay(m,y);
+ if(m===0)return 1;
+ if(m===1)return 14;
+ if(m===2)return 17;
+ if(m===3)return 22;
+ if(m===5)return 8;
+ if(m===6)return 4;
+ if(m===7)return 8;
+ if(m===8)return 21;
+ if(m===9)return 31;
+ return 25;
+}
+
+const fixedHolidays=[
+ [0,1,"New Year's Day"],[0,4,"World Braille Day"],
+ [0,6,"Epiphany"],[0,7,"Orthodox Christmas (some traditions)"],
+ [0,11,"International Thank-You Day"],
+ [0,24,"International Day of Education"],
+ [0,26,"Australia Day / Republic Day (India)"],
+ [0,27,"Holocaust Remembrance Day"],
+ [1,2,"World Wetlands Day"],[1,4,"World Cancer Day"],
+ [1,6,"Waitangi Day (New Zealand)"],
+ [1,11,"International Day of Women and Girls in Science"],
+ [1,14,"Valentine's Day"],[1,20,"World Day of Social Justice"],
+ [1,21,"International Mother Language Day"],
+ [2,1,"St. David's Day (Wales)"],[2,3,"World Wildlife Day"],
+ [2,8,"International Women's Day"],[2,14,"Pi Day"],
+ [2,17,"St. Patrick's Day"],[2,20,"International Day of Happiness"],
+ [2,21,"Nowruz / International Day of Nowruz"],
+ [2,22,"World Water Day"],[2,25,"Greek Independence Day"],
+ [3,1,"April Fools' Day"],[3,2,"World Autism Awareness Day"],
+ [3,7,"World Health Day"],[3,13,"Songkran (Thailand, begins)"],
+ [3,14,"Ambedkar Jayanti (India)"],
+ [3,15,"World Art Day"],[3,22,"Earth Day"],
+ [3,23,"World Book Day"],[3,25,"ANZAC Day"],
+ [3,29,"International Dance Day"],
+ [4,1,"International Workers' Day"],
+ [4,3,"World Press Freedom Day"],[4,5,"Cinco de Mayo"],
+ [4,8,"World Red Cross and Red Crescent Day"],
+ [4,9,"Europe Day"],[4,15,"International Day of Families"],
+ [4,17,"International Day Against Homophobia, Biphobia and Transphobia"],
+ [4,21,"World Day for Cultural Diversity"],
+ [4,22,"International Day for Biological Diversity"],
+ [4,25,"Africa Day"],[4,31,"World No Tobacco Day"],
+ [5,1,"Global Day of Parents"],[5,5,"World Environment Day"],
+ [5,6,"Sweden's National Day"],[5,8,"World Oceans Day"],
+ [5,12,"Philippines Independence Day"],
+ [5,14,"World Blood Donor Day"],
+ [5,19,"Juneteenth (United States)"],
+ [5,20,"World Refugee Day"],[5,21,"International Day of Yoga"],
+ [5,24,"Inti Raymi (Peru)"],[5,30,"International Asteroid Day"],
+ [6,1,"Canada Day"],[6,4,"U.S. Independence Day"],
+ [6,7,"World Chocolate Day"],[6,11,"World Population Day"],
+ [6,14,"Bastille Day (France)"],[6,18,"Nelson Mandela Day"],
+ [6,20,"Colombia Independence Day"],
+ [6,28,"Peru Independence Day"],[6,30,"International Day of Friendship"],
+ [7,1,"Swiss National Day"],[7,6,"Hiroshima Peace Memorial Day"],
+ [7,8,"International Cat Day"],[7,9,"International Day of Indigenous Peoples"],
+ [7,12,"International Youth Day"],[7,15,"India Independence Day"],
+ [7,17,"Indonesia Independence Day"],[7,19,"World Humanitarian Day"],
+ [7,20,"Hungary State Foundation Day"],
+ [7,26,"Women's Equality Day (United States)"],
+ [8,5,"International Day of Charity"],[8,7,"Brazil Independence Day"],
+ [8,8,"International Literacy Day"],[8,15,"International Day of Democracy"],
+ [8,16,"Mexican Independence Day"],
+ [8,18,"Chile Independence Day"],[8,21,"International Day of Peace"],
+ [8,23,"International Day of Sign Languages"],
+ [8,27,"World Tourism Day"],[8,30,"International Translation Day"],
+ [9,1,"International Day of Older Persons"],
+ [9,2,"Gandhi Jayanti (India)"],[9,4,"World Animal Day"],
+ [9,5,"World Teachers' Day"],[9,10,"World Mental Health Day"],
+ [9,12,"Spain National Day"],[9,16,"World Food Day"],
+ [9,17,"International Day for the Eradication of Poverty"],
+ [9,24,"United Nations Day"],[9,31,"Halloween"],
+ [10,1,"All Saints' Day"],[10,2,"Day of the Dead (Mexico)"],
+ [10,5,"Guy Fawkes Night (UK)"],[10,11,"Remembrance Day / Veterans Day"],
+ [10,14,"World Diabetes Day"],[10,16,"International Day for Tolerance"],
+ [10,19,"International Men's Day"],[10,20,"World Children's Day"],
+ [10,25,"International Day for the Elimination of Violence Against Women"],
+ [11,1,"World AIDS Day"],[11,3,"International Day of Persons with Disabilities"],
+ [11,5,"International Volunteer Day"],[11,6,"Finland Independence Day"],
+ [11,10,"Human Rights Day"],[11,12,"Kenya Jamhuri Day"],
+ [11,18,"International Migrants Day"],[11,20,"International Human Solidarity Day"],
+ [11,24,"Christmas Eve"],[11,25,"Christmas Day"],
+ [11,26,"Boxing Day / Kwanzaa begins"],[11,31,"New Year's Eve"]
+];
+
+function builtInHolidays(y){
+ const result=fixedHolidays.map(h=>fixed(h[0],h[1],h[2]));
+ const e=easter(y);
+ result.push(calculated(e,"Easter Sunday"));
+ result.push(calculated(offsetDate(e,-2),"Good Friday"));
+ result.push(calculated(offsetDate(e,-7),"Palm Sunday"));
+ result.push(calculated(offsetDate(e,1),"Easter Monday"));
+ result.push(calculated(offsetDate(e,39),"Ascension Day"));
+ result.push(calculated(offsetDate(e,49),"Pentecost"));
+ result.push(fixed(4,nthWeekday(y,4,0,2),"Mother's Day (United States)"));
+ result.push(fixed(5,nthWeekday(y,5,0,3),"Father's Day (United States)"));
+ result.push(fixed(0,nthWeekday(y,0,1,3),"Martin Luther King Jr. Day"));
+ result.push(fixed(1,nthWeekday(y,1,1,3),"Presidents' Day (United States)"));
+ result.push(fixed(4,lastWeekday(y,4,1),"Memorial Day (United States)"));
+ result.push(fixed(8,nthWeekday(y,8,1,1),"Labor Day (United States)"));
+ result.push(fixed(9,nthWeekday(y,9,1,2),"Columbus Day / Indigenous Peoples' Day"));
+ result.push(fixed(10,nthWeekday(y,10,4,4),"Thanksgiving (United States)"));
+ result.push(fixed(10,nthWeekday(y,10,5,4),"Black Friday"));
+ result.push(fixed(9,nthWeekday(y,9,1,2),"Thanksgiving (Canada)"));
+ return result;
+}
+
+const countries=[
+ ["US","United States"],["GB","United Kingdom"],["CA","Canada"],
+ ["AU","Australia"],["NZ","New Zealand"],["IN","India"],
+ ["JP","Japan"],["KR","South Korea"],["CN","China"],
+ ["TW","Taiwan"],["PH","Philippines"],["ID","Indonesia"],
+ ["TH","Thailand"],["VN","Vietnam"],["MY","Malaysia"],
+ ["SG","Singapore"],["PK","Pakistan"],["BD","Bangladesh"],
+ ["NP","Nepal"],["LK","Sri Lanka"],["TR","Türkiye"],
+ ["SA","Saudi Arabia"],["AE","United Arab Emirates"],
+ ["IL","Israel"],["EG","Egypt"],["ZA","South Africa"],
+ ["NG","Nigeria"],["KE","Kenya"],["GH","Ghana"],
+ ["MA","Morocco"],["ET","Ethiopia"],["BR","Brazil"],
+ ["MX","Mexico"],["AR","Argentina"],["CL","Chile"],
+ ["CO","Colombia"],["PE","Peru"],["UY","Uruguay"],
+ ["DE","Germany"],["FR","France"],["ES","Spain"],
+ ["IT","Italy"],["PT","Portugal"],["NL","Netherlands"],
+ ["BE","Belgium"],["CH","Switzerland"],["AT","Austria"],
+ ["PL","Poland"],["CZ","Czechia"],["SK","Slovakia"],
+ ["HU","Hungary"],["RO","Romania"],["GR","Greece"],
+ ["SE","Sweden"],["NO","Norway"],["DK","Denmark"],
+ ["FI","Finland"],["IE","Ireland"],["IS","Iceland"],
+ ["UA","Ukraine"],["HR","Croatia"],["RS","Serbia"]
+];
+countries.forEach(([code,name])=>{
+ const o=document.createElement("option");
+ o.value=code;o.textContent=name;$("country").append(o);
+});
+$("country").value="US";
+
+const animals=["🐬","🐠","🐟","🐡","🐢","🦭","🐙","🦦","🪼","🦀","🐳","🦈","🐚"];
+const stunts=[
+ ["A spectacular spin! 🌀","spin"],
+ ["A happy bubble hop! 🫧","hop"],
+ ["Wiggle wiggle! 💜","wiggle"],
+ ["An underwater flip! 🐠","flip"],
+ ["A tiny dance party! 🎶","dance"],
+ ["A dramatic entrance! ✨","zoom"]
+];
+const messages=[
+ "A tiny ocean hug, just for you! 💜",
+ "Even across the waves, you're close to my heart. 🌊",
+ "This little friend thinks you're adorable! 🐬",
+ "A little bubble of happiness is swimming your way! 🫧",
+ "You deserve a thousand soft and silly smiles. 💎",
+ "Sending love across every ocean! 💙",
+ "A surprise, a giggle, and a giant cuddle! ✨"
+];
+
+function eventMatches(item,y,m,d){
+ const p=parseDate(item.date);
+ if(!p)return false;
+ if(item.repeat==="yearly")return p[1]===m+1&&p[2]===d;
+ return p[0]===y&&p[1]===m+1&&p[2]===d;
+}
+function holidaysFor(y,m,d){
+ const built=builtInHolidays(y).filter(h=>h.m===m&&h.d===d).map(h=>h.name);
+ const remote=countryHolidays.filter(h=>h.date===dateKey(y,m,d)).map(h=>h.name);
+ const personal=customs.filter(h=>eventMatches(h,y,m,d)).map(h=>h.title);
+ return [...new Set([...built,...remote,...personal])];
+}
+function remindersFor(y,m,d){
+ return reminders.filter(r=>eventMatches(r,y,m,d));
+}
+function unlocked(y,m,d){
+ return dateKey(y,m,d)<=dateObjectKey(today);
+}
+function animalFor(m,d,y){
+ const f=getFinale(m,y);
+ return d===f?months[m][3]:animals[(d*7+m*3)%animals.length];
+}
+
+function render(){
+ $("yearLabel").textContent=year;
+ $("yearInput").value=year;
+ $("yearInput").min=minYear;$("yearInput").max=maxYear;
+ $("yearRange").textContent="Available years: "+minYear+" through "+maxYear+
+ ". The range moves forward automatically each year.";
+ $("prevYear").disabled=year<=minYear;
+ $("nextYear").disabled=year>=maxYear;
+ $("monthPicker").replaceChildren();
+ months.forEach((item,i)=>{
+  const b=document.createElement("button");
+  b.className="month"+(i===month?" active":"");
+  b.type="button";
+  b.innerHTML="<span>"+item[1]+"</span>"+item[0];
+  b.addEventListener("click",()=>{month=i;render()});
+  $("monthPicker").append(b);
+ });
+ const info=months[month],finale=getFinale(month,year);
+ $("monthTitle").textContent=info[1]+" "+info[0]+" "+year;
+ $("monthTheme").textContent=info[2]+" · "+info[4]+
+ " · Giant ocean friend arrives on "+info[0]+" "+finale+".";
+ const total=new Date(year,month+1,0).getDate();
+ const start=new Date(year,month,1).getDay();
+ $("calendar").replaceChildren();
+ for(let i=0;i<start;i++){
+  const e=document.createElement("div");e.className="empty";$("calendar").append(e);
+ }
+ let count=0;
+ for(let d=1;d<=total;d++){
+  const open=d<=finale&&unlocked(year,month,d);
+  if(open)count++;
+  const h=holidaysFor(year,month,d),r=remindersFor(year,month,d);
+  const b=document.createElement("button");b.type="button";
+  b.className="day"+(h.length?" holiday":"")+
+   (d===finale?" final":"")+
+   (dateKey(year,month,d)===dateObjectKey(today)?" today":"");
+  const n=document.createElement("span");n.className="number";n.textContent=d;
+  const a=document.createElement("span");a.className=open?"animal":"lock";
+  a.textContent=open?animalFor(month,d,year):(d<=finale?"🔒":"📅");
+  const l=document.createElement("span");l.className="label";
+  l.textContent=h.length?h[0]:(d===finale?"Grand finale!":open?"Ocean friend":"Add reminder");
+  const dot=document.createElement("span");dot.className="dot";
+  dot.textContent=r.length?"📌 "+r.length:"";
+  b.append(n,a,l,dot);
+  b.title=[dateKey(year,month,d),...h,...r.map(x=>"Reminder: "+x.title)].join("\n");
+  b.addEventListener("click",()=>{
+   $("remDate").value=dateKey(year,month,d);
+   if(open)openSurprise(month,d);
+   else{
+    $("reminderForm").scrollIntoView({behavior:"smooth",block:"center"});
+    $("remTitle").focus();
+   }
+  });
+  $("calendar").append(b);
+ }
+ $("monthStatus").textContent=count+" of "+finale+" ocean surprises unlocked. "+
+ "Every date can hold reminders and holidays.";
+ renderHolidayList();renderReminderList();renderCustomList();
+}
+
+function openSurprise(m,d){
+ activeSurprise={m,d};
+ const final=d===getFinale(m,year);
+ $("surpriseTitle").textContent=final?
+ "The giant holiday cuddle buddy is here! 💜":
+ "A little ocean friend has arrived! 🫧";
+ $("creatureEmoji").textContent=animalFor(m,d,year);
+ $("creature").className="creature"+(final?" big":"");
+ $("overlay").hidden=false;
+ performStunt();
+ $("closeSurprise").focus();
+}
+function performStunt(){
+ if(!activeSurprise)return;
+ let i=Math.floor(Math.random()*stunts.length);
+ if(i===lastStunt)i=(i+1)%stunts.length;
+ lastStunt=i;
+ $("creature").className="creature"+
+ (activeSurprise.d===getFinale(activeSurprise.m,year)?" big":"");
+ void $("creature").offsetWidth;
+ $("creature").classList.add(stunts[i][1]);
+ $("stuntName").textContent=stunts[i][0];
+ $("surpriseMessage").textContent=
+ activeSurprise.d===getFinale(activeSurprise.m,year)?
+ "Happy "+months[activeSurprise.m][2]+", hon! The biggest ocean hug, sent with all my love across every wave. 🌊💜💎":
+ messages[Math.floor(Math.random()*messages.length)];
+}
+function closeSurprise(){$("overlay").hidden=true;activeSurprise=null}
+$("again").addEventListener("click",performStunt);
+$("closeSurprise").addEventListener("click",closeSurprise);
+$("overlay").addEventListener("click",e=>{if(e.target===$("overlay"))closeSurprise()});
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"&&!$("overlay").hidden)closeSurprise();
+});
+
+$("prevYear").addEventListener("click",()=>{if(year>minYear){year--;render();}});
+$("nextYear").addEventListener("click",()=>{if(year<maxYear){year++;render();}});
+$("jumpYear").addEventListener("click",()=>{
+ const n=Number($("yearInput").value);
+ if(!Number.isInteger(n)||n<minYear||n>maxYear){
+  alert("Please enter a year between "+minYear+" and "+maxYear+".");return;
+ }
+ year=n;render();
+});
+$("yearInput").addEventListener("keydown",e=>{
+ if(e.key==="Enter")$("jumpYear").click();
+});
+
+function renderHolidayList(){
+ const list=$("holidayList");list.replaceChildren();
+ const events=[];
+ for(let d=1;d<=new Date(year,month+1,0).getDate();d++){
+  for(const name of holidaysFor(year,month,d))events.push({d,name});
+ }
+ if(!events.length){list.textContent="No listed holidays this month.";return}
+ events.forEach(h=>{
+  const div=document.createElement("div");div.className="entry";
+  div.textContent="🌍 "+months[month][0]+" "+h.d+" — "+h.name;
+  list.append(div);
+ });
+}
+async function loadCountryHolidays(){
+ const code=$("country").value;
+ countryCode=code;
+ const request=++countryRequest;
+ $("countryStatus").textContent="Loading holidays for "+year+"...";
+ countryHolidays=[];
+ renderHolidayList();
+ if(year<1900||year>2100){
+  $("countryStatus").textContent=
+   "Worldwide holiday lookup may not support this year. Built-in and custom holidays are still available.";
+  return;
+ }
+ try{
+  const url="https://date.nager.at/api/v3/PublicHolidays/"+year+"/"+encodeURIComponent(code);
+  const response=await fetch(url);
+  if(!response.ok)throw Error("Service unavailable");
+  const data=await response.json();
+  if(request!==countryRequest||year!==Number(url.split("/").at(-2)))return;
+  countryHolidays=Array.isArray(data)?data.map(x=>({
+   date:x.date,name:x.localName||x.name
+  })).filter(x=>validDate(x.date)):[];
+  $("countryStatus").textContent=countryHolidays.length+
+   " public holidays loaded. This service covers supported countries, not every observance.";
+  render();
+ }catch(e){
+  if(request!==countryRequest)return;
+  $("countryStatus").textContent=
+   "Could not load this country's holidays. Check your connection or try another year.";
+ }
+}
+$("loadHolidays").addEventListener("click",loadCountryHolidays);
+$("country").addEventListener("change",loadCountryHolidays);
+
+function resetReminderForm(){
+ editing=null;$("reminderForm").reset();$("remTime").value="09:00";
+ $("saveReminder").textContent="💾 Save Reminder";
+}
+$("reminderForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const title=$("remTitle").value.trim(),date=$("remDate").value;
+ if(!title||!validDate(date))return alert("Enter a title and valid date.");
+ const item={
+  id:editing||String(Date.now())+Math.random(),
+  title,date,time:$("remTime").value||"09:00",
+  note:$("remNote").value.trim(),repeat:$("remRepeat").value
+ };
+ if(editing)reminders=reminders.map(r=>r.id===editing?item:r);
+ else reminders.push(item);
+ saveStore();resetReminderForm();render();
+});
+$("cancelEdit").addEventListener("click",resetReminderForm);
+
+function renderReminderList(){
+ const list=$("reminderList");list.replaceChildren();
+ const items=[...reminders].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+ if(!items.length){list.textContent="No reminders yet. Add your first special date! 💜";return}
+ items.forEach(r=>{
+  const div=document.createElement("div");div.className="entry";
+  const title=document.createElement("strong");title.textContent="📌 "+r.title;
+  const details=document.createElement("p");
+  details.textContent=r.date+" at "+r.time+(r.repeat==="yearly"?" · Repeats yearly":"");
+  const note=document.createElement("small");note.textContent=r.note||"";
+  const actions=document.createElement("div");actions.className="actions";
+  const edit=document.createElement("button");edit.className="btn";edit.textContent="Edit";
+  edit.addEventListener("click",()=>{
+   editing=r.id;$("remTitle").value=r.title;$("remDate").value=r.date;
+   $("remTime").value=r.time;$("remNote").value=r.note;
+   $("remRepeat").value=r.repeat;$("saveReminder").textContent="Update Reminder";
+   $("reminderForm").scrollIntoView({behavior:"smooth"});
+  });
+  const del=document.createElement("button");del.className="btn";del.textContent="Delete";
+  del.addEventListener("click",()=>{
+   if(confirm("Delete this reminder?")){
+    reminders=reminders.filter(x=>x.id!==r.id);saveStore();render();
+   }
+  });
+  actions.append(edit,del);div.append(title,details,note,actions);list.append(div);
+ });
+}
+function renderCustomList(){
+ const list=$("customList");list.replaceChildren();
+ if(!customs.length){list.textContent="Add your own celebrations here! 💎";return}
+ customs.forEach(c=>{
+  const div=document.createElement("div");div.className="entry";
+  const name=document.createElement("strong");name.textContent="✨ "+c.title;
+  const p=document.createElement("p");p.textContent=c.date+
+   (c.repeat==="yearly"?" · Every year":"");
+  const del=document.createElement("button");del.className="btn";del.textContent="Delete";
+  del.addEventListener("click",()=>{
+   if(confirm("Delete this holiday?")){
+    customs=customs.filter(x=>x.id!==c.id);saveStore();render();
+   }
+  });
+  div.append(name,p,del);list.append(div);
+ });
+}
+$("customForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const title=$("customTitle").value.trim(),date=$("customDate").value;
+ if(!title||!validDate(date))return alert("Enter a valid holiday.");
+ customs.push({id:String(Date.now())+Math.random(),title,date,repeat:$("customRepeat").value});
+ saveStore();$("customForm").reset();render();
+});
+
+$("notifyPermission").addEventListener("click",async()=>{
+ if(!("Notification" in window)){
+  $("notificationStatus").textContent="This browser does not support notifications.";return;
+ }
+ try{
+  const result=await Notification.requestPermission();
+  $("notificationStatus").textContent="Notification permission: "+result+
+  ". Keep this page open for scheduled alerts.";
+ }catch(e){$("notificationStatus").textContent="Notifications could not be enabled."}
+});
+function checkReminders(){
+ const now=new Date();
+ const y=now.getFullYear(),m=now.getMonth(),d=now.getDate();
+ const hh=String(now.getHours()).padStart(2,"0");
+ const mm=String(now.getMinutes()).padStart(2,"0");
+ const currentTime=hh+":"+mm;
+ const due=remindersFor(y,m,d).filter(r=>r.time<=currentTime);
+ due.forEach(r=>{
+  const key=r.id+"|"+dateKey(y,m,d);
+  if(notified.has(key))return;
+  notified.add(key);
+  if("Notification" in window&&Notification.permission==="granted"){
+   try{new Notification("🌊 Ocean Reminder: "+r.title,{body:r.note||"A little reminder made with love 💜"});}
+   catch(e){$("notificationStatus").textContent="A reminder is due: "+r.title}
+  }else{
+   $("notificationStatus").textContent="🔔 Reminder due: "+r.title;
+  }
+ });
+}
+setInterval(checkReminders,30000);
+
+$("exportData").addEventListener("click",()=>{
+ const data=JSON.stringify({reminders,customs},null,2);
+ const blob=new Blob([data],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;a.download="holiday-ocean-backup.json";a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+$("importData").addEventListener("change",async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  const data=JSON.parse(await file.text());
+  if(!Array.isArray(data.reminders)||!Array.isArray(data.customs))
+   throw Error("Invalid backup");
+  if(!confirm("Replace existing reminders and custom holidays with this backup?"))return;
+  reminders=data.reminders.filter(r=>r&&typeof r.title==="string"&&validDate(r.date)&&typeof r.time==="string"&&typeof r.id==="string");
+  customs=data.customs.filter(c=>c&&typeof c.title==="string"&&validDate(c.date)&&typeof c.id==="string");
+  saveStore();render();alert("Backup imported!");
+ }catch(err){alert("Could not import this backup.")}
+ e.target.value="";
+});
+
+$("remDate").value=dateObjectKey(today);
+render();
+loadCountryHolidays();
+checkReminders();
 })();
-</script></body></html>
+</script>
+</body>
+</html>
