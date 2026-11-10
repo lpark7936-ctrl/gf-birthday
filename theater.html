@@ -3,608 +3,518 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Our Little Ocean Theater 🎬🐬</title>
 
 <style>
 :root {
-    --cyan: #8df2ff;
-    --purple: #c4a7ff;
-    --gold: #ffe3a3;
-    --panel: rgba(15, 30, 76, 0.88);
+  --cyan: #8df2ff;
+  --purple: #c4a7ff;
+  --gold: #ffe3a3;
+  --panel: rgba(14, 29, 75, .91);
 }
 
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-        radial-gradient(circle at 20% 15%, #51408a, transparent 40%),
-        radial-gradient(circle at 85% 75%, #087d94, transparent 45%),
-        linear-gradient(145deg, #080e2e, #182c65, #07577a);
-    background-attachment: fixed;
-    color: white;
-    font-family: Georgia, serif;
-    text-align: center;
-    overflow-x: hidden;
+  margin: 0;
+  min-height: 100vh;
+  color: white;
+  font-family: Georgia, serif;
+  text-align: center;
+  background:
+    radial-gradient(circle at 15% 10%, #4c3b84, transparent 35%),
+    radial-gradient(circle at 85% 80%, #086c8a, transparent 45%),
+    linear-gradient(145deg, #080e2e, #172c64, #07577a);
+  background-attachment: fixed;
 }
 
 body.lights-off {
-    background: #030713;
+  background: #030713;
 }
 
-button, input, select {
-    font: inherit;
-}
+button, input { font: inherit; }
 
-button {
-    cursor: pointer;
-}
+button { cursor: pointer; }
 
 button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  opacity: .5;
+  cursor: not-allowed;
 }
 
 button:focus-visible,
 input:focus-visible,
-select:focus-visible,
 a:focus-visible {
-    outline: 3px solid var(--gold);
-    outline-offset: 3px;
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
 }
 
 main {
-    position: relative;
-    z-index: 1;
-    max-width: 1250px;
-    margin: auto;
-    padding: 25px 18px 90px;
+  max-width: 1250px;
+  margin: auto;
+  padding: 25px 18px 100px;
 }
 
 h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    color: var(--cyan);
-    margin-bottom: 10px;
+  color: var(--cyan);
+  font-size: clamp(2rem, 5vw, 3.5rem);
 }
 
-h2 {
-    color: var(--gold);
-}
+h2 { color: var(--gold); }
 
-p {
-    line-height: 1.7;
-}
+p { line-height: 1.6; }
 
-.subtitle {
-    color: #dccbff;
-}
+.subtitle { color: #d8c9ff; }
 
 .back {
-    display: inline-block;
-    margin: 12px;
-    padding: 12px 22px;
-    color: white;
-    text-decoration: none;
-    border: 1px solid var(--cyan);
-    border-radius: 30px;
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  border: 1px solid var(--cyan);
+  border-radius: 30px;
+  padding: 12px 22px;
 }
 
 .panel {
-    margin: 25px 0;
-    padding: 24px;
-    background: var(--panel);
-    border: 1px solid rgba(141, 242, 255, 0.35);
-    border-radius: 25px;
-    box-shadow: 0 0 30px rgba(66, 211, 255, 0.08);
+  margin: 25px 0;
+  padding: 24px;
+  border: 1px solid rgba(141,242,255,.35);
+  border-radius: 25px;
+  background: var(--panel);
+  box-shadow: 0 0 30px rgba(66,211,255,.08);
 }
 
 .btn {
-    padding: 12px 18px;
-    margin: 5px;
-    border: 1px solid var(--cyan);
-    border-radius: 18px;
-    background: linear-gradient(120deg, #127eaa, #7051b3);
-    color: white;
-    transition: transform 0.2s, filter 0.2s;
+  padding: 12px 18px;
+  margin: 5px;
+  border: 1px solid var(--cyan);
+  border-radius: 18px;
+  background: linear-gradient(120deg, #127eaa, #7051b3);
+  color: white;
+  transition: transform .2s, filter .2s;
 }
 
 .btn:hover:not(:disabled) {
-    transform: translateY(-3px);
-    filter: brightness(1.15);
-}
-
-input, select {
-    padding: 13px;
-    border: 1px solid #89ddea;
-    border-radius: 12px;
-    background: #152d61;
-    color: white;
-    max-width: 100%;
+  transform: translateY(-3px);
+  filter: brightness(1.15);
 }
 
 .search-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
 }
 
 .search-row input {
-    flex: 1;
-    min-width: 190px;
-    max-width: 650px;
+  flex: 1;
+  min-width: 190px;
+  max-width: 650px;
+  padding: 13px;
+  border: 1px solid var(--cyan);
+  border-radius: 12px;
+  background: #152d61;
+  color: white;
 }
 
 .player-shell {
-    max-width: 1050px;
-    margin: auto;
-    padding: 12px;
-    border: 2px solid #8eeaff;
-    border-radius: 24px;
-    background: #050c23;
-    box-shadow: 0 0 35px rgba(113, 245, 255, 0.2);
+  max-width: 1050px;
+  margin: auto;
+  padding: 12px;
+  border: 2px solid var(--cyan);
+  border-radius: 24px;
+  background: #050c23;
+  box-shadow: 0 0 35px rgba(113,245,255,.2);
 }
 
 .player {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #030918;
-    border-radius: 14px;
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #030918;
+  border-radius: 14px;
+  overflow: hidden;
 }
 
 .player iframe {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
-.player-placeholder {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    color: #ccecff;
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
-.player-placeholder span {
-    font-size: 4rem;
-}
+.placeholder[hidden] { display: none; }
+
+.placeholder .emoji { font-size: 4rem; }
 
 .player-controls {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 15px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 15px 0;
 }
 
 #nowPlaying {
-    color: var(--gold);
-    overflow-wrap: anywhere;
+  color: var(--gold);
+  overflow-wrap: anywhere;
 }
 
 .category-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }
 
 .video-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-    margin-top: 25px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 25px;
 }
 
 .video-card {
-    background: #17396c;
-    border: 1px solid rgba(141, 242, 255, 0.4);
-    border-radius: 18px;
-    overflow: hidden;
-    text-align: left;
+  overflow: hidden;
+  border: 1px solid rgba(141,242,255,.4);
+  border-radius: 18px;
+  background: #17396c;
+  text-align: left;
 }
 
 .thumbnail {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    display: block;
-    background: #07122d;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #07122d;
 }
 
-.video-info {
-    padding: 14px;
-}
+.video-info { padding: 14px; }
 
 .video-title {
-    font-weight: bold;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
+  font-weight: bold;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .video-channel {
-    color: #b9d8ed;
-    font-size: 0.85rem;
+  color: #b9d8ed;
+  font-size: .85rem;
 }
 
 .video-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .video-actions .btn {
-    margin: 0;
-    padding: 9px 12px;
-    font-size: 0.85rem;
-}
-
-.api-note {
-    font-size: 0.9rem;
-    color: #d2c9ee;
-}
-
-.api-note a {
-    color: var(--cyan);
+  margin: 0;
+  padding: 9px 12px;
+  font-size: .85rem;
 }
 
 #status {
-    color: var(--cyan);
-    min-height: 1.5em;
+  color: var(--cyan);
+  min-height: 1.5em;
 }
 
 .companion {
-    position: fixed;
-    right: 20px;
-    bottom: 18px;
-    z-index: 20;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    pointer-events: none;
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
 }
 
 .dolphin {
-    pointer-events: auto;
-    font-size: 4rem;
-    border: 0;
-    padding: 8px;
-    background: rgba(18, 52, 103, 0.55);
-    border-radius: 50%;
-    animation: dolphinFloat 5s ease-in-out infinite;
-}
-
-.dolphin.sleeping {
-    animation: none;
-    opacity: 0.85;
+  pointer-events: auto;
+  font-size: 4rem;
+  border: 0;
+  padding: 8px;
+  border-radius: 50%;
+  background: rgba(18,52,103,.6);
+  animation: float 5s ease-in-out infinite;
 }
 
 .dolphin-message {
-    max-width: 235px;
-    padding: 11px 14px;
-    margin-bottom: 10px;
-    background: #20275d;
-    border: 1px solid var(--cyan);
-    border-radius: 16px;
-    font-size: 0.85rem;
-    line-height: 1.5;
-    pointer-events: none;
+  max-width: 240px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--cyan);
+  border-radius: 16px;
+  background: #20275d;
+  font-size: .9rem;
+  line-height: 1.5;
 }
 
-.dolphin-message[hidden] {
-    display: none;
-}
+.dolphin-message[hidden] { display: none; }
 
-@keyframes dolphinFloat {
-    0%, 100% {
-        transform: translateY(0) rotate(-4deg);
-    }
-    50% {
-        transform: translateY(-12px) rotate(4deg);
-    }
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-12px) rotate(4deg); }
 }
 
 body.lights-off .panel:not(.theater-panel) {
-    opacity: 0.75;
-}
-
-body.lights-off .player-shell {
-    box-shadow: 0 0 50px rgba(70, 110, 255, 0.18);
+  opacity: .75;
 }
 
 @media (max-width: 850px) {
-    .video-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  .video-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 550px) {
-    .video-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .panel {
-        padding: 15px;
-    }
-
-    .dolphin {
-        font-size: 2.7rem;
-    }
-
-    .companion {
-        right: 8px;
-        bottom: 8px;
-    }
+  .video-grid { grid-template-columns: 1fr; }
+  .panel { padding: 15px; }
+  .dolphin { font-size: 2.7rem; }
+  .companion { right: 8px; bottom: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-    }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
 }
 </style>
 </head>
 
 <body>
-
 <main>
-    <a class="back" href="index.html">
-        ← Back to Our Little World
-    </a>
 
-    <h1>🎬 Our Little Ocean Theater 🐬</h1>
+<a class="back" href="index.html">
+  ← Back to Our Little World
+</a>
 
-    <p class="subtitle">
-        A cozy little cinema beneath the waves,
-        where every video is another adventure. 💜
-    </p>
+<h1>🎬 Our Little Ocean Theater 🐬</h1>
 
-    <section class="panel theater-panel">
-        <h2>🍿 Your Private Ocean Cinema</h2>
+<p class="subtitle">
+  A cozy cinema beneath the waves,
+  where every video is another adventure. 💜
+</p>
 
-        <div class="player-shell" id="playerShell">
-            <div class="player" id="player">
-                <div class="player-placeholder" id="placeholder">
-                    <span>🐬🍿</span>
-                    <h2>Welcome to Movie Night!</h2>
-                    <p>Discover a video below to begin.</p>
-                </div>
+<section class="panel theater-panel">
+  <h2>🍿 Your Private Ocean Cinema</h2>
 
-                <iframe
-                    id="youtubePlayer"
-                    title="Ocean Theater YouTube Player"
-                    src="about:blank"
-                    allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-                    allowfullscreen
-                    referrerpolicy="strict-origin-when-cross-origin">
-                </iframe>
-            </div>
-        </div>
+  <div class="player-shell" id="playerShell">
+    <div class="player">
+      <div class="placeholder" id="placeholder">
+        <span class="emoji">🐬🍿</span>
+        <h2>Welcome to Movie Night!</h2>
+        <p>Choose a video below to begin.</p>
+      </div>
 
-        <h3 id="nowPlaying">Nothing playing yet 🌙</h3>
+      <iframe
+        id="youtubePlayer"
+        title="Ocean Theater YouTube Player"
+        src="about:blank"
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin">
+      </iframe>
+    </div>
+  </div>
 
-        <div class="player-controls">
-            <button class="btn" id="lightsButton">
-                🌙 Dim the Lights
-            </button>
+  <h3 id="nowPlaying">Nothing playing yet 🌙</h3>
 
-            <button class="btn" id="fullscreenButton">
-                ⛶ Fullscreen Theater
-            </button>
+  <div class="player-controls">
+    <button class="btn" id="lightsButton">
+      🌙 Dim the Lights
+    </button>
 
-            <button class="btn" id="stopButton">
-                ⏹ Stop Video
-            </button>
+    <button class="btn" id="fullscreenButton">
+      ⛶ Fullscreen Theater
+    </button>
 
-            <button class="btn" id="favoriteCurrent">
-                💎 Save Current Video
-            </button>
-        </div>
-    </section>
+    <button class="btn" id="stopButton">
+      ⏹ Stop Video
+    </button>
 
-    <section class="panel">
-        <h2>🌍 Live YouTube Discovery</h2>
+    <button class="btn" id="favoriteCurrent">
+      💎 Save Current Video
+    </button>
+  </div>
+</section>
 
-        <p>
-            Search YouTube or let the ocean choose
-            something completely unexpected!
-        </p>
+<section class="panel">
+  <h2>🌍 Discover Something New!</h2>
 
-        <div class="search-row">
-            <input
-                type="search"
-                id="searchInput"
-                placeholder="Search anything on YouTube..."
-                aria-label="Search YouTube">
+  <p>
+    Explore YouTube, find something wonderful,
+    or let the ocean surprise you!
+  </p>
 
-            <button class="btn" id="searchButton">
-                🔎 Search
-            </button>
+  <div class="search-row">
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="Search anything on YouTube..."
+      aria-label="Search YouTube">
 
-            <button class="btn" id="randomButton">
-                🎲 Random YouTube Videos!
-            </button>
-        </div>
+    <button class="btn" id="searchButton">
+      🔎 Search
+    </button>
 
-        <h3>Explore Categories</h3>
+    <button class="btn" id="randomButton">
+      🎲 Random YouTube Videos!
+    </button>
+  </div>
 
-        <div class="category-row" id="categories"></div>
+  <h3>Explore Categories</h3>
 
-        <p id="status" role="status"></p>
+  <div class="category-row" id="categories"></div>
 
-        <div class="video-grid" id="videoGrid"></div>
-    </section>
+  <p id="status" role="status"></p>
 
-    <section class="panel">
-        <h2>💎 Favorite Videos</h2>
-        <p class="subtitle">
-            Keep the videos you love for another movie night.
-        </p>
+  <div class="video-grid" id="videoGrid"></div>
+</section>
 
-        <div class="video-grid" id="favoritesGrid"></div>
-    </section>
+<section class="panel">
+  <h2>💎 Favorite Videos</h2>
 
-    <section class="panel">
-        <h2>🔑 Connect YouTube Discovery</h2>
+  <p class="subtitle">
+    Save the videos you love for another movie night.
+  </p>
 
-        <p>
-            Enter your YouTube Data API v3 key
-            to enable real video discovery.
-        </p>
+  <div class="video-grid" id="favoritesGrid"></div>
+</section>
 
-        <div class="search-row">
-            <input
-                type="password"
-                id="apiKeyInput"
-                placeholder="Paste your restricted API key"
-                aria-label="YouTube API key"
-                autocomplete="off">
+<footer>
+  <p>Made with love, across every ocean. 🌊💜</p>
+</footer>
 
-            <button class="btn" id="connectButton">
-                Connect YouTube
-            </button>
-
-            <button class="btn" id="disconnectButton">
-                Disconnect
-            </button>
-        </div>
-
-        <p id="apiStatus" class="api-note"></p>
-
-        <p class="api-note">
-            Create a key at
-            <a href="https://console.cloud.google.com/apis/credentials"
-               target="_blank" rel="noopener noreferrer">
-                Google Cloud Console
-            </a>.
-            Enable YouTube Data API v3 and restrict your key
-            to this website and that API.
-        </p>
-
-        <p class="api-note">
-            The key is kept in this browser tab's session storage,
-            not saved to your GitHub repository.
-            It is still visible to the browser and should
-            always have website and API restrictions.
-        </p>
-    </section>
-
-    <footer>
-        <p>Made with love, across every ocean. 🌊💜</p>
-    </footer>
 </main>
 
 <div class="companion">
-    <div class="dolphin-message" id="dolphinMessage" hidden
-         aria-live="polite"></div>
+  <div
+    class="dolphin-message"
+    id="dolphinMessage"
+    aria-live="polite"
+    hidden>
+  </div>
 
-    <button
-        class="dolphin"
-        id="dolphinBuddy"
-        aria-label="Talk to your quiet dolphin companion"
-        title="Tap for a little ocean hug">
-        🐬
-    </button>
+  <button
+    class="dolphin"
+    id="dolphinBuddy"
+    aria-label="Talk to your dolphin"
+    title="Tap for a little ocean hug">
+    🐬
+  </button>
 </div>
 
 <script>
 "use strict";
 
-/* ==========================================
-   OCEAN THEATER — COMPLETE JAVASCRIPT
-========================================== */
+/* =========================================
+   IMPORTANT: YOUR YOUTUBE API KEY
+
+   Replace the text below with your
+   restricted YouTube Data API v3 key.
+
+   The key will be visible in page source.
+   Restrict it in Google Cloud before use.
+========================================= */
+
+const YOUTUBE_API_KEY = "PASTE_YOUR_API_KEY_HERE";
+
+/* =========================================
+   SETTINGS
+========================================= */
 
 const $ = id => document.getElementById(id);
 
-const API_BASE =
-    "https://www.googleapis.com/youtube/v3/search";
+const API_URL =
+  "https://www.googleapis.com/youtube/v3/search";
 
 const topics = [
-    "cute animals",
-    "funny cats",
-    "funny dogs",
-    "ocean wildlife",
-    "deep sea creatures",
-    "Minecraft",
-    "Roblox",
-    "gaming adventures",
-    "funny gaming moments",
-    "beautiful nature",
-    "travel adventures",
-    "world history",
-    "ancient civilizations",
-    "space exploration",
-    "astronomy",
-    "science experiments",
-    "interesting facts",
-    "amazing inventions",
-    "art and drawing",
-    "animation",
-    "short films",
-    "music performances",
-    "relaxing piano",
-    "lofi music",
-    "cooking",
-    "baking",
-    "street food",
-    "architecture",
-    "wildlife documentary",
-    "underwater exploration",
-    "photography",
-    "comedy sketches",
-    "technology",
-    "adventure stories",
-    "fantasy worlds",
-    "beautiful landscapes",
-    "crafts",
-    "dancing",
-    "marine biology",
-    "animal rescue"
+  "cute animals",
+  "funny cats",
+  "funny dogs",
+  "ocean wildlife",
+  "deep sea creatures",
+  "Minecraft",
+  "Roblox",
+  "gaming adventures",
+  "funny gaming moments",
+  "beautiful nature",
+  "travel adventures",
+  "world history",
+  "ancient civilizations",
+  "space exploration",
+  "astronomy",
+  "science experiments",
+  "interesting facts",
+  "amazing inventions",
+  "art and drawing",
+  "animation",
+  "short films",
+  "music performances",
+  "relaxing piano",
+  "lofi music",
+  "cooking",
+  "baking",
+  "street food",
+  "architecture",
+  "wildlife documentary",
+  "underwater exploration",
+  "photography",
+  "comedy sketches",
+  "technology",
+  "adventure stories",
+  "fantasy worlds",
+  "beautiful landscapes",
+  "crafts",
+  "dancing",
+  "marine biology",
+  "animal rescue"
 ];
 
 const variations = [
-    "",
-    " amazing",
-    " interesting",
-    " beautiful",
-    " funny",
-    " relaxing",
-    " incredible",
-    " documentary",
-    " adventure",
-    " compilation"
+  "",
+  " amazing",
+  " interesting",
+  " beautiful",
+  " funny",
+  " relaxing",
+  " incredible",
+  " documentary",
+  " adventure",
+  " compilation"
 ];
 
 const categories = [
-    ["🎮 Gaming", "gaming"],
-    ["🐬 Ocean", "ocean wildlife"],
-    ["🐱 Cute Animals", "cute animals"],
-    ["🎵 Music", "music"],
-    ["🌍 Travel", "travel"],
-    ["🚀 Space", "space"],
-    ["📚 History", "history"],
-    ["😂 Comedy", "comedy"],
-    ["🎨 Art", "art"],
-    ["🍳 Cooking", "cooking"],
-    ["🌿 Nature", "nature"],
-    ["🎬 Short Films", "short films"]
+  ["🎮 Gaming", "gaming"],
+  ["🐬 Ocean", "ocean wildlife"],
+  ["🐱 Cute Animals", "cute animals"],
+  ["🎵 Music", "music"],
+  ["🌍 Travel", "travel"],
+  ["🚀 Space", "space"],
+  ["📚 History", "history"],
+  ["😂 Comedy", "comedy"],
+  ["🎨 Art", "art"],
+  ["🍳 Cooking", "cooking"],
+  ["🌿 Nature", "nature"],
+  ["🎬 Short Films", "short films"]
 ];
 
-let apiKey = "";
 let favorites = [];
 let currentVideo = null;
 let currentResults = [];
@@ -612,593 +522,508 @@ let searchController = null;
 let requestNumber = 0;
 let lastTopic = "";
 let lastDolphinMessage = -1;
+let dolphinTimer = null;
 
-try {
-    apiKey = sessionStorage.getItem("oceanYoutubeKey") || "";
-} catch (error) {
-    apiKey = "";
-}
-
-try {
-    const saved = JSON.parse(
-        localStorage.getItem("oceanTheaterFavorites") || "[]"
-    );
-
-    if (Array.isArray(saved)) {
-        favorites = saved.filter(isValidVideo);
-    }
-} catch (error) {
-    favorites = [];
-}
-
-/* ==========================================
-   HELPERS
-========================================== */
-
-function randomItem(array) {
-    return array[Math.floor(Math.random() * array.length)];
-}
-
-function shuffle(array) {
-    const copy = [...array];
-
-    for (let i = copy.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-
-    return copy;
-}
+/* =========================================
+   LOCAL STORAGE
+========================================= */
 
 function isValidVideo(video) {
-    return video &&
-        typeof video.id === "string" &&
-        /^[a-zA-Z0-9_-]{11}$/.test(video.id) &&
-        typeof video.title === "string";
+  return video &&
+    typeof video.id === "string" &&
+    /^[a-zA-Z0-9_-]{11}$/.test(video.id) &&
+    typeof video.title === "string";
 }
 
-function setStatus(message) {
-    $("status").textContent = message;
+try {
+  const saved = JSON.parse(
+    localStorage.getItem("oceanTheaterFavorites") || "[]"
+  );
+
+  if (Array.isArray(saved)) {
+    favorites = saved.filter(isValidVideo);
+  }
+} catch (error) {
+  favorites = [];
 }
 
 function saveFavorites() {
-    try {
-        localStorage.setItem(
-            "oceanTheaterFavorites",
-            JSON.stringify(favorites)
-        );
-    } catch (error) {
-        setStatus("Could not save favorites in this browser.");
-    }
+  try {
+    localStorage.setItem(
+      "oceanTheaterFavorites",
+      JSON.stringify(favorites)
+    );
+  } catch (error) {
+    setStatus("Could not save favorites in this browser.");
+  }
 }
 
 function isFavorite(id) {
-    return favorites.some(video => video.id === id);
+  return favorites.some(video => video.id === id);
 }
 
-/* ==========================================
-   RANDOM YOUTUBE DISCOVERY
-========================================== */
+/* =========================================
+   RANDOMIZATION
+========================================= */
+
+function randomItem(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+function shuffle(array) {
+  const copy = [...array];
+
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+
+  return copy;
+}
 
 function randomQuery() {
-    let topic = randomItem(topics);
+  let topic = randomItem(topics);
 
-    if (topics.length > 1 && topic === lastTopic) {
-        topic = topics[
-            (topics.indexOf(topic) + 1) % topics.length
-        ];
-    }
+  if (topic === lastTopic) {
+    topic = topics[
+      (topics.indexOf(topic) + 1) % topics.length
+    ];
+  }
 
-    lastTopic = topic;
+  lastTopic = topic;
 
-    return topic + randomItem(variations);
+  return topic + randomItem(variations);
 }
 
+function setStatus(message) {
+  $("status").textContent = message;
+}
+
+/* =========================================
+   LIVE YOUTUBE SEARCH
+========================================= */
+
 async function discoverVideos(query) {
-    if (!apiKey) {
-        setStatus(
-            "🔑 Connect your YouTube API key below to discover real videos."
-        );
+  if (
+    !YOUTUBE_API_KEY ||
+    YOUTUBE_API_KEY === "PASTE_YOUR_API_KEY_HERE"
+  ) {
+    setStatus(
+      "⚠️ YouTube discovery needs its API key configured by the website owner."
+    );
+    return;
+  }
 
-        $("apiKeyInput").focus();
-        return;
+  if (searchController) {
+    searchController.abort();
+  }
+
+  searchController = new AbortController();
+  const thisRequest = ++requestNumber;
+
+  $("videoGrid").replaceChildren();
+
+  setStatus("🐬 Searching the ocean for videos...");
+
+  $("searchButton").disabled = true;
+  $("randomButton").disabled = true;
+
+  try {
+    const params = new URLSearchParams({
+      part: "snippet",
+      type: "video",
+      videoEmbeddable: "true",
+      maxResults: "30",
+      q: query,
+      safeSearch: "moderate",
+      key: YOUTUBE_API_KEY
+    });
+
+    const response = await fetch(
+      API_URL + "?" + params.toString(),
+      { signal: searchController.signal }
+    );
+
+    const data = await response.json();
+
+    if (thisRequest !== requestNumber) return;
+
+    if (!response.ok) {
+      throw new Error(
+        data.error?.message ||
+        "YouTube could not complete the search."
+      );
     }
 
-    if (searchController) {
-        searchController.abort();
+    const videos = (data.items || [])
+      .map(item => ({
+        id: item.id?.videoId,
+        title: item.snippet?.title || "Untitled Video",
+        channel: item.snippet?.channelTitle || "YouTube",
+        thumbnail:
+          item.snippet?.thumbnails?.medium?.url || ""
+      }))
+      .filter(isValidVideo);
+
+    currentResults = shuffle(videos);
+
+    renderVideoGrid(
+      currentResults,
+      $("videoGrid"),
+      false
+    );
+
+    if (currentResults.length) {
+      setStatus(
+        "🎬 Found " + currentResults.length +
+        " videos for: " + query
+      );
+    } else {
+      setStatus(
+        "No videos found. Try another search!"
+      );
     }
 
-    searchController = new AbortController();
-
-    const thisRequest = ++requestNumber;
-
-    $("videoGrid").replaceChildren();
-
-    setStatus("🐬 Searching the ocean for videos...");
-
-    $("searchButton").disabled = true;
-    $("randomButton").disabled = true;
-
-    try {
-        const params = new URLSearchParams({
-            part: "snippet",
-            type: "video",
-            videoEmbeddable: "true",
-            maxResults: "30",
-            q: query,
-            safeSearch: "moderate",
-            key: apiKey
-        });
-
-        const response = await fetch(
-            API_BASE + "?" + params.toString(),
-            { signal: searchController.signal }
-        );
-
-        const data = await response.json();
-
-        if (thisRequest !== requestNumber) {
-            return;
-        }
-
-        if (!response.ok) {
-            const message =
-                data.error?.message ||
-                "YouTube could not complete the request.";
-
-            throw new Error(message);
-        }
-
-        const videos = (data.items || [])
-            .map(item => ({
-                id: item.id?.videoId,
-                title: item.snippet?.title || "Untitled Video",
-                channel: item.snippet?.channelTitle || "YouTube",
-                thumbnail:
-                    item.snippet?.thumbnails?.medium?.url ||
-                    item.snippet?.thumbnails?.default?.url ||
-                    ""
-            }))
-            .filter(isValidVideo);
-
-        currentResults = shuffle(videos);
-
-        renderVideoGrid(currentResults, $("videoGrid"), false);
-
-        setStatus(
-            "🎬 Found " + currentResults.length +
-            " videos for: " + query
-        );
-
-        if (!currentResults.length) {
-            setStatus(
-                "No videos found. Try another topic or press Random again."
-            );
-        }
-
-    } catch (error) {
-        if (error.name !== "AbortError") {
-            setStatus(
-                "⚠️ " + error.message +
-                " Check your API key, API restrictions, and quota."
-            );
-        }
-    } finally {
-        if (thisRequest === requestNumber) {
-            $("searchButton").disabled = false;
-            $("randomButton").disabled = false;
-        }
+  } catch (error) {
+    if (error.name !== "AbortError") {
+      setStatus(
+        "⚠️ " + error.message +
+        " Check the API key, website restrictions, and quota."
+      );
     }
+  } finally {
+    if (thisRequest === requestNumber) {
+      $("searchButton").disabled = false;
+      $("randomButton").disabled = false;
+    }
+  }
 }
 
 function discoverRandom() {
-    const query = randomQuery();
-    $("searchInput").value = query;
-    discoverVideos(query);
+  const query = randomQuery();
+
+  $("searchInput").value = query;
+
+  discoverVideos(query);
 }
 
 function searchVideos() {
-    const query = $("searchInput").value.trim();
+  const query = $("searchInput").value.trim();
 
-    if (!query) {
-        setStatus("Enter a search term first.");
-        return;
-    }
+  if (!query) {
+    setStatus("Enter something to search for!");
+    return;
+  }
 
-    discoverVideos(query);
+  discoverVideos(query);
 }
 
-/* ==========================================
-   YOUTUBE PLAYER
-========================================== */
+/* =========================================
+   VIDEO PLAYER
+========================================= */
 
 function playVideo(video) {
-    if (!isValidVideo(video)) {
-        return;
-    }
+  if (!isValidVideo(video)) return;
 
-    currentVideo = video;
+  currentVideo = video;
 
-    const iframe = $("youtubePlayer");
+  const params = new URLSearchParams({
+    autoplay: "1",
+    rel: "0",
+    playsinline: "1"
+  });
 
-    const params = new URLSearchParams({
-        autoplay: "1",
-        rel: "0",
-        playsinline: "1"
-    });
+  $("youtubePlayer").src =
+    "https://www.youtube-nocookie.com/embed/" +
+    encodeURIComponent(video.id) +
+    "?" + params.toString();
 
-    iframe.src =
-        "https://www.youtube-nocookie.com/embed/" +
-        encodeURIComponent(video.id) +
-        "?" + params.toString();
+  $("placeholder").hidden = true;
 
-    $("placeholder").hidden = true;
+  $("nowPlaying").textContent =
+    "🎬 Now Playing: " + video.title;
 
-    $("nowPlaying").textContent =
-        "🎬 Now Playing: " + video.title;
-
-    $("playerShell").scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-    });
+  $("playerShell").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
 }
 
 function stopVideo() {
-    $("youtubePlayer").src = "about:blank";
+  $("youtubePlayer").src = "about:blank";
 
-    $("placeholder").hidden = false;
+  $("placeholder").hidden = false;
 
-    currentVideo = null;
+  currentVideo = null;
 
-    $("nowPlaying").textContent =
-        "Nothing playing yet 🌙";
+  $("nowPlaying").textContent =
+    "Nothing playing yet 🌙";
 }
 
 function fullscreenTheater() {
-    const player = $("playerShell");
+  const player = $("playerShell");
 
-    if (document.fullscreenElement) {
-        document.exitFullscreen();
-    } else if (player.requestFullscreen) {
-        player.requestFullscreen().catch(() => {
-            setStatus("Fullscreen could not be enabled.");
-        });
-    }
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch(() => {});
+  } else if (player.requestFullscreen) {
+    player.requestFullscreen().catch(() => {
+      setStatus("Fullscreen could not be enabled.");
+    });
+  }
 }
 
 function toggleLights() {
-    document.body.classList.toggle("lights-off");
+  document.body.classList.toggle("lights-off");
 
-    const off = document.body.classList.contains("lights-off");
+  const off = document.body.classList.contains(
+    "lights-off"
+  );
 
-    $("lightsButton").textContent = off
-        ? "☀️ Turn Lights On"
-        : "🌙 Dim the Lights";
+  $("lightsButton").textContent = off
+    ? "☀️ Turn Lights On"
+    : "🌙 Dim the Lights";
 }
 
-/* ==========================================
+/* =========================================
    VIDEO CARDS
-========================================== */
+========================================= */
 
 function makeVideoCard(video, favoriteMode) {
-    const card = document.createElement("article");
-    card.className = "video-card";
+  const card = document.createElement("article");
+  card.className = "video-card";
 
-    const img = document.createElement("img");
-    img.className = "thumbnail";
-    img.alt = "";
-    img.loading = "lazy";
+  const img = document.createElement("img");
+  img.className = "thumbnail";
+  img.alt = "";
+  img.loading = "lazy";
 
-    if (video.thumbnail) {
-        img.src = video.thumbnail;
+  img.src = video.thumbnail ||
+    "https://i.ytimg.com/vi/" +
+    encodeURIComponent(video.id) +
+    "/mqdefault.jpg";
+
+  const info = document.createElement("div");
+  info.className = "video-info";
+
+  const title = document.createElement("div");
+  title.className = "video-title";
+  title.textContent = video.title;
+
+  const channel = document.createElement("p");
+  channel.className = "video-channel";
+  channel.textContent = video.channel || "YouTube";
+
+  const actions = document.createElement("div");
+  actions.className = "video-actions";
+
+  const play = document.createElement("button");
+  play.className = "btn";
+  play.type = "button";
+  play.textContent = "▶ Watch";
+
+  play.addEventListener("click", () => {
+    playVideo(video);
+  });
+
+  const favorite = document.createElement("button");
+  favorite.className = "btn";
+  favorite.type = "button";
+
+  favorite.textContent = favoriteMode
+    ? "🗑 Remove"
+    : isFavorite(video.id)
+      ? "💎 Saved"
+      : "♡ Save";
+
+  favorite.addEventListener("click", () => {
+    if (isFavorite(video.id)) {
+      favorites = favorites.filter(
+        v => v.id !== video.id
+      );
     } else {
-        img.src =
-            "https://i.ytimg.com/vi/" +
-            encodeURIComponent(video.id) +
-            "/mqdefault.jpg";
+      favorites.push(video);
     }
 
-    const info = document.createElement("div");
-    info.className = "video-info";
-
-    const title = document.createElement("div");
-    title.className = "video-title";
-    title.textContent = video.title;
-
-    const channel = document.createElement("p");
-    channel.className = "video-channel";
-    channel.textContent = video.channel || "YouTube";
-
-    const actions = document.createElement("div");
-    actions.className = "video-actions";
-
-    const play = document.createElement("button");
-    play.className = "btn";
-    play.type = "button";
-    play.textContent = "▶ Watch";
-
-    play.addEventListener("click", () => {
-        playVideo(video);
-    });
-
-    const favorite = document.createElement("button");
-    favorite.className = "btn";
-    favorite.type = "button";
-
-    favorite.textContent = favoriteMode
-        ? "🗑 Remove"
-        : isFavorite(video.id)
-            ? "💎 Saved"
-            : "♡ Save";
-
-    favorite.addEventListener("click", () => {
-        if (isFavorite(video.id)) {
-            favorites = favorites.filter(v => v.id !== video.id);
-        } else {
-            favorites.push(video);
-        }
-
-        saveFavorites();
-        renderFavorites();
-
-        if (!favoriteMode) {
-            renderVideoGrid(
-                currentResults,
-                $("videoGrid"),
-                false
-            );
-        }
-    });
-
-    actions.append(play, favorite);
-    info.append(title, channel, actions);
-    card.append(img, info);
-
-    return card;
-}
-
-function renderVideoGrid(videos, container, favoriteMode) {
-    container.replaceChildren();
-
-    if (!videos.length) {
-        const empty = document.createElement("p");
-
-        empty.textContent = favoriteMode
-            ? "No favorite videos yet. Save something you love! 💜"
-            : "No videos to display yet.";
-
-        container.append(empty);
-        return;
-    }
-
-    videos.forEach(video => {
-        container.append(
-            makeVideoCard(video, favoriteMode)
-        );
-    });
-}
-
-function renderFavorites() {
-    renderVideoGrid(
-        favorites,
-        $("favoritesGrid"),
-        true
-    );
-}
-
-function saveCurrentVideo() {
-    if (!currentVideo) {
-        setStatus("Play a video first, then save it!");
-        return;
-    }
-
-    if (!isFavorite(currentVideo.id)) {
-        favorites.push(currentVideo);
-        saveFavorites();
-    }
-
+    saveFavorites();
     renderFavorites();
 
-    renderVideoGrid(
+    if (!favoriteMode) {
+      renderVideoGrid(
         currentResults,
         $("videoGrid"),
         false
+      );
+    }
+  });
+
+  actions.append(play, favorite);
+  info.append(title, channel, actions);
+  card.append(img, info);
+
+  return card;
+}
+
+function renderVideoGrid(videos, container, favoriteMode) {
+  container.replaceChildren();
+
+  if (!videos.length) {
+    const empty = document.createElement("p");
+
+    empty.textContent = favoriteMode
+      ? "No favorites yet. Save something you love! 💜"
+      : "No videos to display yet.";
+
+    container.append(empty);
+    return;
+  }
+
+  videos.forEach(video => {
+    container.append(
+      makeVideoCard(video, favoriteMode)
     );
-
-    setStatus("💎 Saved to your favorite videos!");
+  });
 }
 
-/* ==========================================
-   YOUTUBE API CONNECTION
-========================================== */
-
-function connectYouTube() {
-    const value = $("apiKeyInput").value.trim();
-
-    if (!value) {
-        $("apiStatus").textContent =
-            "Please enter your API key.";
-        return;
-    }
-
-    apiKey = value;
-
-    try {
-        sessionStorage.setItem("oceanYoutubeKey", apiKey);
-    } catch (error) {
-        $("apiStatus").textContent =
-            "Key connected for this page, but session storage is unavailable.";
-    }
-
-    $("apiKeyInput").value = "";
-
-    $("apiStatus").textContent =
-        "🔑 Key saved for this browser tab. Testing with a search...";
-
-    discoverRandom();
+function renderFavorites() {
+  renderVideoGrid(
+    favorites,
+    $("favoritesGrid"),
+    true
+  );
 }
 
-function disconnectYouTube() {
-    apiKey = "";
+function saveCurrentVideo() {
+  if (!currentVideo) {
+    setStatus("Play a video first, then save it!");
+    return;
+  }
 
-    if (searchController) {
-        searchController.abort();
-    }
+  if (!isFavorite(currentVideo.id)) {
+    favorites.push(currentVideo);
+    saveFavorites();
+  }
 
-    ++requestNumber;
+  renderFavorites();
 
-    try {
-        sessionStorage.removeItem("oceanYoutubeKey");
-    } catch (error) {}
+  renderVideoGrid(
+    currentResults,
+    $("videoGrid"),
+    false
+  );
 
-    $("apiKeyInput").value = "";
-
-    $("apiStatus").textContent =
-        "YouTube discovery disconnected.";
-
-    setStatus("Connect an API key to discover videos.");
+  setStatus("💎 Saved to your favorites!");
 }
 
-function renderCategories() {
-    const container = $("categories");
-
-    categories.forEach(([label, query]) => {
-        const button = document.createElement("button");
-
-        button.className = "btn";
-        button.type = "button";
-        button.textContent = label;
-
-        button.addEventListener("click", () => {
-            $("searchInput").value = query;
-            discoverVideos(query);
-        });
-
-        container.append(button);
-    });
-}
-
-/* ==========================================
-   QUIET DOLPHIN COMPANION
-========================================== */
+/* =========================================
+   CUTE QUIET DOLPHIN
+========================================= */
 
 const dolphinLines = [
-    "I'm right here beside you, hon! 🐬💜",
-    "Enjoy your movie! I'll be quiet. 🌙",
-    "Sending a tiny ocean hug! 🌊",
-    "You can watch as long as you like. 🫧",
-    "I'll keep you company through every adventure. 💎",
-    "You look cozy! 🍿",
-    "I'll be your little movie buddy. 💙",
-    "The ocean is peaceful tonight. ✨",
-    "I hope this video makes you smile! 🐬",
-    "Even the smallest dolphin can give the biggest hugs. 💜"
+  "I'm right here beside you, hon! 🐬💜",
+  "Enjoy your movie! I'll be quiet. 🌙",
+  "Sending a tiny ocean hug! 🌊",
+  "You can watch as long as you like. 🫧",
+  "I'll keep you company through every adventure. 💎",
+  "You look cozy! 🍿",
+  "I'll be your little movie buddy. 💙",
+  "The ocean is peaceful tonight. ✨",
+  "I hope this video makes you smile! 🐬",
+  "Even the smallest dolphin can give the biggest hugs. 💜"
 ];
 
-let dolphinMessageTimeout = null;
-
 function talkToDolphin() {
-    let index = Math.floor(
-        Math.random() * dolphinLines.length
-    );
+  let index = Math.floor(
+    Math.random() * dolphinLines.length
+  );
 
-    if (index === lastDolphinMessage) {
-        index = (index + 1) % dolphinLines.length;
-    }
+  if (index === lastDolphinMessage) {
+    index = (index + 1) % dolphinLines.length;
+  }
 
-    lastDolphinMessage = index;
+  lastDolphinMessage = index;
 
-    $("dolphinMessage").textContent =
-        dolphinLines[index];
+  $("dolphinMessage").textContent =
+    dolphinLines[index];
 
-    $("dolphinMessage").hidden = false;
+  $("dolphinMessage").hidden = false;
 
-    clearTimeout(dolphinMessageTimeout);
+  clearTimeout(dolphinTimer);
 
-    dolphinMessageTimeout = setTimeout(() => {
-        $("dolphinMessage").hidden = true;
-    }, 4500);
+  dolphinTimer = setTimeout(() => {
+    $("dolphinMessage").hidden = true;
+  }, 4500);
 }
 
-/* ==========================================
+/* =========================================
+   CATEGORY BUTTONS
+========================================= */
+
+function renderCategories() {
+  const container = $("categories");
+
+  categories.forEach(([label, query]) => {
+    const button = document.createElement("button");
+
+    button.className = "btn";
+    button.type = "button";
+    button.textContent = label;
+
+    button.addEventListener("click", () => {
+      $("searchInput").value = query;
+      discoverVideos(query);
+    });
+
+    container.append(button);
+  });
+}
+
+/* =========================================
    BUTTON EVENTS
-========================================== */
+========================================= */
 
 $("searchButton").addEventListener(
-    "click",
-    searchVideos
+  "click", searchVideos
 );
 
 $("randomButton").addEventListener(
-    "click",
-    discoverRandom
+  "click", discoverRandom
 );
 
 $("searchInput").addEventListener("keydown", event => {
-    if (event.key === "Enter") {
-        searchVideos();
-    }
+  if (event.key === "Enter") searchVideos();
 });
 
 $("lightsButton").addEventListener(
-    "click",
-    toggleLights
+  "click", toggleLights
 );
 
 $("fullscreenButton").addEventListener(
-    "click",
-    fullscreenTheater
+  "click", fullscreenTheater
 );
 
 $("stopButton").addEventListener(
-    "click",
-    stopVideo
+  "click", stopVideo
 );
 
 $("favoriteCurrent").addEventListener(
-    "click",
-    saveCurrentVideo
-);
-
-$("connectButton").addEventListener(
-    "click",
-    connectYouTube
-);
-
-$("disconnectButton").addEventListener(
-    "click",
-    disconnectYouTube
+  "click", saveCurrentVideo
 );
 
 $("dolphinBuddy").addEventListener(
-    "click",
-    talkToDolphin
+  "click", talkToDolphin
 );
 
-/* ==========================================
-   INITIALIZE THE THEATER
-========================================== */
+/* =========================================
+   AUTOMATIC STARTUP
+========================================= */
 
 renderCategories();
 renderFavorites();
 
-$("placeholder").hidden = false;
-
-if (apiKey) {
-    $("apiStatus").textContent =
-        "🔑 YouTube key restored for this browser tab.";
-
-    discoverRandom();
-} else {
-    $("apiStatus").textContent =
-        "Connect your YouTube API key to enable live discovery.";
-
-    setStatus(
-        "🐬 Your theater is ready! Connect YouTube below to discover videos."
-    );
-}
+// Automatically discover videos when opened.
+discoverRandom();
 
 </script>
-
 </body>
 </html>
