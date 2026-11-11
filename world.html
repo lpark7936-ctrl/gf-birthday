@@ -666,6 +666,90 @@ footer {
   };
 })();
 </script>
-<script src="language.js" defer></script>
+
+<script id="ocean-inline-dutch-translator">
+/* Self-contained bilingual interface: one shared preference across all ocean pages. */
+(() => {
+  'use strict';
+  const dictionary = {"← Back to Our Little World": "← Terug naar onze kleine wereld", "← Back to Our Little Ocean": "← Terug naar onze kleine oceaan", "← Back Home": "← Terug naar huis", "Made with love, across every ocean. 🌙": "Met liefde gemaakt, over elke oceaan heen. 🌙", "🌎 Our Little World 💎": "🌎 Onze kleine wereld 💎", "Two hearts, one world. Discover 50 diamonds hidden in 50 countries. 💜": "Twee harten, één wereld. Ontdek 50 diamanten, verborgen in 50 landen. 💜", "💞 Find My Way to You": "💞 Vind mijn weg naar jou", "💙 My City": "💙 Mijn stad", "💜 Your City": "💜 Jouw stad", "🌍 Whole World": "🌍 Hele wereld", "🐬 Dolphin Hint": "🐬 Dolfijntip", "🏠 Our Ocean": "🏠 Onze oceaan", "💎 0 / 50 discovered": "💎 0 / 50 ontdekt", "🐬 Tap a diamond to discover its secret!": "🐬 Tik op een diamant om het geheim te ontdekken!", "🌙 Night Map": "🌙 Nachtkaart", "🦭 Baby Seal Says: Play Again! 💎": "🦭 Babyzeehond zegt: speel opnieuw! 💎", "Diamonds mark approximate country locations. Hearts mark city centers, not private addresses. Your discoveries are saved in this browser.": "Diamanten geven ongeveer de locaties van landen aan. Hartjes geven stadscentra aan, geen privé-adressen. Je ontdekkingen worden in deze browser bewaard."};
+  const originals = new WeakMap();
+  const attrOriginals = new WeakMap();
+  let running = false;
+  function selected() {
+    try {
+      const preferred = localStorage.getItem('oceanWebsiteLanguage');
+      if (preferred === 'nl' || preferred === 'en') return preferred;
+      const legacy = localStorage.getItem('oceanLanguage');
+      return legacy === 'nl' ? 'nl' : 'en';
+    } catch (_) { return 'en'; }
+  }
+  function translateValue(value, lang) {
+    if (lang !== 'nl' || !value) return value;
+    const trimmed = value.trim();
+    const normalized = trimmed.replace(/\s+/g, ' ');
+    const replacement = dictionary[trimmed] || dictionary[normalized];
+    return replacement ? value.replace(trimmed, replacement) : value;
+  }
+  function apply() {
+    if (running || !document.body) return;
+    running = true;
+    try {
+      const lang = selected();
+      document.documentElement.lang = lang;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      for (const node of nodes) {
+        const el = node.parentElement;
+        if (!el || el.closest('script,style,noscript,textarea,code,pre,[data-no-translate],.user,.sources')) continue;
+        const current = node.nodeValue;
+        const saved = originals.get(node);
+        // Detect newly generated status labels and preserve their English originals.
+        if (saved === undefined || (current !== saved && current !== translateValue(saved, 'nl'))) originals.set(node, current);
+        const english = originals.get(node);
+        const next = translateValue(english, lang);
+        if (current !== next) node.nodeValue = next;
+      }
+      for (const el of document.querySelectorAll('[placeholder],[title],[aria-label]')) {
+        if (el.closest('[data-no-translate]')) continue;
+        let saved = attrOriginals.get(el);
+        if (!saved) { saved = {}; attrOriginals.set(el, saved); }
+        for (const attr of ['placeholder','title','aria-label']) {
+          if (!el.hasAttribute(attr)) continue;
+          const current = el.getAttribute(attr);
+          if (!(attr in saved) || (current !== saved[attr] && current !== translateValue(saved[attr], 'nl'))) saved[attr] = current;
+          const next = translateValue(saved[attr], lang);
+          if (current !== next) el.setAttribute(attr, next);
+        }
+      }
+      // Update only an existing language button; do not create a second one.
+      const btn = document.getElementById('languageToggle');
+      if (btn) btn.textContent = lang === 'nl' ? '🇬🇧 English' : '🇳🇱 Nederlands';
+    } finally { running = false; }
+  }
+  function init() {
+    apply();
+    const btn = document.getElementById('languageToggle');
+    if (btn && !btn.dataset.oceanLangWired) {
+      btn.dataset.oceanLangWired = 'true';
+      btn.addEventListener('click', () => {
+        const next = selected() === 'nl' ? 'en' : 'nl';
+        try { localStorage.setItem('oceanWebsiteLanguage', next); } catch (_) {}
+        apply();
+      });
+    }
+    let queued = false;
+    const observer = new MutationObserver(() => {
+      if (running || queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; apply(); });
+    });
+    observer.observe(document.body, {subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['placeholder','title','aria-label']});
+    window.addEventListener('storage', event => { if (event.key === 'oceanWebsiteLanguage') apply(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once:true});
+  else init();
+})();
+</script>
 </body>
 </html>
