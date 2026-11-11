@@ -792,12 +792,16 @@ body.aquarium-view #oceanRestoreDock{display:none!important}
 #buddyMessage[hidden],#amorSpeech[hidden]{display:none!important}
 .ocean-hide-arrow:focus-visible,#oceanRestoreAll:focus-visible{outline:3px solid #ffe5a2;outline-offset:3px}
 @media(max-width:600px){#oceanRestoreDock{top:58px;max-width:calc(100vw - 30px);padding:6px 9px}#oceanRestoreDock button{font-size:.73rem;padding:8px}#oceanRestoreDock small{font-size:.64rem}}
+/* Top controls scroll away with the page instead of covering content. */
+#oceanViewToggle {position:absolute;top:12px;left:50%;transform:translateX(-50%)}
+#oceanLanguageHomeButton {position:absolute;top:67px;left:50%;transform:translateX(-50%);z-index:10030;margin:0;padding:9px 18px;border:1px solid #9afaff;border-radius:30px;background:rgba(9,37,78,.97);color:white;font:600 14px Georgia,serif;box-shadow:0 0 20px #39dfff66;cursor:pointer;white-space:nowrap}
+@media(max-width:650px){#oceanLanguageHomeButton{top:60px;padding:8px 14px}}
 </style>
 </head>
 
 <body>
-<!-- English / Dutch switch -->
-<button id="oceanLanguageHomeButton" type="button" aria-label="Switch website language" style="position:fixed;right:12px;top:70px;z-index:10030;margin:0;padding:11px 15px;border:1px solid #9afaff;border-radius:30px;background:rgba(9,37,78,.96);color:white;font:600 14px Georgia,serif;box-shadow:0 0 20px #39dfff66;cursor:pointer">🇳🇱 Nederlands</button>
+<button id="oceanLanguageHomeButton" type="button" aria-label="Switch website language" >🇳🇱 Nederlands</button>
+
 <button id="oceanViewToggle" type="button" aria-pressed="false">🐠 Hide Panels · Explore Ocean</button>
 
 <!-- Interactive Amor Octopus -->
@@ -1564,6 +1568,6 @@ function talkAmorOctopus() {
   });
 })();
 </script>
-    <script src="language.js" defer></script>
+    <script src="language.js?v=6" defer></script>
 </body>
 </html>
