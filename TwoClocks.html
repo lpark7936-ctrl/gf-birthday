@@ -16,4 +16,9 @@ function offsetMinutes(now,zone){const p=parts(now,zone);const hour=Number(p.hou
 function renderClock(now,zone,prefix){const hour=Number(parts(now,zone).hour)%24;document.getElementById(prefix+'Clock').textContent=new Intl.DateTimeFormat('en-US',{timeZone:zone,hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true}).format(now);document.getElementById(prefix+'Date').textContent=new Intl.DateTimeFormat('en-US',{timeZone:zone,weekday:'long',month:'long',day:'numeric',year:'numeric'}).format(now);document.getElementById(prefix+'Emoji').textContent=hour>=6&&hour<18?'☀️':'🌙';document.getElementById(prefix+'Status').textContent=hour>=6&&hour<12?'🌅 Good morning':hour>=12&&hour<18?'🌤️ Good afternoon':hour>=18&&hour<22?'🌆 Good evening':'✨ Dreamy nighttime';return hour}
 function update(){const now=new Date(),a=mine.value,b=hers.value;const ah=renderClock(now,a,'my'),bh=renderClock(now,b,'her');document.getElementById('myZoneLabel').textContent=mine.value==='America/Chicago'?'Lake Forest, Illinois 🇺🇸':mine.selectedOptions[0].textContent;document.getElementById('herZoneLabel').textContent=hers.value==='Europe/Amsterdam'?'Zoetermeer, Netherlands 🇳🇱':hers.selectedOptions[0].textContent;const delta=offsetMinutes(now,b)-offsetMinutes(now,a);const abs=Math.abs(delta),hours=Math.floor(abs/60),mins=abs%60;let phrase=delta===0?'Our clocks show the same time 💞':`Your clock is ${hours?hours+' hour'+(hours!==1?'s':''):''}${hours&&mins?' and ':''}${mins?mins+' minute'+(mins!==1?'s':''):''} ${delta>0?'ahead of':'behind'} mine`;document.getElementById('difference').textContent=phrase;document.getElementById('together').textContent=ah>=8&&ah<23&&bh>=8&&bh<23?'🐬 We might both be awake right now! A lovely time to say hello.': '🌙 One of our skies may be resting. Love can wait patiently across the waves.'}
 for(const sel of [mine,hers])sel.addEventListener('change',()=>{try{localStorage.setItem('two-clocks-mine',mine.value);localStorage.setItem('two-clocks-hers-v2',hers.value)}catch{}update()});update();setInterval(update,1000);
-</script></body></html>
+</script>
+  <script src="language.js" defer></script>
+</body>
+</html>
+</body>
+</html>
