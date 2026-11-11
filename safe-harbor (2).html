@@ -51,4 +51,7 @@ document.getElementById('shareBtn').addEventListener('click',async()=>{if(!reque
 const messages=['💙 You deserve kindness, patience, and support. It’s okay to have a hard day.','🦭 You can take things one small step at a time. There is no rush.','🌊 Feelings can be big. You don’t have to carry them all at once.','🐬 Asking for help is a brave and ordinary thing to do.','💜 Rest is allowed. You do not have to earn it.','✨ Even a difficult day can have a gentle moment.'];let msgIndex=0;
 document.getElementById('another').addEventListener('click',()=>{msgIndex=(msgIndex+1)%messages.length;document.getElementById('comfortText').textContent=messages[msgIndex];});
 let breathing=false;document.getElementById('breathBtn').addEventListener('click',()=>{breathing=!breathing;document.getElementById('bubble').classList.toggle('go',breathing);document.getElementById('breathBtn').textContent=breathing?'Stop Breathing':'Start Breathing';document.getElementById('breathText').textContent=breathing?'Follow the bubble at a comfortable pace. Stop anytime.':'A gentle breathing bubble, whenever you’d like.';});
-</script></body></html>
+</script>
+  <script src="language.js" defer></script>
+</body>
+</html>
