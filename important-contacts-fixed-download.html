@@ -33,6 +33,90 @@ function notify(message){toast.textContent=message;toast.hidden=false;clearTimeo
 async function copyText(value){try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(value)}else{const field=document.createElement('textarea');field.value=value;field.style.position='fixed';field.style.opacity='0';document.body.appendChild(field);field.select();const copied=document.execCommand('copy');field.remove();if(!copied)throw new Error('Copy unavailable')}notify('Copied! 💙')}catch(error){notify('Copy did not work. Please select the text manually.')}}
 document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',()=>copyText(button.dataset.copy)));
 </script>
-  <script src="language.js" defer></script>
+  
+<script id="ocean-inline-dutch-translator">
+/* Self-contained bilingual interface: one shared preference across all ocean pages. */
+(() => {
+  'use strict';
+  const dictionary = {"← Back to Our Little World": "← Terug naar onze kleine wereld", "← Back to Our Little Ocean": "← Terug naar onze kleine oceaan", "← Back Home": "← Terug naar huis", "Made with love, across every ocean. 🌙": "Met liefde gemaakt, over elke oceaan heen. 🌙", "A little connection across the ocean": "Een kleine verbinding over de oceaan", "⭐ Important Contacts": "⭐ Belangrijke contactgegevens", "Ways to Reach Me 🐬": "Manieren om me te bereiken 🐬", "Pick whichever place feels easiest for you.": "Kies wat voor jou het prettigst voelt.", "Phone Number": "Telefoonnummer", "📋 Copy Number": "📋 Nummer kopiëren", "📞 Call": "📞 Bellen", "💬 Text": "💬 Sms’en", "Main Discord": "Hoofdaccount op Discord", "Second Discord": "Tweede Discord-account", "📋 Copy Username": "📋 Gebruikersnaam kopiëren", "👻 Open Profile": "👻 Profiel openen", "🎮 Find on Roblox": "🎮 Zoeken op Roblox", "No matter how many waves are between us, here are the little ways you can find me. Just tap a button to copy what you need. 🌊": "Hoeveel golven er ook tussen ons liggen, hier zijn manieren om me te vinden. Tik op een knop om te kopiëren wat je nodig hebt. 🌊"};
+  const originals = new WeakMap();
+  const attrOriginals = new WeakMap();
+  let running = false;
+  function selected() {
+    try {
+      const preferred = localStorage.getItem('oceanWebsiteLanguage');
+      if (preferred === 'nl' || preferred === 'en') return preferred;
+      const legacy = localStorage.getItem('oceanLanguage');
+      return legacy === 'nl' ? 'nl' : 'en';
+    } catch (_) { return 'en'; }
+  }
+  function translateValue(value, lang) {
+    if (lang !== 'nl' || !value) return value;
+    const trimmed = value.trim();
+    const normalized = trimmed.replace(/\s+/g, ' ');
+    const replacement = dictionary[trimmed] || dictionary[normalized];
+    return replacement ? value.replace(trimmed, replacement) : value;
+  }
+  function apply() {
+    if (running || !document.body) return;
+    running = true;
+    try {
+      const lang = selected();
+      document.documentElement.lang = lang;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      for (const node of nodes) {
+        const el = node.parentElement;
+        if (!el || el.closest('script,style,noscript,textarea,code,pre,[data-no-translate],.user,.sources')) continue;
+        const current = node.nodeValue;
+        const saved = originals.get(node);
+        // Detect newly generated status labels and preserve their English originals.
+        if (saved === undefined || (current !== saved && current !== translateValue(saved, 'nl'))) originals.set(node, current);
+        const english = originals.get(node);
+        const next = translateValue(english, lang);
+        if (current !== next) node.nodeValue = next;
+      }
+      for (const el of document.querySelectorAll('[placeholder],[title],[aria-label]')) {
+        if (el.closest('[data-no-translate]')) continue;
+        let saved = attrOriginals.get(el);
+        if (!saved) { saved = {}; attrOriginals.set(el, saved); }
+        for (const attr of ['placeholder','title','aria-label']) {
+          if (!el.hasAttribute(attr)) continue;
+          const current = el.getAttribute(attr);
+          if (!(attr in saved) || (current !== saved[attr] && current !== translateValue(saved[attr], 'nl'))) saved[attr] = current;
+          const next = translateValue(saved[attr], lang);
+          if (current !== next) el.setAttribute(attr, next);
+        }
+      }
+      // Update only an existing language button; do not create a second one.
+      const btn = document.getElementById('languageToggle');
+      if (btn) btn.textContent = lang === 'nl' ? '🇬🇧 English' : '🇳🇱 Nederlands';
+    } finally { running = false; }
+  }
+  function init() {
+    apply();
+    const btn = document.getElementById('languageToggle');
+    if (btn && !btn.dataset.oceanLangWired) {
+      btn.dataset.oceanLangWired = 'true';
+      btn.addEventListener('click', () => {
+        const next = selected() === 'nl' ? 'en' : 'nl';
+        try { localStorage.setItem('oceanWebsiteLanguage', next); } catch (_) {}
+        apply();
+      });
+    }
+    let queued = false;
+    const observer = new MutationObserver(() => {
+      if (running || queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; apply(); });
+    });
+    observer.observe(document.body, {subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['placeholder','title','aria-label']});
+    window.addEventListener('storage', event => { if (event.key === 'oceanWebsiteLanguage') apply(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once:true});
+  else init();
+})();
+</script>
 </body>
 </html>
