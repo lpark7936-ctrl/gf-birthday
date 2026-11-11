@@ -52,6 +52,90 @@ const messages=['💙 You deserve kindness, patience, and support. It’s okay t
 document.getElementById('another').addEventListener('click',()=>{msgIndex=(msgIndex+1)%messages.length;document.getElementById('comfortText').textContent=messages[msgIndex];});
 let breathing=false;document.getElementById('breathBtn').addEventListener('click',()=>{breathing=!breathing;document.getElementById('bubble').classList.toggle('go',breathing);document.getElementById('breathBtn').textContent=breathing?'Stop Breathing':'Start Breathing';document.getElementById('breathText').textContent=breathing?'Follow the bubble at a comfortable pace. Stop anytime.':'A gentle breathing bubble, whenever you’d like.';});
 </script>
-  <script src="language.js" defer></script>
+  
+<script id="ocean-inline-dutch-translator">
+/* Self-contained bilingual interface: one shared preference across all ocean pages. */
+(() => {
+  'use strict';
+  const dictionary = {"← Back to Our Little World": "← Terug naar onze kleine wereld", "← Back to Our Little Ocean": "← Terug naar onze kleine oceaan", "← Back Home": "← Terug naar huis", "Made with love, across every ocean. 🌙": "Met liefde gemaakt, over elke oceaan heen. 🌙", "🌊 The Safe Harbor": "🌊 De veilige haven", "A quiet place to let things out, ask for support, or simply rest. You don't have to find the perfect words here.": "Een rustige plek om je gevoelens te uiten, om steun te vragen of gewoon uit te rusten. Je hoeft hier niet de perfecte woorden te vinden.", "🌊 Let It Out": "🌊 Laat het los", "💌 Ask for Help": "💌 Vraag om hulp", "🦭 Comfort": "🦭 Troost", "Scream Into the Ocean 🌊": "Schreeuw het uit naar de oceaan 🌊", "What's on your mind?": "Wat houdt je bezig?", "🌊 Release Into the Waves": "🌊 Laat het meegaan met de golven", "Clear": "Wissen", "Ask for Help 💌": "Vraag om hulp 💌", "What kind of support would you like?": "Welke steun zou je fijn vinden?", "💙 Someone to listen": "💙 Iemand die luistert", "💡 Advice": "💡 Advies", "🧩 Help solving something": "🧩 Hulp bij het oplossen van iets", "🫂 Comfort": "🫂 Troost", "📞 A conversation when available": "📞 Een gesprek wanneer het uitkomt", "Your message": "Jouw bericht", "💌 Open Email to Send": "💌 Open e-mail om te verzenden", "📋 Copy Message": "📋 Bericht kopiëren", "📤 Share Message": "📤 Bericht delen", "A Little Moment of Calm 🦭": "Een klein moment van rust 🦭", "You don't need to fix everything right now. Take your time.": "Je hoeft niet alles meteen op te lossen. Neem je tijd.", "💙 You deserve kindness, patience, and support. It's okay to have a hard day.": "💙 Je verdient vriendelijkheid, geduld en steun. Het is oké om een moeilijke dag te hebben.", "✨ Another Kind Message": "✨ Nog een lief bericht", "A gentle breathing bubble, whenever you'd like.": "Een zachte adembubbel, wanneer je maar wilt.", "Start Breathing": "Begin met ademen", "Made with care, for the days that feel a little heavier. 💙": "Met zorg gemaakt, voor de dagen die wat zwaarder voelen. 💙", "Write whatever is weighing on you. When you're ready, let the waves carry it away. This is private to this screen.": "Schrijf op wat je bezighoudt. Wanneer je er klaar voor bent, laat je de golven het meenemen. Dit blijft op dit scherm.", "Write whatever is weighing on you. When you're ready, let the waves carry it away. This is private to this screen: nothing is sent or saved.": "Schrijf op wat je bezighoudt. Wanneer je er klaar voor bent, laat je de golven het meenemen. Dit blijft op dit scherm: er wordt niets verzonden of opgeslagen.", "You can explain what's happening and what would feel most helpful. You're always allowed to ask for support.": "Je mag vertellen wat er gebeurt en wat je het meest zou helpen. Je mag altijd om steun vragen.", "This opens your email app with the message prepared. Review it and press Send there to deliver it. Nothing is sent automatically or saved by this website. If your email app does not open, use Copy Message instead.": "Hiermee opent je e-mailapp met het bericht klaar om te verzenden. Controleer het en druk op Verzenden. Er wordt niets automatisch verzonden of op deze website opgeslagen. Gebruik Bericht kopiëren als je e-mailapp niet opent."};
+  const originals = new WeakMap();
+  const attrOriginals = new WeakMap();
+  let running = false;
+  function selected() {
+    try {
+      const preferred = localStorage.getItem('oceanWebsiteLanguage');
+      if (preferred === 'nl' || preferred === 'en') return preferred;
+      const legacy = localStorage.getItem('oceanLanguage');
+      return legacy === 'nl' ? 'nl' : 'en';
+    } catch (_) { return 'en'; }
+  }
+  function translateValue(value, lang) {
+    if (lang !== 'nl' || !value) return value;
+    const trimmed = value.trim();
+    const normalized = trimmed.replace(/\s+/g, ' ');
+    const replacement = dictionary[trimmed] || dictionary[normalized];
+    return replacement ? value.replace(trimmed, replacement) : value;
+  }
+  function apply() {
+    if (running || !document.body) return;
+    running = true;
+    try {
+      const lang = selected();
+      document.documentElement.lang = lang;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      for (const node of nodes) {
+        const el = node.parentElement;
+        if (!el || el.closest('script,style,noscript,textarea,code,pre,[data-no-translate],.user,.sources')) continue;
+        const current = node.nodeValue;
+        const saved = originals.get(node);
+        // Detect newly generated status labels and preserve their English originals.
+        if (saved === undefined || (current !== saved && current !== translateValue(saved, 'nl'))) originals.set(node, current);
+        const english = originals.get(node);
+        const next = translateValue(english, lang);
+        if (current !== next) node.nodeValue = next;
+      }
+      for (const el of document.querySelectorAll('[placeholder],[title],[aria-label]')) {
+        if (el.closest('[data-no-translate]')) continue;
+        let saved = attrOriginals.get(el);
+        if (!saved) { saved = {}; attrOriginals.set(el, saved); }
+        for (const attr of ['placeholder','title','aria-label']) {
+          if (!el.hasAttribute(attr)) continue;
+          const current = el.getAttribute(attr);
+          if (!(attr in saved) || (current !== saved[attr] && current !== translateValue(saved[attr], 'nl'))) saved[attr] = current;
+          const next = translateValue(saved[attr], lang);
+          if (current !== next) el.setAttribute(attr, next);
+        }
+      }
+      // Update only an existing language button; do not create a second one.
+      const btn = document.getElementById('languageToggle');
+      if (btn) btn.textContent = lang === 'nl' ? '🇬🇧 English' : '🇳🇱 Nederlands';
+    } finally { running = false; }
+  }
+  function init() {
+    apply();
+    const btn = document.getElementById('languageToggle');
+    if (btn && !btn.dataset.oceanLangWired) {
+      btn.dataset.oceanLangWired = 'true';
+      btn.addEventListener('click', () => {
+        const next = selected() === 'nl' ? 'en' : 'nl';
+        try { localStorage.setItem('oceanWebsiteLanguage', next); } catch (_) {}
+        apply();
+      });
+    }
+    let queued = false;
+    const observer = new MutationObserver(() => {
+      if (running || queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; apply(); });
+    });
+    observer.observe(document.body, {subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['placeholder','title','aria-label']});
+    window.addEventListener('storage', event => { if (event.key === 'oceanWebsiteLanguage') apply(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once:true});
+  else init();
+})();
+</script>
 </body>
 </html>
