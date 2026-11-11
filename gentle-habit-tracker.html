@@ -23,6 +23,90 @@ function checked(day,id){return !!(data.checks[day]&&data.checks[day][id])}funct
 $('addForm').addEventListener('submit',e=>{e.preventDefault();const name=$('newHabit').value.trim().replace(/\s+/g,' ');if(!name)return;if(data.habits.length>=40){$('notice').textContent='Your reef is full (40 habits maximum).';return}const id='h'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);data.habits.push({id,name});$('newHabit').value='';save();render()});const quotes=['You do not have to do everything today to deserve a peaceful night.','Even the ocean rests between waves. You can rest too. 🌙','Little steps still carry you forward, my love. 💙','Some days, simply showing up is enough. 🐚','Your worth is never measured by a checklist. 💜','You deserve softness, especially on difficult days. 🦭','One small kindness toward yourself can brighten a whole day. ✨'];let qi=0;$('newQuote').addEventListener('click',()=>{qi=(qi+1)%quotes.length;$('quote').textContent=quotes[qi]});render();document.addEventListener('visibilitychange',()=>{if(!document.hidden&&todayKey()!==activeDay)render()});setInterval(()=>{if(todayKey()!==activeDay)render()},60000);
 })();
 </script>
-  <script src="language.js" defer></script>
+  
+<script id="ocean-inline-dutch-translator">
+/* Self-contained bilingual interface: one shared preference across all ocean pages. */
+(() => {
+  'use strict';
+  const dictionary = {"← Back to Our Little World": "← Terug naar onze kleine wereld", "← Back to Our Little Ocean": "← Terug naar onze kleine oceaan", "← Back Home": "← Terug naar huis", "Made with love, across every ocean. 🌙": "Met liefde gemaakt, over elke oceaan heen. 🌙", "Gentle Habit Tracker 💙": "Zachte gewoontetracker 💙", "Tiny steps are still steps. Every little effort is something to be proud of, and resting is allowed too. 🌊": "Kleine stapjes zijn ook stapjes. Elke kleine inspanning is iets om trots op te zijn, en rusten mag ook. 🌊", "🌸 A little intention for today": "🌸 Een klein voornemen voor vandaag", "+ Add a gentle habit": "+ Voeg een fijne gewoonte toe", "Choose anything that helps you feel cared for. No pressure, no punishment, no streaks to lose.": "Kies iets waardoor je je goed verzorgd voelt. Geen druk, geen straf en geen reeksen die je kunt verliezen.", "🫧 Today's little victories": "🫧 De kleine overwinningen van vandaag", "Every step matters 💜": "Elke stap telt 💜", "🐚 Your last seven days": "🐚 Je afgelopen zeven dagen", "🌙 A reminder from the ocean": "🌙 Een herinnering van de oceaan", "You do not have to do everything today to deserve a peaceful night.": "Je hoeft vandaag niet alles te doen om een rustige nacht te verdienen.", "Another gentle reminder ✨": "Nog een lieve herinnering ✨", "One wave at a time, my love. 🐬💜": "Golf voor golf, mijn liefste. 🐬💜", "e.g. Drink some water": "bijv. Drink wat water", "New habit": "Nieuwe gewoonte", "Today's completed habits": "Vandaag voltooide gewoonten", "Shells mean you checked off at least one habit that day. A quiet day is perfectly okay. 💙": "Schelpen betekenen dat je die dag minstens één gewoonte hebt afgevinkt. Een rustige dag is helemaal prima. 💙", "Your habits are stored only in this browser on this device. They aren't sent anywhere or shared between devices.": "Je gewoonten worden alleen in deze browser op dit apparaat opgeslagen. Ze worden nergens naartoe gestuurd of gedeeld tussen apparaten."};
+  const originals = new WeakMap();
+  const attrOriginals = new WeakMap();
+  let running = false;
+  function selected() {
+    try {
+      const preferred = localStorage.getItem('oceanWebsiteLanguage');
+      if (preferred === 'nl' || preferred === 'en') return preferred;
+      const legacy = localStorage.getItem('oceanLanguage');
+      return legacy === 'nl' ? 'nl' : 'en';
+    } catch (_) { return 'en'; }
+  }
+  function translateValue(value, lang) {
+    if (lang !== 'nl' || !value) return value;
+    const trimmed = value.trim();
+    const normalized = trimmed.replace(/\s+/g, ' ');
+    const replacement = dictionary[trimmed] || dictionary[normalized];
+    return replacement ? value.replace(trimmed, replacement) : value;
+  }
+  function apply() {
+    if (running || !document.body) return;
+    running = true;
+    try {
+      const lang = selected();
+      document.documentElement.lang = lang;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      for (const node of nodes) {
+        const el = node.parentElement;
+        if (!el || el.closest('script,style,noscript,textarea,code,pre,[data-no-translate],.user,.sources')) continue;
+        const current = node.nodeValue;
+        const saved = originals.get(node);
+        // Detect newly generated status labels and preserve their English originals.
+        if (saved === undefined || (current !== saved && current !== translateValue(saved, 'nl'))) originals.set(node, current);
+        const english = originals.get(node);
+        const next = translateValue(english, lang);
+        if (current !== next) node.nodeValue = next;
+      }
+      for (const el of document.querySelectorAll('[placeholder],[title],[aria-label]')) {
+        if (el.closest('[data-no-translate]')) continue;
+        let saved = attrOriginals.get(el);
+        if (!saved) { saved = {}; attrOriginals.set(el, saved); }
+        for (const attr of ['placeholder','title','aria-label']) {
+          if (!el.hasAttribute(attr)) continue;
+          const current = el.getAttribute(attr);
+          if (!(attr in saved) || (current !== saved[attr] && current !== translateValue(saved[attr], 'nl'))) saved[attr] = current;
+          const next = translateValue(saved[attr], lang);
+          if (current !== next) el.setAttribute(attr, next);
+        }
+      }
+      // Update only an existing language button; do not create a second one.
+      const btn = document.getElementById('languageToggle');
+      if (btn) btn.textContent = lang === 'nl' ? '🇬🇧 English' : '🇳🇱 Nederlands';
+    } finally { running = false; }
+  }
+  function init() {
+    apply();
+    const btn = document.getElementById('languageToggle');
+    if (btn && !btn.dataset.oceanLangWired) {
+      btn.dataset.oceanLangWired = 'true';
+      btn.addEventListener('click', () => {
+        const next = selected() === 'nl' ? 'en' : 'nl';
+        try { localStorage.setItem('oceanWebsiteLanguage', next); } catch (_) {}
+        apply();
+      });
+    }
+    let queued = false;
+    const observer = new MutationObserver(() => {
+      if (running || queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; apply(); });
+    });
+    observer.observe(document.body, {subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['placeholder','title','aria-label']});
+    window.addEventListener('storage', event => { if (event.key === 'oceanWebsiteLanguage') apply(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once:true});
+  else init();
+})();
+</script>
 </body>
 </html>
