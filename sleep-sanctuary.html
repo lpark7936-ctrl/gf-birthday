@@ -33,4 +33,7 @@ $('timerStart').onclick=()=>{if(running)return;if(remaining<=0)remaining=Number(
 $('dimButton').onclick=()=>{const dim=document.body.classList.toggle('dim');$('dimButton').textContent=dim?'🌟 Bring back the stars':'🌑 Dim the stars';$('dimButton').setAttribute('aria-pressed',String(dim));try{localStorage.setItem('sleep-sanctuary-dim',String(dim))}catch{}};
 try{if(localStorage.getItem('sleep-sanctuary-dim')==='true'){$('dimButton').click()}}catch{}
 window.addEventListener('pagehide',()=>{clearBreath();pauseTimer();stopSound()});
-</script></body></html>
+</script>
+  <script src="language.js" defer></script>
+</body>
+</html>
