@@ -778,6 +778,18 @@ body.aquarium-view .ocean{z-index:1}
 @media(max-width:650px){#oceanViewToggle{top:10px;padding:10px 13px;font-size:.78rem}.aquarium-fish{font-size:calc(var(--size,2rem) * .75)}}
 @media(prefers-reduced-motion:reduce){.aquarium-fish,.aquarium-seagrass,.aquarium-plankton,.ocean-rays{animation:none!important}.aquarium-fish{transform:translateX(45vw)!important}}
 
+
+/* Individual disappearing panels and a discreet ocean restore control */
+.ocean-hide-arrow{display:block;margin:25px auto 0;padding:9px 20px;border-radius:24px;background:rgba(8,43,81,.82);border:1px solid #9afaff;color:#e7faff;font-size:.9rem}
+.ocean-hide-arrow:hover{box-shadow:0 0 16px #6ceeff88}
+#oceanRestoreDock{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:10021;max-width:calc(100vw - 150px);width:max-content;text-align:center;background:rgba(9,30,69,.88);border:1px solid #8ceeff99;border-radius:18px;padding:7px 14px 9px;box-shadow:0 0 18px #39dfff55;backdrop-filter:blur(12px)}
+#oceanRestoreDock[hidden]{display:none!important}
+#oceanRestoreDock button{margin:0;padding:8px 15px;font-size:.84rem}
+#oceanRestoreDock small{display:block;margin-top:5px;color:#c7f4ff;font: .72rem/1.35 Georgia,serif}
+body.aquarium-view #oceanRestoreDock{display:none!important}
+#buddyMessage{cursor:pointer;touch-action:manipulation;pointer-events:auto!important}
+#amorSpeech{cursor:pointer;touch-action:manipulation}
+@media(max-width:600px){#oceanRestoreDock{max-width:calc(100vw - 135px);padding:6px 9px}#oceanRestoreDock button{font-size:.73rem;padding:8px}#oceanRestoreDock small{font-size:.64rem}}
 </style>
 </head>
 
@@ -1292,7 +1304,7 @@ Object.entries(buddyMessages).forEach(([id, messages]) => {
             note = document.createElement("div");
             note.id = "buddyMessage";
             note.setAttribute("role", "status");
-            note.style.cssText = "position:fixed;bottom:105px;left:50%;transform:translateX(-50%);z-index:10000;max-width:85vw;padding:13px 20px;border:1px solid #9afaff;border-radius:20px;background:#1c2356;color:white;box-shadow:0 0 20px #55dfff88;pointer-events:none";
+            note.style.cssText = "position:fixed;bottom:105px;left:50%;transform:translateX(-50%);z-index:10000;max-width:85vw;padding:13px 20px;border:1px solid #9afaff;border-radius:20px;background:#1c2356;color:white;box-shadow:0 0 20px #55dfff88;pointer-events:auto";
             document.body.appendChild(note);
         }
         note.textContent = message;
@@ -1473,5 +1485,69 @@ function talkAmorOctopus() {
 })();
 </script>
 
+
+<!-- Appears only after a section has been hidden; stays outside the fish-filled center. -->
+<div id="oceanRestoreDock" hidden>
+  <button type="button" id="oceanRestoreAll">↩ Restore hidden sections</button>
+  <small>Tap to bring back the panels you hid. The swimming fish stay here! 🐠</small>
+</div>
+<script>
+(() => {
+  const main = document.querySelector('main');
+  const dock = document.getElementById('oceanRestoreDock');
+  const restore = document.getElementById('oceanRestoreAll');
+  const panels = [...main.querySelectorAll(':scope > section')];
+  const manuallyHidden = new Set();
+  const names = ['Birthday surprise', 'Memory game', 'Love letter', 'Comfort corner', 'Birthday dedication', 'Ocean Journey & Storm Breaker'];
+  panels.forEach((panel, index) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ocean-hide-arrow';
+    btn.textContent = '⌄ Hide this section';
+    btn.setAttribute('aria-label', 'Hide ' + (names[index] || 'this section') + ' to see more ocean');
+    btn.addEventListener('click', () => {
+      manuallyHidden.add(panel);
+      panel.hidden = true;
+      updateDock();
+    });
+    panel.appendChild(btn);
+  });
+  function updateDock() { dock.hidden = manuallyHidden.size === 0; }
+  restore.addEventListener('click', () => {
+    manuallyHidden.forEach(panel => { panel.hidden = false; });
+    manuallyHidden.clear();
+    updateDock();
+  });
+  // Close speech bubbles with two taps/clicks, without changing animal interactions.
+  function enableDismiss(el) {
+    if (!el) return;
+    el.title = 'Double-tap to close this message';
+    el.setAttribute('aria-label', 'Animal message. Double-tap to dismiss');
+    el.addEventListener('dblclick', () => { el.hidden = true; });
+    let lastTap = 0;
+    el.addEventListener('touchend', () => {
+      const now = Date.now();
+      if (now - lastTap < 380) { el.hidden = true; lastTap = 0; }
+      else lastTap = now;
+    }, { passive: true });
+  }
+  enableDismiss(document.getElementById('amorSpeech'));
+  const buddyObserver = new MutationObserver(() => {
+    const bubble = document.getElementById('buddyMessage');
+    if (bubble && !bubble.dataset.dismissReady) {
+      bubble.dataset.dismissReady = 'true';
+      enableDismiss(bubble);
+    }
+  });
+  buddyObserver.observe(document.body, {childList:true});
+  // A hidden bubble should reappear on the next animal click.
+  document.querySelectorAll('#sealBuddy, #dolphinBuddy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const bubble = document.getElementById('buddyMessage');
+      if (bubble) bubble.hidden = false;
+    });
+  });
+})();
+</script>
 </body>
 </html>
