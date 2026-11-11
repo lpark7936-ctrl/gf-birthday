@@ -33,5 +33,6 @@ function notify(message){toast.textContent=message;toast.hidden=false;clearTimeo
 async function copyText(value){try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(value)}else{const field=document.createElement('textarea');field.value=value;field.style.position='fixed';field.style.opacity='0';document.body.appendChild(field);field.select();const copied=document.execCommand('copy');field.remove();if(!copied)throw new Error('Copy unavailable')}notify('Copied! 💙')}catch(error){notify('Copy did not work. Please select the text manually.')}}
 document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',()=>copyText(button.dataset.copy)));
 </script>
+  <script src="language.js" defer></script>
 </body>
 </html>
