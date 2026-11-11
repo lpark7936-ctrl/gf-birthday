@@ -754,6 +754,39 @@ main { padding-top: 170px; }
 .storm-note{min-height:2.8em;color:#dfd3ff}
 @media(prefers-reduced-motion:reduce){.storm-rock.hit{animation:none}}
 
+
+/* ===== LIVING OCEAN: ambient scenery, entirely decorative ===== */
+.ocean { isolation:isolate; }
+.ocean-atmosphere { position:absolute; inset:0; overflow:hidden; z-index:-1; }
+.ocean-atmosphere .surface-glow {position:absolute;inset:-15% -20% 20%;background:radial-gradient(ellipse at 50% 0%,rgba(98,235,255,.25),transparent 57%);animation:seaBreath 13s ease-in-out infinite alternate}
+.ocean-atmosphere .light-ray {position:absolute;top:-35%;height:145%;width:clamp(80px,15vw,260px);transform-origin:top center;filter:blur(12px);background:linear-gradient(to bottom,rgba(154,244,255,.20),rgba(117,217,255,.055) 45%,transparent 88%);clip-path:polygon(45% 0,55% 0,100% 100%,0 100%);animation:raySway 18s ease-in-out infinite alternate}
+.ocean-atmosphere .ray-one{left:8%;transform:rotate(-18deg);animation-delay:-4s}.ocean-atmosphere .ray-two{left:43%;width:23vw;animation-delay:-9s}.ocean-atmosphere .ray-three{left:78%;transform:rotate(15deg);animation-delay:-13s}
+.ocean-atmosphere .sea-floor {position:absolute;bottom:-45px;left:-5%;width:110%;height:145px;background:radial-gradient(ellipse at 50% 5%,rgba(34,144,151,.38),transparent 70%),linear-gradient(0deg,rgba(3,27,48,.87),rgba(8,80,96,.26) 80%,transparent);border-radius:50% 50% 0 0;filter:blur(4px)}
+.ocean-atmosphere .seaweed {position:absolute;bottom:-6px;width:8px;height:var(--h);left:var(--x);transform-origin:bottom center;background:linear-gradient(90deg,#0c636c,#22b6a5,#0d666b);border-radius:90% 10% 65% 10%;opacity:.75;filter:drop-shadow(0 0 5px #2ce8b255);animation:kelpDance var(--t) ease-in-out infinite alternate;animation-delay:var(--d)}
+.ocean-atmosphere .seaweed::before {content:'';position:absolute;left:-9px;top:32%;width:19px;height:36px;border-radius:100% 0 100% 0;background:#159b8c;transform:rotate(-30deg);opacity:.9}
+.ocean-atmosphere .seaweed::after {content:'';position:absolute;left:3px;top:55%;width:19px;height:31px;border-radius:0 100% 0 100%;background:#1b9d9e;transform:rotate(25deg)}
+.ocean-atmosphere .coral-shape {position:absolute;bottom:0;left:var(--x);font-size:var(--size);opacity:.68;filter:drop-shadow(0 0 13px #4adbe188);animation:coralGlow 7s ease-in-out infinite alternate;animation-delay:var(--d)}
+.ocean-atmosphere .plankton {position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);border-radius:50%;background:#c1ffff;box-shadow:0 0 8px 2px #66ecff99,0 0 19px #6ae4fa55;opacity:.65;animation:planktonFloat var(--t) ease-in-out infinite alternate, planktonTwinkle 3.4s ease-in-out infinite alternate;animation-delay:var(--d)}
+.ocean-atmosphere .glow-fish {position:absolute;top:var(--y);left:-110px;width:var(--size);height:auto;opacity:.83;filter:drop-shadow(0 0 9px var(--glow)) drop-shadow(0 0 15px var(--glow));animation:fishSwim var(--t) linear infinite;animation-delay:var(--d)}
+.ocean-atmosphere .glow-fish.reverse {left:auto;right:-110px;transform:scaleX(-1);animation-name:fishSwimReverse}
+.ocean-atmosphere .glow-fish svg {display:block;width:100%;height:auto}
+.ocean-atmosphere .sea-star {position:absolute;bottom:var(--bottom);left:var(--x);font-size:var(--size);opacity:.62;filter:drop-shadow(0 0 10px #f3b2ff99);animation:coralGlow 5s ease-in-out infinite alternate;animation-delay:var(--d)}
+@keyframes seaBreath {to{opacity:.45;transform:translateY(4%)}}
+@keyframes raySway {to{translate:35px 0;opacity:.48}}
+@keyframes kelpDance {to{transform:rotate(15deg) skewX(7deg)}}
+@keyframes planktonFloat {to{transform:translate(20px,-55px)}}
+@keyframes planktonTwinkle {to{opacity:.22}}
+@keyframes fishSwim {to{left:calc(100% + 120px)}}
+@keyframes fishSwimReverse {to{right:calc(100% + 120px)}}
+@keyframes coralGlow {to{opacity:.35;filter:drop-shadow(0 0 20px #7cffffaa)}}
+/* A subtle shimmer on cards, keeping text readable. */
+.welcome,.letter-card {box-shadow:0 0 35px rgba(36,211,232,.12),inset 0 1px 0 rgba(200,255,255,.14)}
+@media(max-width:600px){.ocean-atmosphere .glow-fish:nth-of-type(n+9){display:none}.ocean-atmosphere .light-ray{filter:blur(22px)}.ocean-atmosphere .seaweed{opacity:.5}}
+@media(prefers-reduced-motion:reduce){.ocean-atmosphere *{animation:none!important}.ocean-atmosphere .glow-fish{display:none}}
+body.ocean-still .ocean-atmosphere *{animation:none!important}
+body.ocean-still .ocean-atmosphere .glow-fish{display:none}
+.ocean-motion-control{position:relative;z-index:2;margin:10px auto 20px;padding:10px 18px;font-size:.9rem;border-color:#9afaffaa;background:#0b3864bb}
+
 </style>
 </head>
 
@@ -786,6 +819,11 @@ main { padding-top: 170px; }
 </div>
 
 <div class="ocean" aria-hidden="true">
+    <div class="ocean-atmosphere" id="oceanAtmosphere">
+      <div class="surface-glow"></div>
+      <div class="light-ray ray-one"></div><div class="light-ray ray-two"></div><div class="light-ray ray-three"></div>
+      <div class="sea-floor"></div>
+    </div>
     <div class="bubble"></div>
     <div class="bubble"></div>
     <div class="bubble"></div>
@@ -842,6 +880,8 @@ main { padding-top: 170px; }
             Even though oceans separate us,
             you're always close to my heart.
         </p>
+
+        <button class="ocean-motion-control" id="oceanMotionControl" type="button" aria-pressed="false">🌊 Pause ocean movement</button>
 
         <button id="surpriseButton">
             Discover Your Surprise ✨
@@ -1391,6 +1431,59 @@ function talkAmorOctopus() {
   rock.addEventListener('animationend', () => rock.classList.remove('hit'));
   document.getElementById('stormReset').addEventListener('click', () => {
     hits = 0; count.textContent = '0'; note.textContent = messages[0];
+  });
+})();
+</script>
+
+<script>
+/* Living Ocean: deterministic decorations; no requests, tracking, or extra files. */
+(() => {
+  const ocean = document.getElementById('oceanAtmosphere');
+  if (!ocean) return;
+  let seed = 20261111;
+  const random = () => { seed = (Math.imul(seed,1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+  const make = (className, styles, content) => {
+    const el = document.createElement('span');
+    el.className = className;
+    for (const [key,value] of Object.entries(styles)) el.style.setProperty(key,value);
+    if (content) el.textContent = content;
+    ocean.appendChild(el);
+    return el;
+  };
+  // Dozens of tiny drifting bioluminescent specks, not blocking any buttons.
+  for (let i=0;i<95;i++) {
+    const size = (1.5 + random()*3.5).toFixed(1)+'px';
+    make('plankton',{'--x':(random()*100)+'%','--y':(random()*100)+'%',
+      '--s':size,'--t':(7+random()*14).toFixed(1)+'s','--d':(-random()*18).toFixed(1)+'s'});
+  }
+  // A softly glowing school of fish that swims behind the page content.
+  const palette = [['#89fbff','#66e8ff'],['#f9b6ff','#d899ff'],['#ffe9a6','#ffce70'],['#a6ffd8','#69e6c4']];
+  for (let i=0;i<16;i++) {
+    const [fill,glow] = palette[i%palette.length];
+    const el = make('glow-fish'+(i%3===0?' reverse':''),{
+      '--y':(6+random()*82)+'%','--size':(24+random()*36).toFixed(0)+'px',
+      '--t':(21+random()*31).toFixed(1)+'s','--d':(-random()*49).toFixed(1)+'s','--glow':glow
+    });
+    el.innerHTML = `<svg viewBox="0 0 90 50" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M24 25 L3 8 L7 25 L3 42 Z" fill="${fill}" opacity=".85"/><path d="M19 25 Q47 -4 79 25 Q47 54 19 25Z" fill="${fill}"/><path d="M43 11 L53 3 L60 14" fill="${fill}" opacity=".8"/><circle cx="65" cy="22" r="3" fill="#17365d"/><circle cx="66" cy="21" r="1" fill="white"/></svg>`;
+  }
+  // Seagrass grows along the lower edge, with coral and starfish accents.
+  for (let i=0;i<48;i++) {
+    make('seaweed',{'--x':(random()*100)+'%','--h':(42+random()*125)+'px',
+      '--t':(3+random()*5).toFixed(1)+'s','--d':(-random()*6).toFixed(1)+'s'});
+  }
+  for (let i=0;i<12;i++) {
+    make('coral-shape',{'--x':(random()*96)+'%','--size':(24+random()*36)+'px',
+      '--d':(-random()*7)+'s'},i%3===0?'🪸':'🐚');
+  }
+  for (let i=0;i<7;i++) {
+    make('sea-star',{'--x':(random()*95)+'%','--bottom':(8+random()*45)+'px',
+      '--size':(15+random()*19)+'px','--d':(-random()*5)+'s'},'⭐');
+  }
+  const control = document.getElementById('oceanMotionControl');
+  if (control) control.addEventListener('click', () => {
+    const paused = document.body.classList.toggle('ocean-still');
+    control.setAttribute('aria-pressed',String(paused));
+    control.textContent = paused ? '🐬 Resume ocean movement' : '🌊 Pause ocean movement';
   });
 })();
 </script>
