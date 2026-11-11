@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our Two Clocks 💙</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23075b83'/%3E%3Ctext x='32' y='45' font-size='39' text-anchor='middle'%3E%F0%9F%92%99%3C/text%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;color:white;
+ font-family:Georgia,serif;text-align:center;
+ background:radial-gradient(circle at 20% 10%,#453781,transparent 45%),
+ radial-gradient(circle at 85% 80%,#087e9a,transparent 50%),
+ linear-gradient(150deg,#08152f,#182b60,#075573);
+}
+main{max-width:950px;margin:auto;padding:35px 18px 65px}
+h1{color:#92f4ff;font-size:clamp(2rem,6vw,3.4rem)}
+a{color:#9af5ff}
+.back{display:inline-block;margin:0 0 20px;padding:12px 20px;
+ border:1px solid #8cefff;border-radius:30px;text-decoration:none}
+.subtitle{color:#dacbff;line-height:1.7}
+.clocks{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:35px 0}
+.panel,.note,.settings{
+ background:#101c49d9;border:1px solid #8cefff77;
+ border-radius:25px;padding:26px 18px;
+ box-shadow:0 10px 35px #0003
+}
+.emoji{font-size:3.3rem}
+.name{color:#ffe3a0;font-size:1.35rem;margin:12px 0}
+.clock{font:750 clamp(1.5rem,4vw,2.8rem) system-ui,sans-serif;
+ font-variant-numeric:tabular-nums;margin:18px 0}
+.date{color:#ddcfff;min-height:28px}
+.status{color:#a5f5ec;margin:12px}
+.location{color:#d1d3ee;font-size:.9rem}
+.note{margin-bottom:22px}
+.note h2{color:#ffe3a0}
+.settings{max-width:680px;margin:auto;text-align:left}
+.settings h2{text-align:center;color:#92f4ff}
+label{display:block;margin:16px 0 7px}
+select{width:100%;padding:13px;border-radius:12px;
+ background:#15285a;border:1px solid #8cefff;
+ color:white;font:inherit}
+.hint{color:#c8c9e7;font-size:.9rem;line-height:1.6}
+footer{margin-top:35px;color:#d5c8f5}
+@media(max-width:650px){.clocks{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="index.html">← Back to Our Little World</a>
+<div style="font-size:2rem">🐬 🌊 🐚</div>
+<h1>Our Two Clocks 💙</h1>
+<p class="subtitle">Two different skies, one little world.<br>
+No matter the hour, you're in my heart.</p>
+
+<section class="clocks">
+ <article class="panel">
+  <div class="emoji" id="myEmoji">☀️</div>
+  <div class="name">My Side of the Ocean</div>
+  <div class="clock" id="myClock">--:--:--</div>
+  <div class="date" id="myDate">Loading...</div>
+  <div class="status" id="myStatus"></div>
+  <div class="location" id="myLocation">Lake Forest, Illinois 🇺🇸</div>
+ </article>
+ <article class="panel">
+  <div class="emoji" id="herEmoji">🌙</div>
+  <div class="name">Your Side of the Ocean</div>
+  <div class="clock" id="herClock">--:--:--</div>
+  <div class="date" id="herDate">Loading...</div>
+  <div class="status" id="herStatus"></div>
+  <div class="location" id="herLocation">Zoetermeer, Netherlands 🇳🇱</div>
+ </article>
+</section>
+
+<section class="note">
+ <h2 id="difference">Our Ocean of Time 🌊</h2>
+ <p id="together">Even oceans cannot separate our hearts.</p>
+ <div style="font-size:2rem">💙 🐬 💜</div>
+</section>
+
+<section class="settings">
+ <h2>⚙️ Set Our Clocks</h2>
+ <label for="mine">My time zone</label>
+ <select id="mine"></select>
+ <label for="hers">Your time zone</label>
+ <select id="hers"></select>
+ <p class="hint">Your selections are saved in this browser.
+ Times update automatically, including daylight-saving changes.</p>
+</section>
+
+<footer>Even when the sun rises at different times,
+we're under the same sky. 🌙</footer>
+</main>
+
+<script>
+"use strict";
+
+const zones = [
+ ["America/Chicago","Lake Forest / Chicago, USA"],
+ ["America/New_York","New York, USA"],
+ ["America/Los_Angeles","Los Angeles, USA"],
+ ["America/Denver","Denver, USA"],
+ ["Europe/Amsterdam","Zoetermeer, Netherlands"],
+ ["Europe/London","London, UK"],
+ ["Europe/Paris","Paris, France"],
+ ["Europe/Berlin","Berlin, Germany"],
+ ["Asia/Tokyo","Tokyo, Japan"],
+ ["Asia/Seoul","Seoul, South Korea"],
+ ["Asia/Manila","Manila, Philippines"],
+ ["Asia/Singapore","Singapore"],
+ ["Australia/Sydney","Sydney, Australia"]
+];
+
+const mine = document.getElementById("mine");
+const hers = document.getElementById("hers");
+
+for (const [zone,label] of zones) {
+ for (const select of [mine,hers]) {
+  const option = document.createElement("option");
+  option.value = zone;
+  option.textContent = label;
+  select.appendChild(option);
+ }
+}
+
+function savedZone(key,fallback) {
+ try {
+  const value = localStorage.getItem(key);
+  return zones.some(z=>z[0]===value) ? value : fallback;
+ } catch(e) {
+  return fallback;
+ }
+}
+
+mine.value = savedZone("clocks-mine","America/Chicago");
+hers.value = savedZone("clocks-hers","Europe/Amsterdam");
+
+function timeParts(now,zone) {
+ const parts = new Intl.DateTimeFormat("en-US",{
+  timeZone:zone,
+  year:"numeric",month:"numeric",day:"numeric",
+  hour:"numeric",minute:"numeric",second:"numeric",
+  hourCycle:"h23"
+ }).formatToParts(now);
+ const result = {};
+ for(const part of parts) result[part.type]=part.value;
+ return result;
+}
+
+function offset(now,zone) {
+ const p = timeParts(now,zone);
+ const utc = Date.UTC(
+  Number(p.year),Number(p.month)-1,Number(p.day),
+  Number(p.hour),Number(p.minute),Number(p.second)
+ );
+ return Math.round((utc-Math.floor(now.getTime()/1000)*1000)/60000);
+}
+
+function render(now,zone,prefix) {
+ const clock = new Intl.DateTimeFormat("en-US",{
+  timeZone:zone,hour:"numeric",minute:"2-digit",
+  second:"2-digit",hour12:true
+ }).format(now);
+
+ const date = new Intl.DateTimeFormat("en-US",{
+  timeZone:zone,weekday:"long",month:"long",
+  day:"numeric",year:"numeric"
+ }).format(now);
+
+ const hour = Number(timeParts(now,zone).hour);
+ document.getElementById(prefix+"Clock").textContent=clock;
+ document.getElementById(prefix+"Date").textContent=date;
+ document.getElementById(prefix+"Emoji").textContent=
+  hour>=6 && hour<18 ? "☀️" : "🌙";
+
+ const greeting = hour>=6 && hour<12 ? "🌅 Good morning" :
+  hour>=12 && hour<18 ? "🌤️ Good afternoon" :
+  hour>=18 && hour<22 ? "🌆 Good evening" :
+  "✨ Dreamy nighttime";
+
+ document.getElementById(prefix+"Status").textContent=greeting;
+ return hour;
+}
+
+function update() {
+ const now = new Date();
+ const myHour = render(now,mine.value,"my");
+ const herHour = render(now,hers.value,"her");
+
+ document.getElementById("myLocation").textContent=
+  mine.selectedOptions[0].textContent;
+ document.getElementById("herLocation").textContent=
+  hers.selectedOptions[0].textContent;
+
+ const delta = offset(now,hers.value)-offset(now,mine.value);
+ const abs = Math.abs(delta);
+ const hours = Math.floor(abs/60);
+ const minutes = abs%60;
+
+ let difference;
+ if(delta===0) {
+  difference="Our clocks show the same time 💞";
+ } else {
+  const pieces=[];
+  if(hours) pieces.push(hours+" hour"+(hours===1?"":"s"));
+  if(minutes) pieces.push(minutes+" minute"+(minutes===1?"":"s"));
+  difference="Your clock is "+pieces.join(" and ")+" "+
+   (delta>0?"ahead of":"behind")+" mine 💙";
+ }
+
+ document.getElementById("difference").textContent=difference;
+ document.getElementById("together").textContent=
+  myHour>=8 && myHour<23 && herHour>=8 && herHour<23
+  ? "🐬 We might both be awake right now! A lovely time to say hello."
+  : "🌙 One of our skies may be resting. Love waits patiently across the waves.";
+}
+
+for(const select of [mine,hers]) {
+ select.addEventListener("change",()=>{
+  try {
+   localStorage.setItem("clocks-mine",mine.value);
+   localStorage.setItem("clocks-hers",hers.value);
+  } catch(e) {}
+  update();
+ });
+}
+
+update();
+setInterval(update,1000);
+</script>
+</body>
+</html>
