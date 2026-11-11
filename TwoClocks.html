@@ -17,7 +17,91 @@ function renderClock(now,zone,prefix){const hour=Number(parts(now,zone).hour)%24
 function update(){const now=new Date(),a=mine.value,b=hers.value;const ah=renderClock(now,a,'my'),bh=renderClock(now,b,'her');document.getElementById('myZoneLabel').textContent=mine.value==='America/Chicago'?'Lake Forest, Illinois 🇺🇸':mine.selectedOptions[0].textContent;document.getElementById('herZoneLabel').textContent=hers.value==='Europe/Amsterdam'?'Zoetermeer, Netherlands 🇳🇱':hers.selectedOptions[0].textContent;const delta=offsetMinutes(now,b)-offsetMinutes(now,a);const abs=Math.abs(delta),hours=Math.floor(abs/60),mins=abs%60;let phrase=delta===0?'Our clocks show the same time 💞':`Your clock is ${hours?hours+' hour'+(hours!==1?'s':''):''}${hours&&mins?' and ':''}${mins?mins+' minute'+(mins!==1?'s':''):''} ${delta>0?'ahead of':'behind'} mine`;document.getElementById('difference').textContent=phrase;document.getElementById('together').textContent=ah>=8&&ah<23&&bh>=8&&bh<23?'🐬 We might both be awake right now! A lovely time to say hello.': '🌙 One of our skies may be resting. Love can wait patiently across the waves.'}
 for(const sel of [mine,hers])sel.addEventListener('change',()=>{try{localStorage.setItem('two-clocks-mine',mine.value);localStorage.setItem('two-clocks-hers-v2',hers.value)}catch{}update()});update();setInterval(update,1000);
 </script>
-  <script src="language.js" defer></script>
+  
+<script id="ocean-inline-dutch-translator">
+/* Self-contained bilingual interface: one shared preference across all ocean pages. */
+(() => {
+  'use strict';
+  const dictionary = {"← Back to Our Little World": "← Terug naar onze kleine wereld", "← Back to Our Little Ocean": "← Terug naar onze kleine oceaan", "← Back Home": "← Terug naar huis", "Made with love, across every ocean. 🌙": "Met liefde gemaakt, over elke oceaan heen. 🌙", "Our Two Clocks 💙": "Onze twee klokken 💙", "Two different skies, one little world. No matter the hour, you're in my heart.": "Twee verschillende hemels, één kleine wereld. Hoe laat het ook is, je zit in mijn hart.", "My Side of the Ocean": "Mijn kant van de oceaan", "Your Side of the Ocean": "Jouw kant van de oceaan", "Our Ocean of Time 🌊": "Onze oceaan van tijd 🌊", "Choose your time zone to see how our days meet.": "Kies je tijdzone om te zien hoe onze dagen samenkomen.", "⚙️ Set Our Clocks": "⚙️ Stel onze klokken in", "My time zone": "Mijn tijdzone", "Your time zone": "Jouw tijdzone", "Loading…": "Laden…", "Even when the sun rises at different times, we're under the same sky. 🌙": "Zelfs als de zon op verschillende tijden opkomt, leven we onder dezelfde hemel. 🌙", "Your selections are saved only in this browser. Times update automatically, including daylight saving changes. You can change either clock at any time.": "Je keuzes worden alleen in deze browser opgeslagen. De tijden worden automatisch bijgewerkt, ook bij zomer- en wintertijd. Je kunt beide klokken altijd aanpassen."};
+  const originals = new WeakMap();
+  const attrOriginals = new WeakMap();
+  let running = false;
+  function selected() {
+    try {
+      const preferred = localStorage.getItem('oceanWebsiteLanguage');
+      if (preferred === 'nl' || preferred === 'en') return preferred;
+      const legacy = localStorage.getItem('oceanLanguage');
+      return legacy === 'nl' ? 'nl' : 'en';
+    } catch (_) { return 'en'; }
+  }
+  function translateValue(value, lang) {
+    if (lang !== 'nl' || !value) return value;
+    const trimmed = value.trim();
+    const normalized = trimmed.replace(/\s+/g, ' ');
+    const replacement = dictionary[trimmed] || dictionary[normalized];
+    return replacement ? value.replace(trimmed, replacement) : value;
+  }
+  function apply() {
+    if (running || !document.body) return;
+    running = true;
+    try {
+      const lang = selected();
+      document.documentElement.lang = lang;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      for (const node of nodes) {
+        const el = node.parentElement;
+        if (!el || el.closest('script,style,noscript,textarea,code,pre,[data-no-translate],.user,.sources')) continue;
+        const current = node.nodeValue;
+        const saved = originals.get(node);
+        // Detect newly generated status labels and preserve their English originals.
+        if (saved === undefined || (current !== saved && current !== translateValue(saved, 'nl'))) originals.set(node, current);
+        const english = originals.get(node);
+        const next = translateValue(english, lang);
+        if (current !== next) node.nodeValue = next;
+      }
+      for (const el of document.querySelectorAll('[placeholder],[title],[aria-label]')) {
+        if (el.closest('[data-no-translate]')) continue;
+        let saved = attrOriginals.get(el);
+        if (!saved) { saved = {}; attrOriginals.set(el, saved); }
+        for (const attr of ['placeholder','title','aria-label']) {
+          if (!el.hasAttribute(attr)) continue;
+          const current = el.getAttribute(attr);
+          if (!(attr in saved) || (current !== saved[attr] && current !== translateValue(saved[attr], 'nl'))) saved[attr] = current;
+          const next = translateValue(saved[attr], lang);
+          if (current !== next) el.setAttribute(attr, next);
+        }
+      }
+      // Update only an existing language button; do not create a second one.
+      const btn = document.getElementById('languageToggle');
+      if (btn) btn.textContent = lang === 'nl' ? '🇬🇧 English' : '🇳🇱 Nederlands';
+    } finally { running = false; }
+  }
+  function init() {
+    apply();
+    const btn = document.getElementById('languageToggle');
+    if (btn && !btn.dataset.oceanLangWired) {
+      btn.dataset.oceanLangWired = 'true';
+      btn.addEventListener('click', () => {
+        const next = selected() === 'nl' ? 'en' : 'nl';
+        try { localStorage.setItem('oceanWebsiteLanguage', next); } catch (_) {}
+        apply();
+      });
+    }
+    let queued = false;
+    const observer = new MutationObserver(() => {
+      if (running || queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; apply(); });
+    });
+    observer.observe(document.body, {subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['placeholder','title','aria-label']});
+    window.addEventListener('storage', event => { if (event.key === 'oceanWebsiteLanguage') apply(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once:true});
+  else init();
+})();
+</script>
 </body>
 </html>
 
