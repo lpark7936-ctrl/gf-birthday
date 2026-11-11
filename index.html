@@ -735,6 +735,25 @@ main { padding-top: 170px; }
 .comfort-letter p { margin: 0 0 18px; }
 .comfort-letter p:last-child { margin-bottom: 0; }
 
+
+/* Ocean Journey and Storm Breaker */
+.ocean-extra-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:18px;margin:22px 0}
+.ocean-extra-card{background:rgba(12,28,72,.78);border:1px solid #8ceeff77;border-radius:22px;padding:22px;min-width:0}
+.ocean-extra-card h3{color:#91f4ff;font-size:1.4rem}
+.ocean-extra-card p{line-height:1.7}
+.ocean-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:15px 0}
+.ocean-stat{border-radius:14px;background:#132d61;padding:13px 7px}
+.ocean-stat strong{display:block;font-size:1.45rem;color:#ffe5a2;overflow-wrap:anywhere}
+.ocean-stat small{color:#d8eaff}
+.ocean-extra-card select{background:#142f67;color:white;border:1px solid #8ceeff;border-radius:12px;padding:10px;font:inherit;max-width:100%}
+.storm-rock{display:block;width:175px;height:155px;margin:18px auto;padding:0;border:0;border-radius:48% 53% 35% 38%;background:radial-gradient(circle at 28% 23%,#b8d5df,#7895b5 42%,#465d86 80%);box-shadow:inset -15px -15px 18px #243d68,0 15px 25px #0005;color:#e8fcff;font-size:3.2rem;position:relative;touch-action:manipulation;user-select:none}
+.storm-rock::after{content:'✦';position:absolute;top:16px;right:33px;color:#dcf9ff;font-size:1.6rem}
+.storm-rock:active,.storm-rock.hit{animation:rockBump .18s ease}
+@keyframes rockBump{25%{transform:translateX(-9px) rotate(-5deg)}75%{transform:translateX(9px) rotate(5deg)}}
+.storm-count{font-size:1.2rem;color:#ffe5a2}
+.storm-note{min-height:2.8em;color:#dfd3ff}
+@media(prefers-reduced-motion:reduce){.storm-rock.hit{animation:none}}
+
 </style>
 </head>
 
@@ -1023,6 +1042,37 @@ main { padding-top: 170px; }
         </p>
     </section>
 
+
+    <!-- Two personal, optional ocean activities; stored only in this browser -->
+    <section class="letter-card" aria-label="Our Ocean Journey and Storm Breaker">
+      <p class="small-title">Two more little treasures</p>
+      <h2>🌊 Our Ocean Journey &amp; Storm Breaker</h2>
+      <p class="intro">A little record of your time in this ocean, and a rock to tap when the waves feel rough. 💙</p>
+      <div class="ocean-extra-grid">
+        <div class="ocean-extra-card">
+          <h3>⏳ Our Ocean Journey</h3>
+          <p>Who is exploring right now?</p>
+          <label for="oceanVisitor">Visitor: </label>
+          <select id="oceanVisitor"><option value="guest">Just visiting</option><option value="her">Virginia 💜</option><option value="me">Leo 💙</option></select>
+          <div class="ocean-stats">
+            <div class="ocean-stat"><strong id="oceanVisits">0</strong><small>Visits on this browser</small></div>
+            <div class="ocean-stat"><strong id="oceanTotal">0m</strong><small>Total active time</small></div>
+            <div class="ocean-stat"><strong id="oceanCurrent">0:00</strong><small>This visit</small></div>
+            <div class="ocean-stat"><strong id="oceanLast">—</strong><small>Previous visit</small></div>
+          </div>
+          <p class="intro" style="font-size:.85rem">These are private, per-browser estimates, not shared live statistics. Time counts while this page is visible. Each person can select their name on their own device.</p>
+        </div>
+        <div class="ocean-extra-card">
+          <h3>🪨 Storm Breaker</h3>
+          <p>Need a harmless little distraction? Tap the enchanted sea rock as often as you'd like.</p>
+          <button class="storm-rock" id="stormRock" type="button" aria-label="Tap the enchanted sea rock">🫧</button>
+          <div class="storm-count"><strong id="stormHits">0</strong> little splashes</div>
+          <p id="stormNote" class="storm-note" role="status">Every wave passes eventually. 🌊</p>
+          <button id="stormReset" type="button">Reset splashes ↺</button>
+        </div>
+      </div>
+    </section>
+
     <footer>
         Made with love, across every ocean. 🌙
     </footer>
@@ -1249,6 +1299,100 @@ function talkAmorOctopus() {
     speech.textContent = amorMessages[amorMessageIndex];
     speech.hidden = false;
 }
+</script>
+
+<script>
+// Local-only journey counters. No tracking requests or shared database.
+(() => {
+  const visitor = document.getElementById('oceanVisitor');
+  const visits = document.getElementById('oceanVisits');
+  const total = document.getElementById('oceanTotal');
+  const current = document.getElementById('oceanCurrent');
+  const last = document.getElementById('oceanLast');
+  const key = 'little-ocean-journey-v1';
+  const sessionKey = 'little-ocean-session-v1';
+  const blank = () => ({ visits:0, seconds:0, last:null });
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(key) || '{}') || {}; } catch(e) { data = {}; }
+  let who = 'guest';
+  try { who = localStorage.getItem('little-ocean-visitor-v1') || 'guest'; } catch(e) {}
+  if (!['guest','her','me'].includes(who)) who = 'guest';
+  visitor.value = who;
+  let session = {};
+  try { session = JSON.parse(sessionStorage.getItem(sessionKey) || '{}') || {}; } catch(e) {}
+  let elapsed = 0;
+  function formatTime(seconds) {
+    seconds = Math.max(0, Math.floor(seconds));
+    const h = Math.floor(seconds / 3600), m = Math.floor((seconds % 3600) / 60), sec = seconds % 60;
+    return h ? `${h}h ${m}m` : m ? `${m}m ${sec}s` : `${sec}s`;
+  }
+  function persist() {
+    try { localStorage.setItem(key, JSON.stringify(data)); sessionStorage.setItem(sessionKey, JSON.stringify(session)); } catch(e) {}
+  }
+  function startFor(name) {
+    if (!data[name]) data[name] = blank();
+    if (!session[name]) {
+      const previous = data[name].last;
+      data[name].visits += 1;
+      session[name] = { previous };
+      data[name].last = new Date().toISOString();
+      persist();
+    }
+  }
+  function render() {
+    const d = data[who] || blank();
+    visits.textContent = d.visits;
+    total.textContent = formatTime(d.seconds);
+    current.textContent = formatTime(elapsed);
+    const previous = session[who]?.previous;
+    last.textContent = previous ? new Date(previous).toLocaleDateString() : 'First visit';
+  }
+  startFor(who); render();
+  visitor.addEventListener('change', () => {
+    who = visitor.value;
+    elapsed = 0;
+    try { localStorage.setItem('little-ocean-visitor-v1', who); } catch(e) {}
+    startFor(who); render();
+  });
+  let lastTick = Date.now();
+  setInterval(() => {
+    const now = Date.now();
+    const delta = Math.min(2, Math.max(0, (now - lastTick) / 1000));
+    lastTick = now;
+    if (document.visibilityState !== 'visible') return;
+    startFor(who);
+    data[who].seconds += delta;
+    elapsed += delta;
+    persist(); render();
+  }, 1000);
+  document.addEventListener('visibilitychange', () => { lastTick = Date.now(); });
+  window.addEventListener('pagehide', persist);
+
+  const rock = document.getElementById('stormRock');
+  const count = document.getElementById('stormHits');
+  const note = document.getElementById('stormNote');
+  let hits = 0;
+  const messages = [
+    'Every wave passes eventually. 🌊',
+    'A little splash for a difficult moment. 🫧',
+    'You can take a break whenever you want. 💙',
+    'Your feelings are allowed to exist. 🐚',
+    'Want to loosen your shoulders and breathe? 🌙',
+    'You deserve a moment of calm. 💜'
+  ];
+  rock.addEventListener('click', () => {
+    hits++;
+    count.textContent = hits;
+    rock.classList.remove('hit');
+    void rock.offsetWidth;
+    rock.classList.add('hit');
+    if (hits % 10 === 0) note.textContent = messages[(hits / 10) % messages.length];
+  });
+  rock.addEventListener('animationend', () => rock.classList.remove('hit'));
+  document.getElementById('stormReset').addEventListener('click', () => {
+    hits = 0; count.textContent = '0'; note.textContent = messages[0];
+  });
+})();
 </script>
 </body>
 </html>
