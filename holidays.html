@@ -1,265 +1,4 @@
 
-Continued from
-Love Philosophy and Fear 4
-cant download language.js
-No worries, bro. 💙 We can skip downloading entirely.
-
-You can create language.js directly on GitHub by pasting the code into a new file. That way, you won't need to open a ZIP or download anything.
-
-Go to your gf-birthday repository, click Add file → Create new file, and name it exactly:
-
-language.js
-
-Then paste this code into the file:
-
-
-(() => {
-  const KEY = "oceanWebsiteLanguage";
-
-  const dutch = {
-    "Home": "Startpagina",
-    "Back": "Terug",
-    "Next": "Volgende",
-    "Continue": "Doorgaan",
-    "Welcome": "Welkom",
-    "Happy Birthday": "Gefeliciteerd met je verjaardag",
-    "I love you": "Ik hou van je",
-    "Our World": "Onze wereld",
-    "Our Two Clocks": "Onze twee klokken",
-    "Theater": "Bioscoop",
-    "Holidays": "Feestdagen",
-    "Drawing Studio": "Tekenstudio",
-    "Safe Harbor": "Veilige haven",
-    "Sleep Sanctuary": "Slaapplek",
-    "Important Contacts": "Belangrijke contacten",
-    "Focus Reef": "Focusrif",
-    "Save": "Opslaan",
-    "Close": "Sluiten",
-    "Start": "Starten",
-    "Pause": "Pauzeren",
-    "Reset": "Opnieuw instellen"
-  };
-
-  const original = new WeakMap();
-
-  function translate() {
-    const lang = localStorage.getItem(KEY) || "en";
-    document.documentElement.lang = lang;
-
-    const walker = document.createTreeWalker(
-      document.body,
-      NodeFilter.SHOW_TEXT
-    );
-
-    let node;
-    while ((node = walker.nextNode())) {
-      if (node.parentElement?.closest(
-        "script, style, textarea, input, select"
-      )) continue;
-
-      if (!original.has(node)) {
-        original.set(node, node.nodeValue);
-      }
-
-      const english = original.get(node);
-      const trimmed = english.trim();
-      const translated =
-        lang === "nl" ? (dutch[trimmed] || trimmed) : trimmed;
-
-      if (dutch[trimmed]) {
-        node.nodeValue = english.replace(trimmed, translated);
-      }
-    }
-
-    const button = document.getElementById("ocean-language-button");
-    if (button) {
-      button.textContent =
-        lang === "nl" ? "🇬🇧 English" : "🇳🇱 Nederlands";
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const path = location.pathname;
-    const homepage = path.endsWith("/") ||
-      path.endsWith("/index.html");
-
-    if (homepage) {
-      const button = document.createElement("button");
-      button.id = "ocean-language-button";
-      button.style.cssText = `
-        position:fixed;
-        top:15px;
-        right:15px;
-        z-index:999999;
-        padding:12px 18px;
-        border-radius:30px;
-        background:#075985;
-        color:white;
-        border:2px solid #67e8f9;
-        cursor:pointer;
-        font-weight:bold;
-      `;
-
-      button.onclick = () => {
-        const current = localStorage.getItem(KEY) || "en";
-        localStorage.setItem(
-          KEY, current === "nl" ? "en" : "nl"
-        );
-        translate();
-      };
-
-      document.body.appendChild(button);
-    }
-
-    translate();
-  });
-})();
-
-Next, click Commit changes on GitHub.
-
-One important thing: This is a starter version with a small Dutch dictionary, not a complete translation of your website. Also, each HTML page must include this line before </body>:
-
-<script src="language.js" defer></script>
-
-You only need to add that line once per page. After that, the homepage button controls the saved language preference for every connected page, and you can expand the Dutch translations by editing just language.js.
-
-If you'd rather use the fuller translation file we prepared earlier, we can get that onto GitHub without downloading it too.
-
-question. which body
-Bro, use the closing </body> tag, not the opening <body> tag. 💙
-
-Near the very bottom of each HTML file, you'll usually see something like:
-
-</body>
-</html>
-
-Add the script directly above </body>, like this:
-
-<script src="language.js" defer></script>
-</body>
-</html>
-
-Important:
-<body> = Opening tag near the beginning. Don't put it here.
-
-</body> = Closing tag near the bottom. Put the script right above this.
-
-</html> = Usually the final line. Leave it alone.
-
-You'll need to do this in all 13 HTML files, including index.html, so the homepage button can change the language across the website.
-
-You don't need to delete or replace any existing code. Just add that one line before the closing </body> tag in each file.
-
-
-TwoClocks(1).html
-HTML
-alright. lets do this for each file. first I got the clocks. so here.
-I checked your Two Clocks file, bro. 💙
-
-Good news: you already added the language.js line in the correct place!
-
-I also spotted one small issue: the file has an extra </body> and </html> at the very bottom. I'll remove those duplicates while keeping your clocks and time-zone settings intact.
-
-TwoClocks.html — Fixed
-
-Language script connected · Duplicate closing tags removed
-
- Download the corrected TwoClocks.html
-
-Replace your existing TwoClocks.html on GitHub with this version.
-
-Remember: The Dutch translations will work only after language.js is also uploaded to the same GitHub folder. The current starter dictionary doesn't yet cover all the clock page's text.
-
-Send me the next HTML file, and we'll do the same thing! 🐬
-
-
-TwoClocks.html
-HTML
-
-dolphin(4).html
-HTML
-heres the next
-
-Worked for 7s
-Done, bro! 🐬💙 Your Dolphin AI page is ready.
-
- Download updated dolphin.html
-
-I added the language.js connection just before the closing </body> tag, without changing your dolphin AI, chat, research settings, or ocean animations.
-
-On GitHub: Replace your existing dolphin.html with this version and commit the change.
-
-Once language.js is uploaded, this page will follow the language selected on your homepage. Remember that only text included in the translation dictionary will appear in Dutch.
-
-Send me the next HTML file! 🌊
-
-
-dolphin.html
-HTML
-
-holidays(1).html
-HTML
-
-gentle-habit-tracker(1).html
-HTML
-
-focus-reef (2).html
-HTML
-
-drawing-studio(1).html
-HTML
-heres 4. from now on, give me the codes be able to be copy and pasted manually in (entire code for each.)
-
-Worked for 15s
-Got all four, bro! 💙🐬
-
-I'll keep all your existing features and designs and add the shared Dutch/English language connection to each one:
-
-holidays.html — Holiday Ocean
-
-gentle-habit-tracker.html — Habit Tracker
-
-focus-reef.html — Focus Reef
-
-drawing-studio.html — Drawing Studio
-
-Since you want to copy and paste the entire code manually into GitHub, I'll prepare complete code files you can open in a text editor, select all, and paste. That way, none of your original code gets cut off in a long chat message.
-
-Your four complete codes
-Each file contains the entire original HTML code, with the language.js connection added exactly once.
-
-Holiday Ocean
-Open complete code
-
-Gentle Habit Tracker
-Open complete code
-
-Focus Reef
-Open complete code
-
-Drawing Studio
-Open complete code
-
-How to paste them into GitHub
-Open the complete code for a page above.
-
-Copy everything using Ctrl + A, then Ctrl + C.
-
-Open that page's existing .html file in GitHub.
-
-Click the pencil icon to edit.
-
-Press Ctrl + A, then Ctrl + V to replace the old code.
-
-Click Commit changes.
-
-Repeat for the other three pages.
-
-These updates connect the pages to your language preference; they don't yet guarantee that every sentence is translated because language.js still needs a more complete Dutch dictionary.
-
-Four more pages prepared! Send the next batch whenever you're ready. 🌊
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1131,10 +870,105 @@ loadCountryHolidays();
 checkReminders();
 })();
 </script>
-<script src="language.js" defer></script>
+
+<script>
+/* Shared English / Dutch language switcher for the ocean website. */
+(() => {
+  'use strict';
+  const KEY='oceanWebsiteLanguage';
+  const translations={"A Little World Made for You 🌊":"Een kleine wereld, speciaal voor jou 🌊","🐠 Hide Panels · Explore Ocean":"🐠 Verberg panelen · Ontdek de oceaan","🐠 Show Panels · Return":"🐠 Toon panelen · Terug","Hey Hon! ❤️":"Hé lieverd! ❤️","A birthday surprise made with love":"Een verjaardagsverrassing, met liefde gemaakt","Happy Birthday, My Love 🌊":"Gefeliciteerd met je verjaardag, mijn liefste 🌊","A little world, made just for you.":"Een kleine wereld, speciaal voor jou gemaakt.","Even though oceans separate us, you're always close to my heart.":"Ook al scheiden oceanen ons, je bent altijd dicht bij mijn hart.","Discover Your Surprise ✨":"Ontdek je verrassing ✨","Play a Little Game ♡":"Speel een spelletje ♡","Our Holiday Ocean":"Onze feestdagenoceaan","12 months of surprises, celebrations, and little reminders 💜":"12 maanden vol verrassingen, feestjes en lieve herinneringen 💜","Our Little Ocean Theater":"Ons kleine oceaantheater","Bring a movie link, get cozy, and enjoy a little adventure together 💜":"Kies een film, maak het gezellig en beleef samen een avontuur 💜","Focus Reef":"Focusrif","A gentle focus timer and a growing coral reef 💙":"Een rustige focustimer en een groeiend koraalrif 💙","Important Contacts":"Belangrijke contactgegevens","A little place to find me whenever you need me 💜":"Een plekje waar je me kunt vinden wanneer je me nodig hebt 💜","Our Ocean Drawing Studio":"Onze oceaantekenstudio","Draw your dreams and save a little masterpiece ✨":"Teken je dromen en bewaar je kleine meesterwerk ✨","Our Two Clocks":"Onze twee klokken","Two different skies, one heart across the ocean 💙":"Twee verschillende luchten, één hart over de oceaan 💙","Sleep Sanctuary":"Slaapplekje","Breathe, listen to gentle waves, and rest among the stars 💜":"Adem rustig, luister naar de golven en rust uit onder de sterren 💜","Gentle Habit Tracker":"Rustige gewoontetracker","Celebrate the little steps, one day at a time 💙":"Vier de kleine stapjes, dag na dag 💙","The Safe Harbor":"De veilige haven","Let your feelings out, find a little comfort, or ask for help 💙":"Uit je gevoelens, vind troost of vraag om hulp 💙","Our Little World":"Onze kleine wereld","50 countries, 50 diamonds, and little messages waiting for you 💜":"50 landen, 50 diamanten en lieve berichtjes voor jou 💜","🐬 Need Help Studying?":"🐬 Hulp nodig bij het studeren?","This can be your little area to help you study, research, and discover new things. 💙":"Dit is jouw plekje om te studeren, onderzoek te doen en nieuwe dingen te ontdekken. 💙","A little challenge for you":"Een kleine uitdaging voor jou","Memory Match ♡":"Memoryspel ♡","Find all four matching pairs!":"Zoek alle vier de paren!","Matches: 0 / 4":"Paren: 0 / 4","You found them all... just like I found you. ❤️":"Je hebt ze allemaal gevonden... net zoals ik jou vond. ❤️","Back to My Birthday Surprise":"Terug naar mijn verjaardagsverrassing","A letter from my heart to yours":"Een brief van mijn hart aan het jouwe","My Rarest Diamond":"Mijn zeldzaamste diamant","With all my love, always ♡":"Met al mijn liefde, voor altijd ♡","A Little Shelter From the Storm":"Een schuilplaats voor de storm","For the Days When the Ocean Feels Stormy":"Voor de dagen waarop de oceaan onrustig voelt","Hon, you don't have to be happy every day. Whenever things feel heavy, this little corner is here for you. 💙":"Lieverd, je hoeft niet elke dag gelukkig te zijn. Als alles zwaar voelt, is dit plekje er voor jou. 💙","Open a Little Comfort 💌":"Open een beetje troost 💌","My love,":"Mijn liefste,","With all my love, Leo 💙":"Met al mijn liefde, Leo 💙","A Gift Across the Ocean":"Een cadeau over de oceaan","A little world created with love, just for you.":"Een kleine wereld, met liefde gemaakt, speciaal voor jou.","From":"Van","To":"Voor","Two more little treasures":"Nog twee kleine schatten","🌊 Our Ocean Journey & Storm Breaker":"🌊 Onze oceaanreis en stormbreker","A little record of your time in this ocean, and a rock to tap when the waves feel rough. 💙":"Een herinnering aan je tijd in deze oceaan, en een steen om aan te tikken als de golven hoog zijn. 💙","⏳ Our Ocean Journey":"⏳ Onze oceaanreis","Who is exploring right now?":"Wie verkent de oceaan?","Visitor:":"Bezoeker:","Just visiting":"Gewoon op bezoek","Visits on this browser":"Bezoeken in deze browser","Total active time":"Totale actieve tijd","This visit":"Dit bezoek","Previous visit":"Vorig bezoek","🪨 Storm Breaker":"🪨 Stormbreker","Need a harmless little distraction? Tap the enchanted sea rock as often as you'd like.":"Even afleiding nodig? Tik zo vaak je wilt op de betoverde zeesteen.","little splashes":"kleine spetters","Every wave passes eventually. 🌊":"Elke golf gaat uiteindelijk voorbij. 🌊","Reset splashes ↺":"Spetters resetten ↺","Made with love, across every ocean. 🌙":"Met liefde gemaakt, over elke oceaan. 🌙","Made with love, across every ocean. 🌊💜":"Met liefde gemaakt, over elke oceaan. 🌊💜","← Back to Our Little World":"← Terug naar onze kleine wereld","← Back to Our Little Ocean":"← Terug naar onze kleine oceaan","← Back to Our Little Ocean 🌊":"← Terug naar onze kleine oceaan 🌊","← Back Home":"← Terug naar huis","🌎 Our Little World 💎":"🌎 Onze kleine wereld 💎","Two hearts, one world. Discover 50 diamonds hidden in 50 countries. 💜":"Twee harten, één wereld. Ontdek 50 diamanten verborgen in 50 landen. 💜","💞 Find My Way to You":"💞 Vind de weg naar jou","💙 My City":"💙 Mijn stad","💜 Your City":"💜 Jouw stad","🌍 Whole World":"🌍 Hele wereld","🐬 Dolphin Hint":"🐬 Dolfijntip","🌙 Night Map":"🌙 Nachtkaart","🦭 Baby Seal Says: Play Again! 💎":"🦭 Babyzeehond zegt: speel opnieuw! 💎","🏠 Our Ocean":"🏠 Onze oceaan","💎 0 / 50 discovered":"💎 0 / 50 ontdekt","🐬 Tap a diamond to discover its secret!":"🐬 Tik op een diamant om zijn geheim te ontdekken!","Diamonds mark approximate country locations. Hearts mark city centers, not private addresses. Your discoveries are saved in this browser.":"Diamanten geven ongeveer aan waar landen liggen. Hartjes geven stadscentra aan, geen privéadressen. Je ontdekkingen worden in deze browser opgeslagen.","🎬 Our Little Ocean Theater 🐬":"🎬 Ons kleine oceaantheater 🐬","A cozy little cinema beneath the waves, where every movie is another adventure. 💜":"Een gezellig bioscoopje onder de golven, waar elke film een nieuw avontuur is. 💜","🍿 Your Private Ocean Cinema":"🍿 Jouw eigen oceaanbioscoop","Movie Night Awaits!":"Filmavond wacht op je!","Paste a link below to begin.":"Plak hieronder een link om te beginnen.","Nothing playing yet 🌙":"Er wordt nog niets afgespeeld 🌙","🌙 Dim the Lights":"🌙 Dim de lichten","⛶ Fullscreen Theater":"⛶ Volledig scherm","⏹ Stop Video":"⏹ Video stoppen","🔗 Bring Your Own Movie or Video":"🔗 Kies je eigen film of video","▶ Open Link":"▶ Link openen","💎 Save to Watchlist":"💎 Opslaan op kijklijst","💎 Our Movie Watchlist":"💎 Onze kijklijst","Save your favorite adventures for another cozy night.":"Bewaar je favoriete avonturen voor een volgende gezellige avond.","🌙 Sleep Sanctuary":"🌙 Slaapplekje","A quiet corner of our ocean, made just for you. Rest your thoughts, follow the gentle tide, and know you are loved. 💙":"Een rustig hoekje van onze oceaan, speciaal voor jou. Laat je gedachten rusten, volg het zachte getij en weet dat er van je gehouden wordt. 💙","🫧 Breathe with the Tide":"🫧 Adem mee met het getij","Breathe in for 4 seconds, hold for 4, and breathe out for 6. Go at your own pace.":"Adem 4 seconden in, houd 4 seconden vast en adem 6 seconden uit. Doe het op je eigen tempo.","Ready?":"Klaar?","A little calm, one breath at a time.":"Een beetje rust, ademhaling voor ademhaling.","Start breathing":"Begin met ademen","Stop":"Stoppen","✨ A Gentle Thought":"✨ Een lieve gedachte","You do not have to solve everything tonight. Rest is enough.":"Je hoeft niet alles vanavond op te lossen. Rust is genoeg.","Another gentle thought 💜":"Nog een lieve gedachte 💜","No pressure, no goals. Just a moment of kindness.":"Geen druk, geen doelen. Alleen een moment van zachtheid.","🌊 Quiet Ocean Sounds":"🌊 Rustige oceaangeluiden","Soft, original sound generated by your browser. Sound starts only when you choose it.":"Zachte geluiden die je browser zelf maakt. Het geluid begint pas als jij dat wilt.","▶ Play soft waves":"▶ Zachte golven afspelen","■ Silence":"■ Stilte","The ocean is quiet.":"De oceaan is stil.","Use your device volume to adjust.":"Gebruik het volume van je apparaat om het aan te passen.","🌊 The Safe Harbor":"🌊 De veilige haven","A quiet place to let things out, ask for support, or simply rest. You don't have to find the perfect words here.":"Een rustige plek om je hart te luchten, hulp te vragen of gewoon uit te rusten. Je hoeft hier niet de perfecte woorden te vinden.","🌊 Let It Out":"🌊 Laat het los","💌 Ask for Help":"💌 Vraag om hulp","🦭 Comfort":"🦭 Troost","Scream Into the Ocean 🌊":"Schreeuw het de oceaan in 🌊","Write whatever is weighing on you. When you're ready, let the waves carry it away. This is private to this screen: nothing is sent or saved.":"Schrijf op wat je dwarszit. Laat de golven het meenemen wanneer je er klaar voor bent. Dit blijft op dit scherm: niets wordt verstuurd of opgeslagen.","What's on your mind?":"Wat houdt je bezig?","🌊 Release Into the Waves":"🌊 Laat het met de golven meegaan","Clear":"Wissen","Ask for Help 💌":"Vraag om hulp 💌","You can explain what's happening and what would feel most helpful. You're always allowed to ask for support.":"Je mag vertellen wat er aan de hand is en wat je zou helpen. Je mag altijd om steun vragen.","What kind of support would you like?":"Welke steun zou je willen?","💙 Someone to listen":"💙 Iemand die luistert","💡 Advice":"💡 Advies","🧩 Help solving something":"🧩 Hulp bij een probleem","🫂 Comfort":"🫂 Troost","📞 A conversation when available":"📞 Een gesprek wanneer het kan","Your message":"Jouw bericht","Our Two Clocks 💙":"Onze twee klokken 💙","Two different skies, one little world.":"Twee verschillende luchten, één kleine wereld.","No matter the hour, you're in my heart.":"Welk uur het ook is, je zit in mijn hart.","My Side of the Ocean":"Mijn kant van de oceaan","Your Side of the Ocean":"Jouw kant van de oceaan","Loading...":"Laden...","Loading…":"Laden…","Our Ocean of Time 🌊":"Onze oceaan van tijd 🌊","Even oceans cannot separate our hearts.":"Zelfs oceanen kunnen onze harten niet scheiden.","⚙️ Set Our Clocks":"⚙️ Stel onze klokken in","My time zone":"Mijn tijdzone","Your time zone":"Jouw tijdzone","Your selections are saved in this browser. Times update automatically, including daylight-saving changes.":"Je keuzes worden in deze browser opgeslagen. De tijden worden automatisch bijgewerkt, ook bij zomer- en wintertijd.","Your selections are saved only in this browser. Times update automatically, including daylight saving changes. You can change either clock at any time.":"Je keuzes worden alleen in deze browser opgeslagen. De tijden worden automatisch bijgewerkt, ook bij zomer- en wintertijd. Je kunt beide klokken altijd aanpassen.","Choose your time zone to see how our days meet.":"Kies je tijdzone om te zien hoe onze dagen samenkomen.","Even when the sun rises at different times, we're under the same sky. 🌙":"Zelfs als de zon op andere tijden opkomt, staan we onder dezelfde hemel. 🌙","⭐ Important Contacts":"⭐ Belangrijke contactgegevens","A little connection across the ocean":"Een kleine verbinding over de oceaan","Ways to Reach Me 🐬":"Zo kun je me bereiken 🐬","Pick whichever place feels easiest for you.":"Kies wat voor jou het makkelijkst is.","Phone Number":"Telefoonnummer","📋 Copy Number":"📋 Nummer kopiëren","📞 Call":"📞 Bellen","💬 Text":"💬 Sms'en","Main Discord":"Hoofdaccount op Discord","Second Discord":"Tweede Discord-account","📋 Copy Username":"📋 Gebruikersnaam kopiëren","👻 Open Profile":"👻 Profiel openen","🎮 Find on Roblox":"🎮 Zoeken op Roblox","Our Holiday Ocean 🌊💜":"Onze feestdagenoceaan 🌊💜","📅 Travel Through Time":"📅 Reis door de tijd","◀ Previous":"◀ Vorige","Next ▶":"Volgende ▶","Jump to year:":"Ga naar jaar:","Go! 🚀":"Ga! 🚀","Sun":"Zo","Mon":"Ma","Tue":"Di","Wed":"Wo","Thu":"Do","Fri":"Vr","Sat":"Za","🌍 Holidays Around the World":"🌍 Feestdagen over de hele wereld","Load Country Holidays 🌏":"Feestdagen laden 🌏","⏰ My Ocean Reminders":"⏰ Mijn oceaanherinneringen","Gentle Habit Tracker 💙":"Rustige gewoontetracker 💙","Tiny steps are still steps. Every little effort is something to be proud of, and resting is allowed too. 🌊":"Kleine stapjes tellen ook. Je mag trots zijn op elke inspanning, en rusten mag ook. 🌊","🌸 A little intention for today":"🌸 Een klein voornemen voor vandaag","+ Add a gentle habit":"+ Voeg een gewoonte toe","Choose anything that helps you feel cared for. No pressure, no punishment, no streaks to lose.":"Kies iets waardoor je goed voor jezelf zorgt. Geen druk, geen straf en geen reeks die je kunt verliezen.","🫧 Today's little victories":"🫧 De kleine overwinningen van vandaag","Every step matters 💜":"Elke stap telt 💜","🐚 Your last seven days":"🐚 Je afgelopen zeven dagen","Shells mean you checked off at least one habit that day. A quiet day is perfectly okay. 💙":"Schelpen betekenen dat je die dag minstens één gewoonte hebt afgevinkt. Een rustige dag is helemaal oké. 💙","🌙 A reminder from the ocean":"🌙 Een herinnering van de oceaan","You do not have to do everything today to deserve a peaceful night.":"Je hoeft vandaag niet alles te doen om een rustige nacht te verdienen.","Another gentle reminder ✨":"Nog een lieve herinnering ✨","One wave at a time, my love. 🐬💜":"Golf voor golf, mijn liefste. 🐬💜","🪸 Focus Reef":"🪸 Focusrif","A little space to concentrate, take breaks, and grow something beautiful one session at a time. 💙":"Een plekje om je te concentreren, pauzes te nemen en elke sessie iets moois te laten groeien. 💙","⏳ Your Ocean Timer":"⏳ Jouw oceaantimer","🪸 Focus":"🪸 Focus","🐬 Short Break":"🐬 Korte pauze","🐢 Long Break":"🐢 Lange pauze","Ready whenever you are.":"Klaar wanneer jij dat bent.","▶ Start":"▶ Starten","↺ Reset":"↺ Resetten","Focus session length (minutes)":"Duur focussessie (minuten)","Breaks are 5 and 15 minutes. Change the focus length while paused.":"Pauzes duren 5 en 15 minuten. Pas de focustijd aan wanneer de timer gepauzeerd is.","🐠 Your Growing Reef":"🐠 Jouw groeiende rif","Complete a focus session to plant your first coral! 🪸":"Rond een focussessie af om je eerste koraal te planten! 🪸","Focus sessions":"Focussessies","Minutes focused":"Minuten gefocust","Reef friends":"Rifvriendjes","💙 A Gentle Reminder":"💙 Een lieve herinnering","🎨 Our Ocean Drawing Studio":"🎨 Onze oceaantekenstudio","Draw a little dream, a memory, or anything your heart imagines. 🐬💜":"Teken een droom, een herinnering of wat je hart maar bedenkt. 🐬💜","🖌️ Brush":"🖌️ Penseel","🧽 Eraser":"🧽 Gum","↶ Undo":"↶ Ongedaan maken","↷ Redo":"↷ Opnieuw","🫧 Clear":"🫧 Wissen","💾 Save PNG":"💾 PNG opslaan","🌊 Ocean Colors":"🌊 Oceaankleuren","Custom color":"Eigen kleur","Brush size":"Penseelgrootte","Your canvas is ready! 🐚":"Je tekenvlak is klaar! 🐚","Meet Your Ocean Friend! 🌊":"Ontmoet je oceaanvriend! 🌊","A little dolphin with a world of curiosity.":"Een nieuwsgierige kleine dolfijn.","Research works without a GPU. Wake Dolphin to enable AI answers.":"Onderzoek werkt zonder GPU. Maak Dolfijn wakker voor AI-antwoorden.","Send":"Verzenden","Choose Dolphin's brain":"Kies het brein van Dolfijn","Light — smaller download":"Licht — kleinere download","Standard — balanced":"Standaard — gebalanceerd","Advanced — stronger GPU needed":"Geavanceerd — krachtigere GPU nodig","🌍 Internet research":"🌍 Internetonderzoek","Auto — research factual questions":"Automatisch — feitelijke vragen onderzoeken","Research all sources":"Alle bronnen onderzoeken","Wikipedia":"Wikipedia","Academic papers":"Wetenschappelijke artikelen","Recent news (experimental)":"Recent nieuws (experimenteel)","Off — AI only":"Uit — alleen AI","🦭 Sending you the biggest little seal hug! 💜":"🦭 Een dikke knuffel van een kleine zeehond! 💜","🦭 You're a treasure, hon! 💎":"🦭 Je bent een schat, lieverd! 💎","🐬 A little dolphin says I love you! 💙":"🐬 Een kleine dolfijn zegt: ik hou van je! 💙","🐬 Across every ocean, you're special to me! 🌊":"🐬 Over elke oceaan heen blijf je bijzonder voor mij! 🌊","If you hurt me, I will seek to forgive while respecting our boundaries. 💜":"Als je me pijn doet, probeer ik te vergeven en onze grenzen te respecteren. 💜","If I hurt you, I will communicate and take responsibility. 💙":"Als ik je pijn doe, praat ik erover en neem ik verantwoordelijkheid. 💙","If we argue during difficult times, I will listen and seek understanding. 🐙":"Als we ruzie hebben in moeilijke tijden, zal ik luisteren en proberen je te begrijpen. 🐙","If you feel lost, I will stand beside you. 🌊":"Als je je verloren voelt, sta ik naast je. 🌊","If you need freedom, I will respect your space. 🦋":"Als je vrijheid nodig hebt, respecteer ik je ruimte. 🦋","If sadness finds you, I will offer comfort. 💜":"Als je verdrietig bent, bied ik je troost. 💜","If I make a mistake, I will learn and grow. 💎":"Als ik een fout maak, zal ik ervan leren en groeien. 💎","Love is not control. Love is trust, understanding, and freedom. 🐬":"Liefde is geen controle. Liefde is vertrouwen, begrip en vrijheid. 🐬","Even across the ocean, my loyalty remains. 🌙":"Zelfs over de oceaan blijf ik je trouw. 🌙","If we misunderstand each other, I will choose communication. 💙":"Als we elkaar verkeerd begrijpen, kies ik voor een gesprek. 💙","Forgiveness can heal, and healthy love also needs boundaries. 💜":"Vergeving kan helen, en gezonde liefde heeft ook grenzen nodig. 💜","I want to keep improving myself for the future we share. 💎":"Ik wil mezelf blijven verbeteren voor onze gezamenlijke toekomst. 💎","When life feels stormy, I hope we can find calmer waters together. 🌊":"Als het leven stormachtig is, hoop ik dat we samen rustiger water vinden. 🌊","You are someone I cherish, never someone I wish to control. ❤️":"Ik koester je en wil je nooit controleren. ❤️","I love the person you are, and the person you're becoming. 🌸":"Ik hou van wie je bent en wie je aan het worden bent. 🌸","No ocean can change how grateful I am that we met. 🐚":"Geen oceaan verandert hoe dankbaar ik ben dat we elkaar hebben ontmoet. 🐚"};
+  const normalize=s=>String(s||'').replace(/\s+/g,' ').trim();
+  const original=new WeakMap();
+  const translated=new WeakSet();
+  let busy=false;
+  let lang='en';
+  try { lang=localStorage.getItem(KEY)==='nl'?'nl':'en'; } catch (_) {}
+  const skip=el=>el.closest('script,style,noscript,textarea,code,pre,[contenteditable="true"],.message,.messages,.chat-messages,.user-message,.bot-message,.habit-name,.toast,.leaflet-container');
+  function translateText(node){
+    if(!node.parentElement || skip(node.parentElement))return;
+    const raw=node.nodeValue;
+    const key=normalize(raw);
+    if(!key || !translations[key] && !original.has(node))return;
+    if(!original.has(node))original.set(node,raw);
+    const base=original.get(node),source=normalize(base);
+    const target=lang==='nl' && translations[source] ? translations[source] : source;
+    if(!target)return;
+    const lead=(base.match(/^\s*/)||[''])[0],tail=(base.match(/\s*$/)||[''])[0];
+    const result=lead+target+tail;
+    if(node.nodeValue!==result){translated.add(node);node.nodeValue=result;}
+  }
+  const attrs=['placeholder','title','aria-label'];
+  function translateElement(el){
+    if(skip(el))return;
+    for(const a of attrs){
+      if(!el.hasAttribute(a))continue;
+      const data='data-ocean-original-'+a;
+      if(!el.hasAttribute(data))el.setAttribute(data,el.getAttribute(a));
+      const originalText=el.getAttribute(data);
+      const result=lang==='nl'?(translations[normalize(originalText)]||originalText):originalText;
+      if(el.getAttribute(a)!==result)el.setAttribute(a,result);
+    }
+  }
+  function translateTree(root){
+    if(!root || busy)return;
+    busy=true;
+    try {
+      if(root.nodeType===1){translateElement(root);root.querySelectorAll('*').forEach(translateElement);}
+      const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+      while(walker.nextNode())translateText(walker.currentNode);
+    } finally {busy=false;}
+  }
+  function applyLanguage(value){
+    lang=value==='nl'?'nl':'en';
+    document.documentElement.lang=lang;
+    try{localStorage.setItem(KEY,lang);}catch(_){}
+    document.querySelectorAll('.ocean-language-select').forEach(s=>s.value=lang);
+    translateTree(document.body);
+  }
+  function init(){
+    // An existing homepage button is supported; do not exit early.
+    const path=location.pathname.split('/').pop().toLowerCase();
+    const isHome=path==='' || path==='index.html';
+    // The homepage already contains the button; its CSS places it below the ocean control.
+    function updateHomeButton(){
+      const button=document.getElementById('oceanLanguageHomeButton');
+      if(!button)return;
+      button.textContent=lang==='nl'?'🇬🇧 English':'🇳🇱 Nederlands';
+      button.setAttribute('aria-label',lang==='nl'?'Switch entire website to English':'Schakel de hele website over naar Nederlands');
+    }
+    const homeButton=document.getElementById('oceanLanguageHomeButton');
+    if(homeButton && !homeButton.dataset.oceanLanguageBound){
+      homeButton.dataset.oceanLanguageBound='1';
+      homeButton.addEventListener('click',()=>{applyLanguage(lang==='nl'?'en':'nl');updateHomeButton();});
+    }
+    // Remove duplicate legacy floating language buttons if present.
+    document.querySelectorAll('#languageToggle, .ocean-language-select, [data-language-toggle]').forEach(el => {
+      if(el.id !== 'oceanLanguageHomeButton') el.remove();
+    });
+    document.querySelectorAll('button').forEach(el => {
+      if (el.id !== 'oceanLanguageHomeButton' &&
+          /^(?:🇳🇱\s*)?(?:NL\s*)?Nederlands$|^(?:🇬🇧\s*)?English$/i.test(el.textContent.trim())) el.remove();
+    });
+    applyLanguage(lang);
+    updateHomeButton();
+    const observer=new MutationObserver(changes=>{
+      if(busy)return;
+      for(const change of changes){
+        if(change.type==='characterData'){
+          const n=change.target;
+          if(translated.has(n)){translated.delete(n);continue;}
+          // A script updated this text: capture the new English string.
+          if(!skip(n.parentElement) && normalize(n.nodeValue) && translations[normalize(n.nodeValue)])original.set(n,n.nodeValue);
+          translateTree(n.parentElement);
+        }else if(change.type==='childList'){
+          change.addedNodes.forEach(n=>{if(n.nodeType===1||n.nodeType===3)translateTree(n);});
+        }
+      }
+    });
+    observer.observe(document.body,{subtree:true,childList:true,characterData:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
 </body>
 </html>
-
-
-
-
