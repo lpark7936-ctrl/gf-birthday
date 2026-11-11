@@ -11,5 +11,89 @@
 <script>
 (()=>{'use strict';const KEY='focus-reef-progress-v1',STATE='focus-reef-timer-v1';const $=id=>document.getElementById(id);const modes={focus:25,short:5,long:15};let mode='focus',running=false,endsAt=null,remaining=1500,interval=null;let data={sessions:0,minutes:0};try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&Number.isFinite(saved.sessions)&&Number.isFinite(saved.minutes)){data={sessions:Math.max(0,Math.floor(saved.sessions)),minutes:Math.max(0,Math.floor(saved.minutes))}}}catch(e){}try{const val=Number(localStorage.getItem('focus-reef-length-v1'));if(Number.isInteger(val)&&val>=1&&val<=120){modes.focus=val;$('focusMinutes').value=val;remaining=val*60}}catch(e){}function persist(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}function persistTimer(){try{localStorage.setItem(STATE,JSON.stringify({mode,running,endsAt,remaining}))}catch(e){}}function drawReef(){const symbols=['🪸','🌿','🪸','🐠','🪸','🐚','🐟','🪸','🪼','🐢','🪸','🐬','🪸','🐙','🐡'];const count=Math.min(data.sessions,30);$('reefLife').replaceChildren();if(!count){const empty=document.createElement('div');empty.className='reef-empty';empty.textContent='Complete a focus session to plant your first coral! 🪸';$('reefLife').append(empty)}else for(let i=0;i<count;i++){const el=document.createElement('span');el.className='creature';el.textContent=symbols[i%symbols.length];el.setAttribute('aria-label','Reef decoration');$('reefLife').append(el)}$('sessions').textContent=data.sessions;$('minutes').textContent=data.minutes;$('creatures').textContent=count}function render(){const s=Math.max(0,Math.ceil(remaining));$('clock').textContent=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;document.title=`${$('clock').textContent} | Focus Reef 🪸`;$('start').textContent=running?'⏸ Pause':'▶ Start';$('status').textContent=running?(mode==='focus'?'Growing your reef... 🌱':'Enjoy your break. 🌊'):'Ready whenever you are.';const total=(mode==='focus'?modes.focus:modes[mode])*60;$('progress').style.width=`${Math.min(100,Math.max(0,100-remaining/total*100))}%`;document.querySelectorAll('[data-mode]').forEach(b=>{const active=b.dataset.mode===mode;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});$('focusMinutes').disabled=running}function stopTicker(){if(interval!==null){clearInterval(interval);interval=null}}function complete(){running=false;endsAt=null;remaining=0;stopTicker();if(mode==='focus'){data.sessions++;data.minutes+=modes.focus;persist();drawReef();$('message').textContent='✨ Wonderful work! A new friend joined your reef. Take a break!'}else $('message').textContent='🐬 Your break is finished. Ready for another little step?';persistTimer();render();$('status').textContent=mode==='focus'?'Focus session complete!':'Break complete!'}function tick(){if(!running)return;remaining=Math.max(0,(endsAt-Date.now())/1000);if(remaining<=0){complete();return}render()}function selectMode(next){mode=next;running=false;endsAt=null;stopTicker();remaining=modes[mode]*60;$('message').textContent='';persistTimer();render()}document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>selectMode(b.dataset.mode)));$('start').addEventListener('click',()=>{if(running){remaining=Math.max(0,(endsAt-Date.now())/1000);running=false;endsAt=null;stopTicker()}else{if(remaining<=0)remaining=modes[mode]*60;running=true;endsAt=Date.now()+remaining*1000;stopTicker();interval=setInterval(tick,250)}persistTimer();render()});$('reset').addEventListener('click',()=>selectMode(mode));$('focusMinutes').addEventListener('change',()=>{let n=Math.round(Number($('focusMinutes').value));if(!Number.isFinite(n))n=25;n=Math.min(120,Math.max(1,n));$('focusMinutes').value=n;modes.focus=n;try{localStorage.setItem('focus-reef-length-v1',String(n))}catch(e){}if(mode==='focus'&&!running){remaining=n*60;persistTimer();render()}});try{const saved=JSON.parse(localStorage.getItem(STATE));if(saved&&Object.hasOwn(modes,saved.mode)&&Number.isFinite(saved.remaining)&&saved.remaining>=0&&saved.remaining<=7200){mode=saved.mode;remaining=saved.remaining;if(saved.running&&Number.isFinite(saved.endsAt)){running=true;endsAt=saved.endsAt;interval=setInterval(tick,250)}}}catch(e){}drawReef();if(running)tick();else render();document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});window.addEventListener('pagehide',persistTimer)})();
 </script>
-<script src="language.js" defer></script>
+
+<script id="ocean-inline-dutch-translator">
+/* Self-contained bilingual interface: one shared preference across all ocean pages. */
+(() => {
+  'use strict';
+  const dictionary = {"← Back to Our Little World": "← Terug naar onze kleine wereld", "← Back to Our Little Ocean": "← Terug naar onze kleine oceaan", "← Back Home": "← Terug naar huis", "Made with love, across every ocean. 🌙": "Met liefde gemaakt, over elke oceaan heen. 🌙", "Focus Reef": "Focusrif", "Start": "Starten", "Pause": "Pauzeren", "Reset": "Opnieuw instellen", "Focus": "Concentratie", "Break": "Pauze", "Short Break": "Korte pauze", "Long Break": "Lange pauze", "Minutes": "Minuten", "Sessions": "Sessies", "Completed": "Voltooid", "🪸 Focus Reef": "🪸 Focusrif", "A little space to concentrate, take breaks, and grow something beautiful one session at a time. 💙": "Een kleine plek om je te concentreren, pauzes te nemen en sessie voor sessie iets moois te laten groeien. 💙", "⏳ Your Ocean Timer": "⏳ Jouw oceaantimer", "🪸 Focus": "🪸 Concentreren", "🐬 Short Break": "🐬 Korte pauze", "🐢 Long Break": "🐢 Lange pauze", "Ready whenever you are.": "Klaar wanneer jij dat bent.", "▶ Start": "▶ Starten", "↺ Reset": "↺ Opnieuw instellen", "Focus session length (minutes)": "Duur van concentratiesessie (minuten)", "Breaks are 5 and 15 minutes. Change the focus length while paused.": "Pauzes duren 5 en 15 minuten. Verander de concentratieduur tijdens een pauze.", "🐠 Your Growing Reef": "🐠 Jouw groeiende rif", "Complete a focus session to plant your first coral! 🪸": "Voltooi een concentratiesessie om je eerste koraal te planten! 🪸", "Focus sessions": "Concentratiesessies", "Minutes focused": "Minuten geconcentreerd", "Reef friends": "Rifvriendjes", "Each completed focus session adds a new piece of coral or a sea friend. Your reef stays saved in this browser. 🌊": "Elke voltooide sessie voegt nieuw koraal of een zeevriendje toe. Je rif blijft bewaard in deze browser. 🌊", "💙 A Gentle Reminder": "💙 Een lieve herinnering", "Progress doesn't need to be perfect. One small step still counts. Take breaks when you need them, drink some water, and come back when you're ready.": "Vooruitgang hoeft niet perfect te zijn. Ook een kleine stap telt. Neem pauzes wanneer nodig, drink wat water en kom terug wanneer je er klaar voor bent.", "This timer works offline after the page is loaded, but it cannot reliably play an alert or keep running in the background if your browser suspends the page. The countdown catches up when you return.": "Deze timer werkt offline nadat de pagina is geladen, maar kan geen betrouwbare melding geven of blijven lopen als je browser de pagina pauzeert. De aftelling wordt bijgewerkt wanneer je terugkomt."};
+  const originals = new WeakMap();
+  const attrOriginals = new WeakMap();
+  let running = false;
+  function selected() {
+    try {
+      const preferred = localStorage.getItem('oceanWebsiteLanguage');
+      if (preferred === 'nl' || preferred === 'en') return preferred;
+      const legacy = localStorage.getItem('oceanLanguage');
+      return legacy === 'nl' ? 'nl' : 'en';
+    } catch (_) { return 'en'; }
+  }
+  function translateValue(value, lang) {
+    if (lang !== 'nl' || !value) return value;
+    const trimmed = value.trim();
+    const normalized = trimmed.replace(/\s+/g, ' ');
+    const replacement = dictionary[trimmed] || dictionary[normalized];
+    return replacement ? value.replace(trimmed, replacement) : value;
+  }
+  function apply() {
+    if (running || !document.body) return;
+    running = true;
+    try {
+      const lang = selected();
+      document.documentElement.lang = lang;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      for (const node of nodes) {
+        const el = node.parentElement;
+        if (!el || el.closest('script,style,noscript,textarea,code,pre,[data-no-translate],.user,.sources')) continue;
+        const current = node.nodeValue;
+        const saved = originals.get(node);
+        // Detect newly generated status labels and preserve their English originals.
+        if (saved === undefined || (current !== saved && current !== translateValue(saved, 'nl'))) originals.set(node, current);
+        const english = originals.get(node);
+        const next = translateValue(english, lang);
+        if (current !== next) node.nodeValue = next;
+      }
+      for (const el of document.querySelectorAll('[placeholder],[title],[aria-label]')) {
+        if (el.closest('[data-no-translate]')) continue;
+        let saved = attrOriginals.get(el);
+        if (!saved) { saved = {}; attrOriginals.set(el, saved); }
+        for (const attr of ['placeholder','title','aria-label']) {
+          if (!el.hasAttribute(attr)) continue;
+          const current = el.getAttribute(attr);
+          if (!(attr in saved) || (current !== saved[attr] && current !== translateValue(saved[attr], 'nl'))) saved[attr] = current;
+          const next = translateValue(saved[attr], lang);
+          if (current !== next) el.setAttribute(attr, next);
+        }
+      }
+      // Update only an existing language button; do not create a second one.
+      const btn = document.getElementById('languageToggle');
+      if (btn) btn.textContent = lang === 'nl' ? '🇬🇧 English' : '🇳🇱 Nederlands';
+    } finally { running = false; }
+  }
+  function init() {
+    apply();
+    const btn = document.getElementById('languageToggle');
+    if (btn && !btn.dataset.oceanLangWired) {
+      btn.dataset.oceanLangWired = 'true';
+      btn.addEventListener('click', () => {
+        const next = selected() === 'nl' ? 'en' : 'nl';
+        try { localStorage.setItem('oceanWebsiteLanguage', next); } catch (_) {}
+        apply();
+      });
+    }
+    let queued = false;
+    const observer = new MutationObserver(() => {
+      if (running || queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; apply(); });
+    });
+    observer.observe(document.body, {subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['placeholder','title','aria-label']});
+    window.addEventListener('storage', event => { if (event.key === 'oceanWebsiteLanguage') apply(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once:true});
+  else init();
+})();
+</script>
 </body></html>
