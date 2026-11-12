@@ -2897,13 +2897,13 @@ sync();
  <p>A fictional cinematic ocean blast followed by a massive naval fleet battle. No damage to your saved game.</p>
  <p id="oceanNavalCooldown" role="status">Checking cooldown…</p>
  <button type="button" id="oceanNavalLaunch">☢️ Launch Nuclear Event</button>
- <p style="font-size:.8rem;color:#bce8ff">One launch every 5 hours. The cooldown persists after refresh. Uses gentle light transitions rather than rapid flashing.</p>
+ <p style="font-size:.8rem;color:#bce8ff">TEST MODE: One launch every 1 minute. The cooldown persists after refresh. Uses gentle light transitions rather than rapid flashing.</p>
 </section>
 <div id="oceanNavalStage" hidden aria-hidden="true"><div id="oceanNavalFlash"></div><div id="oceanNavalCloud">☁️</div><div id="oceanNavalShips"></div><div id="oceanNavalBanner">☢️ Nuclear detonation detected!</div></div>
 <script id="ocean-naval-event-script">
 (()=>{'use strict';
 const $=id=>document.getElementById(id),tools=$('oceanTopTools'),panel=$('oceanNavalPanel'),stage=$('oceanNavalStage'),ships=$('oceanNavalShips'),banner=$('oceanNavalBanner');if(!tools)return;
-const key='ocean-nuclear-event-five-hour-v1',cooldown=5*60*60*1000;
+const key='ocean-nuclear-event-one-minute-test-v1',cooldown=60*1000;
 const btn=document.createElement('button');btn.type='button';btn.textContent='☢️ Nuclear Fleet Battle';tools.append(btn);
 let running=false,ctx=null;
 function remaining(){try{return Math.max(0,Number(localStorage.getItem(key)||0)-Date.now())}catch{return 0}}
@@ -2913,7 +2913,7 @@ $('oceanNavalClose').addEventListener('click',()=>panel.hidden=true);
 function noise(freq,duration=1.2){if(!($('oceanSoundToggle')?.textContent.includes('Pause Ocean Sounds')))return;const C=window.AudioContext||window.webkitAudioContext;if(!C)return;try{ctx=ctx||new C();if(ctx.state!=='running'){ctx.resume();return}const o=ctx.createOscillator(),g=ctx.createGain(),t=ctx.currentTime,v=(Number($('oceanVolume')?.value||30)/100)*.07;o.type='sawtooth';o.frequency.setValueAtTime(freq,t);o.frequency.exponentialRampToValueAtTime(Math.max(25,freq*.3),t+duration);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.1);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+duration+.01)}catch{}}
 function blast(x,y){const e=document.createElement('span');e.className='oceanNavalBlast';e.textContent='💥';e.style.setProperty('--x',x+'%');e.style.setProperty('--y',y+'%');ships.append(e);setTimeout(()=>e.remove(),1400);noise(90,.5)}
 function ship(i){const e=document.createElement('span');e.className='oceanWarship'+(i%2?' enemy':'');e.textContent=['🚢','🛳️','🚢','⛴️'][i%4];e.style.setProperty('--y',(27+(i%5)*12)+'%');e.style.setProperty('--dur',(17+(i%4)*3)+'s');ships.append(e);setTimeout(()=>e.remove(),32000)}
-function start(){if(running||remaining())return;running=true;try{localStorage.setItem(key,String(Date.now()+cooldown))}catch{}update();panel.hidden=true;stage.hidden=false;ships.replaceChildren();banner.textContent='☢️ A colossal explosion shakes the ocean!';const cloud=$('oceanNavalCloud'),flash=$('oceanNavalFlash');cloud.classList.add('active');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)flash.classList.add('active');noise(55,3);
+function start(){if(running||remaining())return;running=true;try{localStorage.setItem(key,String(Date.now()+cooldown))}catch{}update();panel.hidden=true;stage.hidden=false;startOrbitalScore();ships.replaceChildren();banner.textContent='☢️ A colossal explosion shakes the ocean!';const cloud=$('oceanNavalCloud'),flash=$('oceanNavalFlash');cloud.classList.add('active');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)flash.classList.add('active');noise(55,3);
 setTimeout(()=>flash.classList.remove('active'),1400);
 setTimeout(()=>{banner.textContent='⚓ Naval fleets converge on the blast zone!';for(let i=0;i<12;i++)setTimeout(()=>ship(i),i*650)},6500);
 setTimeout(()=>{banner.textContent='⚔️ MASSIVE NAVAL BATTLE — cannons firing!';let n=0;const interval=setInterval(()=>{if(n++>=22){clearInterval(interval);return}blast(12+Math.random()*76,27+Math.random()*57)},1100)},12500);
@@ -3047,6 +3047,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!broadcast.hidden)b
 <p>A fictional global catastrophe. The orbital strike devastates human civilization; surviving wildlife reacts with grief, relief, or uncertainty.</p>
 <p id="orbitalCooldownText">Checking availability…</p>
 <button id="orbitalLaunch" type="button">🛰️ Begin Orbital Strike</button>
+<div style="margin-top:14px;padding:12px;background:#0b223b;border-radius:12px">
+<label style="display:block"><input id="orbitalMusicEnabled" type="checkbox" checked> 🎼 Intense orbital-event music</label>
+<label for="orbitalMusicVolume" style="display:block;margin-top:9px">🎵 Event music volume</label>
+<input id="orbitalMusicVolume" type="range" min="0" max="100" value="55" style="width:100%">
+<small>Original synthesized soundtrack, only during this event.</small>
+</div>
 <p style="font-size:12px;opacity:.8">Separate 5-hour cooldown. Fictional casualty estimates; no actual saved-game damage. Reduced-motion settings are supported.</p>
 </section>
 <div id="oceanOrbitalStage" hidden aria-hidden="true">
@@ -3103,6 +3109,48 @@ function startAudio(){
  },650)}catch{}
 }
 function stopAudio(){clearInterval(ticker);ticker=null;if(audio){audio.close().catch(()=>{});audio=null;master=null}}
+
+// Original, event-exclusive cinematic score. Separate from the existing impact drones.
+let scoreContext=null,scoreTimer=null,scoreStart=0,scoreStep=0;
+function stopOrbitalScore(){
+ clearInterval(scoreTimer);scoreTimer=null;
+ if(scoreContext){const closing=scoreContext;scoreContext=null;closing.close().catch(()=>{});}
+}
+function scoreTone(frequency,when,duration,shape,level){
+ if(!scoreContext||!frequency)return;
+ const osc=scoreContext.createOscillator(),g=scoreContext.createGain();
+ osc.type=shape;osc.frequency.setValueAtTime(frequency,when);
+ g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(Math.max(.0002,level),when+.055);
+ g.gain.exponentialRampToValueAtTime(.0001,when+duration);
+ osc.connect(g);g.connect(scoreContext.destination);osc.start(when);osc.stop(when+duration+.03);
+}
+function startOrbitalScore(){
+ stopOrbitalScore();
+ if(!$('orbitalMusicEnabled')?.checked)return;
+ const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+ try{scoreContext=new C();scoreContext.resume().catch(()=>{});}catch{return}
+ scoreStart=Date.now();scoreStep=0;
+ const scoreTick=()=>{
+  if(!scoreContext||document.hidden)return;
+  const t=scoreContext.currentTime+.035,elapsed=(Date.now()-scoreStart)/1000;
+  const vol=Number($('orbitalMusicVolume')?.value??55)/100;
+  const quiet=elapsed<5,attack=elapsed>=5&&elapsed<24,aftermath=elapsed>=39;
+  const root=quiet?55:attack?65.41:aftermath?49:73.42;
+  const melody=attack?[0,3,7,10,7,3,12,10]:aftermath?[0,7,3,0,5,3,0,0]:[0,0,7,0,3,0,10,0];
+  const semitone=melody[scoreStep%8];
+  const f=root*Math.pow(2,semitone/12);
+  scoreTone(root/2,t,Math.min(.9,aftermath?.9:.48),'sawtooth',vol*.018);
+  scoreTone(f*2,t,aftermath?.72:.3,'triangle',vol*(quiet?.018:aftermath?.025:.045));
+  if(!quiet&&!aftermath){
+   scoreTone(46,t,.13,'square',vol*.035); // percussion pulse
+   if(scoreStep%2===0)scoreTone(f*4,t,.2,'sine',vol*.015);
+  }
+  if(aftermath&&scoreStep%4===0)scoreTone(root*1.5,t,1.8,'sine',vol*.025);
+  scoreStep++;
+ };
+ scoreTick();scoreTimer=setInterval(scoreTick,420);
+}
+
 function impact(){
  if(!active||stage.hidden)return;
  const beams=$('orbitalBeams'),x=rand(10,90),y=rand(27,78);
@@ -3133,7 +3181,7 @@ function start(){
  setTimeout(()=>{message.textContent='🌍 CIVILIZATION COLLAPSE — ESTIMATED 90% HUMAN POPULATION LOST';reactions()},23500);
  setTimeout(()=>{message.textContent='🌊 THE OCEAN REACTS TO A CHANGED WORLD';intervals.forEach(clearInterval)},39000);
  setTimeout(()=>{
- intervals.forEach(clearInterval);stage.hidden=true;$('orbitalBeams').replaceChildren();stopAudio();active=false;update();
+ intervals.forEach(clearInterval);stage.hidden=true;$('orbitalBeams').replaceChildren();stopAudio();stopOrbitalScore();active=false;update();
  const world=rand(8000000000,8500000000),humans=Math.round(world*.9);
  const wildlife=rand(3000000,90000000);
  showReport('🛰️ Orbital Strike — Global Aftermath',[
