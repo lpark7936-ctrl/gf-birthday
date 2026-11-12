@@ -3053,7 +3053,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!broadcast.hidden)b
 <input id="orbitalMusicVolume" type="range" min="0" max="100" value="55" style="width:100%">
 <small>Original synthesized soundtrack, only during this event.</small>
 </div>
-<p style="font-size:12px;opacity:.8">Separate 5-hour cooldown. Fictional casualty estimates; no actual saved-game damage. Reduced-motion settings are supported.</p>
+<p style="font-size:12px;opacity:.8">Separate 1-minute test cooldown. Fictional casualty estimates; no actual saved-game damage. Reduced-motion settings are supported.</p>
 </section>
 <div id="oceanOrbitalStage" hidden aria-hidden="true">
 <div id="orbitalSky"></div><div id="orbitalBeams"></div><div id="orbitalMessage">🛰️ ORBITAL DEFENSE SYSTEM ACTIVATED</div><div id="orbitalWildlife"></div>
@@ -3071,7 +3071,7 @@ const tools=$('oceanTopTools'),nuke=$('oceanNavalLaunch'),report=$('oceanCasualt
 if(!tools||!nuke)return;
 const button=document.createElement('button');button.type='button';button.textContent='🛰️ Orbital Strike';tools.append(button);
 const panel=$('oceanApocalypsePanel'),launch=$('orbitalLaunch'),text=$('orbitalCooldownText');
-const key='ocean-orbital-strike-cooldown-v1',period=5*60*60*1000;
+const key='ocean-orbital-strike-one-minute-test-v1',period=60*1000;
 let active=false,audio=null,master=null,ticker=null,started=0;
 const fmt=n=>Math.round(n).toLocaleString('en-US');
 const rand=(a,b)=>Math.floor(a+Math.random()*(b-a+1));
