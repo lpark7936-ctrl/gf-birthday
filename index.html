@@ -799,6 +799,25 @@ body.aquarium-view #oceanRestoreDock{display:none!important}
 #oceanLanguageHomeButton {pointer-events:auto;position:absolute;top:67px;left:50%;transform:translateX(-50%);z-index:10030;margin:0;padding:9px 18px;border:1px solid #9afaff;border-radius:30px;background:rgba(9,37,78,.97);color:white;font:600 14px Georgia,serif;box-shadow:0 0 20px #39dfff66;cursor:pointer;white-space:nowrap}
 @media(max-width:650px){#oceanLanguageHomeButton{top:60px;padding:8px 14px}}
 </style>
+<style id="ocean-economy-style">
+#oceanShopButton{position:static!important;margin:0!important;padding:10px 12px!important;font-size:.82rem!important;white-space:nowrap;background:linear-gradient(110deg,#0b6b8d,#7150b0)}
+#oceanShopPanel{position:fixed;right:12px;top:74px;z-index:10052;width:min(440px,calc(100vw - 24px));max-height:min(78vh,720px);overflow:auto;border:1px solid #83eafa;border-radius:22px;background:linear-gradient(145deg,#10254cfb,#291e55fc);padding:18px;color:#f5f7ff;text-align:left;box-shadow:0 18px 50px #000a}
+#oceanShopPanel h3{color:#9ff5ff;margin:0 0 8px;font-size:1.35rem}
+#oceanShopPanel button{margin:4px;padding:8px 12px;font-size:.82rem}
+.ocean-wallet{padding:12px;background:#0b456b;border-radius:14px;color:#ffe5a2;font-weight:bold}
+.ocean-avatar-stage{min-height:185px;display:grid;place-items:center;background:radial-gradient(ellipse,#23749b,#10294f);border-radius:18px;margin:12px 0;position:relative;overflow:hidden}
+.ocean-avatar-figure{position:relative;font-size:5rem;line-height:1.4;filter:drop-shadow(0 5px 12px #0008)}
+.ocean-avatar-hat{position:absolute;top:-23px;left:50%;transform:translateX(-50%);font-size:2.5rem;white-space:nowrap}
+.ocean-avatar-accessory{position:absolute;right:-40px;bottom:0;font-size:2.6rem}
+.ocean-avatar-stage .avatar-bg{position:absolute;inset:0;display:grid;place-items:center;font-size:9rem;opacity:.16;pointer-events:none}
+.ocean-shop-tabs{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+.ocean-shop-tabs button[aria-pressed=true]{background:#1e8e92;outline:2px solid #bff8ff}
+.ocean-shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.ocean-shop-item{border:1px solid #7ad4ef70;background:#142e5e;border-radius:13px;padding:11px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.ocean-shop-item strong{font-size:.88rem}.ocean-shop-item small{color:#c1e4fa}.ocean-shop-item button{margin-top:auto!important}
+#oceanShopMessage{min-height:1.5em;font-size:.84rem;color:#ffe4a0}
+@media(max-width:650px){#oceanShopPanel{top:170px;max-height:calc(100vh - 185px)}#bigShark{top:360px!important;left:0!important;transform:scale(.55)!important}}
+</style>
 </head>
 
 <body>
@@ -1726,6 +1745,36 @@ body.ocean-reduce-effects #oceanAtmosphere *,body.ocean-reduce-effects #oceanEve
 </style>
 <div id="oceanAtmosphere" aria-hidden="true"><div class="ocean-vignette"></div><div class="ocean-waves"></div><div class="ocean-waves"></div><div id="oceanLightning"></div><div id="oceanParticles"></div></div>
 <div id="oceanEventScene" aria-hidden="true"></div>
+
+<style id="ocean-layout-v3">
+#bigShark{position:absolute!important;top:235px!important;left:12px!important;right:auto!important;z-index:4!important;animation:none!important;transform:scale(.82)!important;transform-origin:top left!important}
+#oceanSoundButton,#oceanCollectionButton,#oceanChooseButton{position:static!important;transform:none!important;margin:0!important;padding:10px 12px!important;font-size:.82rem!important;white-space:nowrap}
+#oceanTopTools{position:relative;z-index:10045;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px;padding:12px 14px 0 165px;min-height:53px}
+#oceanWeatherChip{position:relative!important;left:auto!important;bottom:auto!important;top:auto!important;transform:none!important;max-width:100%!important;white-space:normal!important;display:inline-block;margin:8px auto 0;pointer-events:none}
+#oceanWeatherStatus{position:relative;z-index:3;text-align:center;padding:0 12px}
+#oceanChoosePanel{position:absolute;right:14px;top:62px;z-index:10046;width:min(350px,calc(100vw - 28px));max-height:65vh;overflow:auto;padding:16px;border:1px solid #9afaff;border-radius:18px;background:#0c2349fa;box-shadow:0 12px 35px #0009;text-align:left}
+#oceanChoosePanel label{display:block;margin:10px 0 6px}
+#oceanChoosePanel select{width:100%;padding:10px;border-radius:10px;background:#193d6b;color:white;border:1px solid #8ceeff}
+#oceanChoosePanel button{padding:9px 14px;margin:10px 0 0}
+#oceanChooseCountdown{font-size:.84rem;color:#ffe5a2}
+#oceanCollectionPanel,#oceanSoundPanel{position:absolute!important;right:14px!important;top:62px!important;max-height:70vh!important}
+#oceanCollectionItems{max-height:45vh;overflow:auto}
+.ocean-collect-slot{overflow-wrap:anywhere}
+@media(max-width:650px){#oceanTopTools{padding-left:8px;padding-top:125px;justify-content:center}#bigShark{top:300px!important;left:4px!important;right:auto!important;transform:scale(.58)!important;transform-origin:top left!important}#oceanChoosePanel,#oceanCollectionPanel,#oceanSoundPanel{top:173px!important;right:8px!important}}
+</style>
+
+<div id="oceanTopTools" aria-label="Ocean controls"></div>
+<section id="oceanChoosePanel" hidden aria-label="Choose ocean weather or event">
+<h3>🌦️ Choose an Ocean Adventure</h3>
+<label for="oceanChooseType">What would you like to summon?</label>
+<select id="oceanChooseType"><option value="weather">Weather</option><option value="event">Special event</option></select>
+<label for="oceanChooseOption">Choose an adventure</label>
+<select id="oceanChooseOption"></select>
+<button type="button" id="oceanChooseStart">✨ Summon Adventure</button>
+<button type="button" id="oceanChooseClose">Close ✕</button>
+<p id="oceanChooseCountdown" role="status">Ready to summon!</p>
+<p style="font-size:.78rem">One manual summon every 5 minutes. Automatic weather and events continue normally.</p>
+</section>
 <button id="oceanSoundButton" type="button" aria-expanded="false" aria-controls="oceanSoundPanel">🔊 Ocean Sound</button>
 <div id="oceanSoundPanel" hidden>
 <strong>🌊 Ocean Sound &amp; Weather</strong>
@@ -1757,17 +1806,17 @@ body.ocean-reduce-effects #oceanAtmosphere *,body.ocean-reduce-effects #oceanEve
 @media(prefers-reduced-motion:reduce){.ocean-collectible{animation:none}#oceanNavCurtain{transition:none}}
 </style>
 
-<button type="button" id="oceanCollectionButton" aria-expanded="false" aria-controls="oceanCollectionPanel">💎 Collection <span id="oceanCollectionCount">0/12</span></button>
+<button type="button" id="oceanCollectionButton" aria-expanded="false" aria-controls="oceanCollectionPanel">💎 Collection <span id="oceanCollectionCount">0/1000</span></button>
 <section id="oceanCollectionPanel" hidden aria-label="Rare ocean collection">
 <h3>💎 Ocean Treasure Collection</h3>
-<p style="font-size:.85rem;line-height:1.5">Rare treasures sometimes appear in our ocean. Tap one to keep it forever in this browser! 💙</p>
+<p style="font-size:.85rem;line-height:1.5">1,000 treasures across Common, Uncommon, Rare, Epic, Legendary and Mythic rarities appear in our ocean. Tap one to keep it forever in this browser! 💙</p>
 <button type="button" id="oceanCollectionClose">Close ✕</button>
 <div id="oceanCollectionItems"></div>
-<p style="font-size:.74rem;color:#b9ddf1">Saved privately on this device. Collectibles appear approximately every 2–5 minutes; some are much rarer than others.</p>
+<p style="font-size:.74rem;color:#b9ddf1">Saved privately on this device. Collectibles appear approximately every 2–5 minutes; Mythic finds are extremely rare.</p>
 </section>
 <div id="oceanCollectToast" role="status" hidden></div>
 <div id="oceanNavCurtain" aria-hidden="true"><span>🌊🐬</span><div>Swimming to our next adventure…</div></div>
-<div id="oceanWeatherChip" role="status" aria-live="polite">☀️ Sunny Ocean</div>
+<div id="oceanWeatherStatus"><div id="oceanWeatherChip" role="status" aria-live="polite">☀️ Sunny Ocean</div></div>
 <script id="living-ocean-events-script">
 (()=>{'use strict';
 const $=id=>document.getElementById(id), atmos=$('oceanAtmosphere'), particles=$('oceanParticles'), scene=$('oceanEventScene'), chip=$('oceanWeatherChip');
@@ -1803,7 +1852,7 @@ if(currentWeather==='hurricane')particle('magic',18,['🌀']);
 if(currentWeather==='storm'&&!reduce.checked){let flashes=0;const f=()=>{if(currentWeather!=='storm'||reduce.checked||flashes++>3)return;atmos.classList.add('flash');setTimeout(()=>atmos.classList.remove('flash'),150);setTimeout(f,7000+Math.random()*9000)};setTimeout(f,1800)}
 if(soundOn)playEventSound(currentWeather==='storm'?'thunder':currentWeather==='rain'?'rain':currentWeather==='tsunami'?'wave':'chime');
 }
-function startSpecial(){if(activeEvent||document.hidden)return;activeEvent=true;const e=events[Math.floor(Math.random()*events.length)];const el=document.createElement('div');el.className='ocean-scene-item '+(e[2]==='travel'?'':e[2]);el.textContent=e[1];scene.appendChild(el);chip.textContent=(language()?'Bijzondere gebeurtenis: ':'Special event: ')+e[0];saveDiscovery(e[0]);playEventSound(e[0].includes('Pirate')?'cannon':e[0].includes('Treasure')?'chime':'deep');setTimeout(()=>{el.remove();activeEvent=false;chip.textContent=weatherLabel(weather.find(w=>w[2]===currentWeather))},20000)}
+function startSpecial(forcedIndex=null){if(activeEvent||document.hidden)return false;activeEvent=true;const e=forcedIndex===null?events[Math.floor(Math.random()*events.length)]:events[forcedIndex];const el=document.createElement('div');el.className='ocean-scene-item '+(e[2]==='travel'?'':e[2]);el.textContent=e[1];scene.appendChild(el);chip.textContent=(language()?'Bijzondere gebeurtenis: ':'Special event: ')+e[0];saveDiscovery(e[0]);window.dispatchEvent(new CustomEvent('ocean-special-event',{detail:{name:e[0],duration:120000}}));playEventSound(e[0].includes('Pirate')?'cannon':e[0].includes('Treasure')?'chime':'deep');setTimeout(()=>{el.remove();activeEvent=false;chip.textContent=weatherLabel(weather.find(w=>w[2]===currentWeather))},20000);return true}
 function saveDiscovery(name){let items=[];try{items=JSON.parse(safeGet('ocean-discoveries','[]'))}catch{}if(!items.includes(name)){items.push(name);safeSet('ocean-discoveries',JSON.stringify(items))}updateJournal()}
 function updateJournal(){const target=$('oceanJournalEntries');if(!target)return;let items=[];try{items=JSON.parse(safeGet('ocean-discoveries','[]'))}catch{}target.textContent=items.length?items.join(' · '):'No rare events discovered yet. Keep exploring! 🌊'}
 function initJournal(){const journal=document.createElement('details');journal.id='oceanJournal';journal.innerHTML='<summary>📖 Ocean Journal · Rare Discoveries</summary><p id="oceanJournalEntries"></p>';const main=document.querySelector('main');if(main){const footer=main.querySelector('footer');if(footer)footer.before(journal);else main.append(journal)}updateJournal()}
@@ -1817,23 +1866,52 @@ volume.addEventListener('input',()=>{$('oceanVolumeText').textContent=volume.val
 effects.addEventListener('change',()=>safeSet('ocean-event-sfx',effects.checked));reduce.addEventListener('change',()=>{document.body.classList.toggle('ocean-reduce-effects',reduce.checked);safeSet('ocean-reduced',reduce.checked)});
 
 // Rare collectible treasures. Each spawn chooses one item by rarity; only direct taps collect it.
-const treasureCatalog=[
+const originalTreasureCatalog=[
 ['🐚','Pearl Shell',24],['⭐','Golden Starfish',18],['🪸','Crystal Coral',15],
 ['🧭','Pirate Compass',11],['🪙','Sunken Coin',10],['🔱','Poseidon’s Trident',7],
 ['💠','Ocean Sapphire',5],['🦑','Kraken Relic',4],['🚢','Lost Liner Keepsake',2.5],
 ['👑','Mermaid Crown',1.7],['💎','Heart of the Ocean',1.3],['🌌','Starlight Pearl',.5]
 ];
-const collectionKey='ocean-treasure-collection-v1';
-function collectionRead(){try{const a=JSON.parse(safeGet(collectionKey,'[]'));return Array.isArray(a)?a.filter(x=>Number.isInteger(x)&&x>=0&&x<treasureCatalog.length):[]}catch{return []}}
+
+// 1,000 unique treasures; preserve original 240 IDs for saved collections.
+const rarityTiers=[
+ {name:'Common',count:80,weight:55,color:'#c9e5e9'},
+ {name:'Uncommon',count:58,weight:24,color:'#79efb7'},
+ {name:'Rare',count:42,weight:12,color:'#77baff'},
+ {name:'Epic',count:28,weight:6,color:'#d9a0ff'},
+ {name:'Legendary',count:15,weight:2.3,color:'#ffd27c'},
+ {name:'Mythic',count:5,weight:.7,color:'#ff8ad8'}];
+const treasureThemes=[['🐚','Shell'],['🪸','Coral'],['💎','Gem'],['🪙','Coin'],['🧭','Compass'],['⭐','Star'],['🔱','Trident'],['🦪','Pearl'],['🗝️','Key'],['⚓','Anchor'],['🐙','Kraken Token'],['🪼','Jelly Charm']];
+const treasurePlaces=['Moonlit','Coral','Sapphire','Tidal','Sunken','Pearl','Storm','Lagoon','Abyssal','Starlit','Mermaid','Whispering','Golden','Deepwater','Azure','Silver','Crimson','Crystal','Ancient','Eternal'];
+const treasureCatalog=originalTreasureCatalog.map(([emoji,name,weight],i)=>({id:'original-'+i,emoji,name,rarity:i<3?'Common':i<5?'Uncommon':i<7?'Rare':i<9?'Epic':i<11?'Legendary':'Mythic'}));
+rarityTiers.forEach((tier,t)=>{for(let i=0;i<tier.count;i++){
+ const theme=treasureThemes[(i+t*3)%treasureThemes.length];
+ const place=treasurePlaces[(i*7+t*3)%treasurePlaces.length];
+ const suffix=i>=treasurePlaces.length?' '+(Math.floor(i/treasurePlaces.length)+1):'';
+ treasureCatalog.push({id:'treasure-'+t+'-'+i,emoji:theme[0],name:place+' '+theme[1]+suffix,rarity:tier.name});
+}});
+// 760 additional named finds, with stable IDs and six rarity tiers.
+const expansionCounts=[270,205,135,85,45,20];
+const expansionAdjectives=['Glowing','Forgotten','Velvet','Sunrise','Twilight','Luminous','Hidden','Royal','Enchanted','Frozen','Wandering','Celestial','Opaline','Emerald','Ruby','Midnight','Dancing','Sacred','Lost','Secret','Dreaming','Radiant','Misty','Shimmering','Stormborn','Whispering','Eternal','Gilded','Moonbeam','Oceanheart','Tropical','Drowned','Ancient','Starbound','Silver','Golden','Amethyst','Rosewater','Coralline','Azure'];
+const expansionObjects=[['🐚','Conch'],['🪸','Reef Fragment'],['💎','Crystal'],['🪙','Doubloon'],['🧭','Navigator Charm'],['⭐','Sea Star'],['🔱','Trident Shard'],['🦪','Oyster'],['🗝️','Treasure Key'],['⚓','Ship Anchor'],['🐙','Tentacle Idol'],['🪼','Jelly Lantern'],['🐬','Dolphin Figurine'],['🐢','Turtle Totem'],['🦈','Shark Tooth'],['🧜‍♀️','Mermaid Locket'],['🚢','Ship Relic'],['🌙','Moon Pearl'],['🌈','Rainbow Scale'],['🦀','Crab Crown'],['🐠','Fish Amulet'],['🦑','Squid Inkstone'],['🫧','Bubble Orb'],['👑','Coral Crown'],['🪷','Sea Blossom']];
+rarityTiers.forEach((tier,t)=>{for(let i=0;i<expansionCounts[t];i++){
+ const adj=expansionAdjectives[(i*7+t*11)%expansionAdjectives.length];
+ const obj=expansionObjects[(i*13+t*3)%expansionObjects.length];
+ const variant=Math.floor(i/expansionAdjectives.length)+1;
+ treasureCatalog.push({id:'expansion-'+t+'-'+i,emoji:obj[0],name:adj+' '+obj[1]+' '+variant,rarity:tier.name});
+}});
+const rarityMap=Object.fromEntries(rarityTiers.map(t=>[t.name,t]));
+const collectionKey='ocean-treasure-collection-v2';
+function collectionRead(){try{const a=JSON.parse(safeGet(collectionKey,'[]'));return Array.isArray(a)?a.filter(x=>typeof x==='string'&&treasureCatalog.some(t=>t.id===x)):[]}catch{return []}}
 let owned=new Set(collectionRead()), collectible=null, collectibleTimer=null;
 const collectionPanel=$('oceanCollectionPanel'),collectionButton=$('oceanCollectionButton');
 function collectionRender(){
  $('oceanCollectionCount').textContent=owned.size+'/'+treasureCatalog.length;
  $('oceanCollectionItems').replaceChildren();
- treasureCatalog.forEach(([emoji,name],i)=>{
- const slot=document.createElement('div');slot.className='ocean-collect-slot'+(owned.has(i)?'':' locked');
- slot.textContent=owned.has(i)?emoji+' '+name:'🔒 Undiscovered treasure';
- slot.title=owned.has(i)?name:'Find this treasure in the ocean';
+ treasureCatalog.forEach(({emoji,name,rarity,id})=>{
+ const slot=document.createElement('div');slot.className='ocean-collect-slot'+(owned.has(id)?'':' locked');
+ slot.textContent=owned.has(id)?emoji+' '+name+' · '+rarity:'🔒 '+rarity+' treasure';slot.style.borderColor=rarityMap[rarity].color;
+ slot.title=owned.has(id)?name:'Find this treasure in the ocean';
  $('oceanCollectionItems').appendChild(slot);
  });
 }
@@ -1841,21 +1919,21 @@ function collectionOpen(open){collectionPanel.hidden=!open;collectionButton.setA
 collectionButton.addEventListener('click',()=>collectionOpen(collectionPanel.hidden));
 $('oceanCollectionClose').addEventListener('click',()=>collectionOpen(false));
 function collectionToast(message){const el=$('oceanCollectToast');el.textContent=message;el.hidden=false;clearTimeout(collectionToast.timer);collectionToast.timer=setTimeout(()=>el.hidden=true,4500)}
-function weightedTreasure(){let r=Math.random()*100;for(let i=0;i<treasureCatalog.length;i++){r-=treasureCatalog[i][2];if(r<0)return i}return 0}
+function weightedTreasure(){let r=Math.random()*100;let tier=rarityTiers[0];for(const t of rarityTiers){r-=t.weight;if(r<0){tier=t;break}}const pool=treasureCatalog.filter(x=>x.rarity===tier.name);return pool[Math.floor(Math.random()*pool.length)]}
 function spawnTreasure(){
  if(document.hidden||collectible||owned.size===treasureCatalog.length)return;
- const i=weightedTreasure(),item=treasureCatalog[i];
+ const item=weightedTreasure();
  const b=document.createElement('button');b.type='button';b.className='ocean-collectible';
- b.textContent=item[0];b.setAttribute('aria-label','Collect rare treasure: '+item[1]);b.title='Tap to collect a treasure!';
- b.style.left=(12+Math.random()*65)+'vw';b.style.top=(25+Math.random()*47)+'vh';
+ b.textContent=item.emoji;b.setAttribute('aria-label','Collect '+item.rarity+' treasure: '+item.name);b.title='Tap to collect a treasure!';
+ b.style.borderColor=rarityMap[item.rarity].color;b.style.left=(12+Math.random()*65)+'vw';b.style.top=(25+Math.random()*47)+'vh';
  document.body.appendChild(b);collectible=b;
  const expiry=setTimeout(()=>{b.remove();if(collectible===b)collectible=null},25000);
  b.addEventListener('click',()=>{
  clearTimeout(expiry);b.remove();collectible=null;
- if(!owned.has(i)){owned.add(i);safeSet(collectionKey,JSON.stringify([...owned]));collectionRender();
- collectionToast('✨ Found: '+item[0]+' '+item[1]+'! Added to your collection.');
+ if(!owned.has(item.id)){owned.add(item.id);oceanRewardTreasure(item);safeSet(collectionKey,JSON.stringify([...owned]));collectionRender();
+ collectionToast('✨ '+item.rarity+' found: '+item.emoji+' '+item.name+'!');
  if(soundOn)playEventSound('chime');
- }else{collectionToast('🐚 '+item[1]+' — already in your collection!')}
+ }else{collectionToast('🐚 '+item.name+' — already in your collection!')}
  });
 }
 function scheduleTreasure(){setTimeout(()=>{spawnTreasure();scheduleTreasure()},(2+Math.random()*3)*60000)}
@@ -1883,11 +1961,220 @@ document.addEventListener('click',event=>{
  setTimeout(()=>{location.href=target.href},800);
 });
 
+
+// Place the three controls together, clear of the shark and weather indicator.
+const tools=$('oceanTopTools');
+['oceanSoundButton','oceanCollectionButton'].forEach(id=>tools.appendChild($(id)));
+const chooseBtn=document.createElement('button');chooseBtn.id='oceanChooseButton';chooseBtn.type='button';chooseBtn.textContent='🌦️ Choose Event';chooseBtn.setAttribute('aria-expanded','false');chooseBtn.setAttribute('aria-controls','oceanChoosePanel');tools.appendChild(chooseBtn);
+const chooser=$('oceanChoosePanel'),chooseType=$('oceanChooseType'),chooseOption=$('oceanChooseOption'),chooseCountdown=$('oceanChooseCountdown');
+const cooldownKey='ocean-manual-summon-until-v1';
+function refreshOptions(){chooseOption.replaceChildren();const data=chooseType.value==='weather'?weather:events;data.forEach((entry,i)=>{const opt=document.createElement('option');opt.value=i;opt.textContent=entry[0];chooseOption.appendChild(opt)})}
+chooseType.addEventListener('change',refreshOptions);refreshOptions();
+chooseBtn.addEventListener('click',()=>{chooser.hidden=!chooser.hidden;chooseBtn.setAttribute('aria-expanded',String(!chooser.hidden));$('oceanSoundPanel').hidden=true;collectionOpen(false)});
+$('oceanChooseClose').addEventListener('click',()=>{chooser.hidden=true;chooseBtn.setAttribute('aria-expanded','false')});
+$('oceanChooseStart').addEventListener('click',()=>{
+ const remaining=Number(safeGet(cooldownKey,'0'))-Date.now();
+ if(remaining>0){updateCooldown();return}
+ const index=Number(chooseOption.value);
+ if(chooseType.value==='weather')setWeather(weather[index]);
+ else if(!startSpecial(index)){chooseCountdown.textContent='An event is already happening. Please wait until it finishes.';return}
+ safeSet(cooldownKey,Date.now()+300000);updateCooldown();chooser.hidden=true;chooseBtn.setAttribute('aria-expanded','false');
+});
+function updateCooldown(){const remain=Math.max(0,Number(safeGet(cooldownKey,'0'))-Date.now());chooseCountdown.textContent=remain?'Next summon in '+Math.ceil(remain/60000)+' min '+String(Math.floor(remain/1000)%60).padStart(2,'0')+' sec':'✨ Ready to summon!';$('oceanChooseStart').disabled=remain>0}
+updateCooldown();setInterval(updateCooldown,1000);
+// Make the sound and collection panels mutually exclusive with the event chooser.
+$('oceanSoundButton').addEventListener('click',()=>{chooser.hidden=true;chooseBtn.setAttribute('aria-expanded','false');collectionOpen(false)});
+$('oceanCollectionButton').addEventListener('click',()=>{chooser.hidden=true;chooseBtn.setAttribute('aria-expanded','false');$('oceanSoundPanel').hidden=true});
 initJournal();wildlife();setWeather(weather[0]);setInterval(()=>setWeather(pickWeighted()),180000);
 // Each 5-10 minute interval offers a 65% chance of a rare encounter.
 function scheduleSpecial(){const delay=(5+Math.random()*5)*60000;setTimeout(()=>{if(Math.random()<.65)startSpecial();scheduleSpecial()},delay)}scheduleSpecial();
 })();
 </script>
 
+<section id="oceanShopPanel" hidden aria-label="Ocean avatar and treasure shop">
+<div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3>🛍️ Ocean Boutique</h3><button id="oceanShopClose" type="button">✕ Close</button></div>
+<div class="ocean-wallet">🫧 Ocean Pearls: <span id="oceanPearlBalance">0</span></div>
+<p style="font-size:.83rem;line-height:1.6">Discover new treasures to earn pearls. Dress up your ocean avatar and explore in style! Everything here uses free in-game pearls. 💙</p>
+<div class="ocean-avatar-stage" id="oceanAvatarStage"><div class="avatar-bg" id="oceanAvatarBackground">🌊</div><div class="ocean-avatar-figure"><span id="oceanAvatarBody">🧜‍♀️</span><span class="ocean-avatar-hat" id="oceanAvatarHat"></span><span class="ocean-avatar-accessory" id="oceanAvatarAccessory"></span></div></div>
+<div class="ocean-shop-tabs" id="oceanShopTabs"></div><div id="oceanShopMessage" role="status"></div><div class="ocean-shop-grid" id="oceanShopGrid"></div>
+<p style="font-size:.73rem;color:#b9d8e9">Purchases, equipped items, and pearl balance are stored in this browser. Finding an already-collected treasure does not award additional pearls.</p>
+</section>
+<script id="ocean-economy-script">
+(()=>{
+'use strict';
+const byId=id=>document.getElementById(id);
+const key='ocean-avatar-economy-v1';
+const base={pearls:0,purchased:['body-mermaid','hat-none','accessory-none','background-ocean'],equipped:{body:'body-mermaid',hat:'hat-none',accessory:'accessory-none',background:'background-ocean'},awarded:[]};
+let state;
+try{const saved=JSON.parse(localStorage.getItem(key)||'null');state=saved&&typeof saved==='object'?{...base,...saved,equipped:{...base.equipped,...saved.equipped}}:structuredClone(base)}catch{state=JSON.parse(JSON.stringify(base))}
+state.pearls=Math.max(0,Math.floor(Number(state.pearls)||0));
+state.purchased=Array.isArray(state.purchased)?state.purchased:base.purchased.slice();
+state.awarded=Array.isArray(state.awarded)?state.awarded:[];
+const catalog=[
+['body-mermaid','body','🧜‍♀️','Ocean Mermaid',0],['body-diver','body','🤿','Deep Sea Diver',75],['body-dolphin','body','🐬','Playful Dolphin',125],['body-seal','body','🦭','Baby Seal',175],['body-octopus','body','🐙','Friendly Octopus',250],['body-turtle','body','🐢','Sea Turtle',350],['body-shark','body','🦈','Little Shark',500],['body-fairy','body','🧚','Ocean Fairy',900],['body-princess','body','👸','Coral Princess',1500],['body-dragon','body','🐉','Sea Dragon',3500],
+['hat-none','hat','','No Hat',0],['hat-flower','hat','🌺','Tropical Flower',40],['hat-bow','hat','🎀','Pink Bow',65],['hat-shell','hat','🐚','Shell Crown',150],['hat-star','hat','⭐','Star Crown',250],['hat-pirate','hat','🏴‍☠️','Pirate Hat',400],['hat-crown','hat','👑','Royal Crown',850],['hat-halo','hat','✨','Starlight Halo',1900],
+['accessory-none','accessory','','No Accessory',0],['accessory-heart','accessory','💗','Pink Heart',40],['accessory-pearl','accessory','🦪','Pearl Companion',110],['accessory-crab','accessory','🦀','Crab Friend',180],['accessory-fish','accessory','🐠','Fish Companion',300],['accessory-jelly','accessory','🪼','Glowing Jellyfish',700],['accessory-diamond','accessory','💎','Diamond Charm',1800],['accessory-kraken','accessory','🦑','Tiny Kraken',3000],
+['background-ocean','background','🌊','Ocean Blue',0],['background-reef','background','🪸','Coral Reef',90],['background-sunset','background','🌅','Sunset Bay',180],['background-rainbow','background','🌈','Rainbow Sea',350],['background-moon','background','🌙','Moonlit Cove',600],['background-aurora','background','🌌','Aurora Waters',1200],['background-castle','background','🏰','Undersea Palace',2600]
+].map(([id,type,emoji,name,price])=>({id,type,emoji,name,price}));
+
+// 2,400 procedurally named, individually purchasable cosmetic items.
+const shopAdjectives=['Coral','Moonlit','Starlight','Sunken','Crystal','Pearl','Royal','Tidal','Azure','Dreamy','Glowing','Golden','Silver','Velvet','Mystic','Rainbow','Frosted','Ancient','Luminous','Celestial','Deepwater','Rose','Opal','Enchanted'];
+const shopThemes=[
+['body','🧜‍♀️','Mermaid'],['body','🐬','Dolphin'],['body','🦭','Seal'],['body','🐙','Octopus'],['body','🐢','Turtle'],['body','🦈','Shark'],['body','🦄','Sea Unicorn'],['body','🐉','Sea Dragon'],
+['hat','👑','Crown'],['hat','🎀','Bow'],['hat','🌺','Flower'],['hat','⭐','Star'],['hat','🐚','Shell'],['hat','✨','Halo'],['hat','🪸','Coral Tiara'],['hat','💎','Gem'],
+['accessory','🐠','Fish Friend'],['accessory','🦀','Crab Friend'],['accessory','🪼','Jelly Friend'],['accessory','💗','Heart'],['accessory','🔱','Trident'],['accessory','🦑','Squid Friend'],['accessory','🦋','Butterfly'],['accessory','🦪','Pearl Friend'],
+['background','🌊','Ocean'],['background','🏝️','Island'],['background','🌌','Galaxy'],['background','🌅','Sunset'],['background','🏰','Palace'],['background','🪸','Reef'],['background','🌙','Moonlight'],['background','🌈','Rainbow']
+];
+const shopEditions=['Whisper','Dream','Bloom'];
+for(let i=0;i<2400;i++){
+ const theme=shopThemes[i%shopThemes.length],adj=shopAdjectives[Math.floor(i/shopThemes.length)%shopAdjectives.length],edition=shopEditions[Math.floor(i/(shopThemes.length*shopAdjectives.length))%shopEditions.length];
+ const rank=Math.floor(i/32);const price=20+Math.round((rank+1)**1.32*6)+((i%7)*7);
+ catalog.push({id:'boutique-'+i,type:theme[0],emoji:theme[1],name:adj+' '+theme[2]+' · '+edition+' '+(Math.floor(i/768)+1),price});
+}
+const itemMap=new Map(catalog.map(item=>[item.id,item]));
+const rewards={Common:5,Uncommon:12,Rare:30,Epic:80,Legendary:220,Mythic:700};
+function save(){try{localStorage.setItem(key,JSON.stringify(state))}catch{}}
+// Reconcile previously collected treasures once, so older progress earns its rightful pearls.
+function migrate(){if(typeof owned==='undefined'||typeof treasureCatalog==='undefined')return;
+const index=new Map(treasureCatalog.map(item=>[item.id,item]));let changed=false;
+for(const id of owned){if(state.awarded.includes(id))continue;const item=index.get(id);if(!item)continue;state.awarded.push(id);state.pearls+=Number(item.value)||rewards[item.rarity]||5;changed=true}
+if(changed)save()}
+const btn=document.createElement('button');btn.id='oceanShopButton';btn.type='button';btn.textContent='🛍️ Avatar & Shop';btn.setAttribute('aria-controls','oceanShopPanel');btn.setAttribute('aria-expanded','false');
+const tools=byId('oceanTopTools');if(tools)tools.appendChild(btn);else document.body.prepend(btn);
+const panel=byId('oceanShopPanel');
+let tab='body',shopPage=0,shopSearch='';
+const shopSearchInput=document.createElement('input');shopSearchInput.type='search';shopSearchInput.placeholder='Search 2,400+ cosmetics…';shopSearchInput.setAttribute('aria-label','Search shop');shopSearchInput.className='ocean-shop-search';byId('oceanShopGrid').before(shopSearchInput);shopSearchInput.addEventListener('input',()=>{shopSearch=shopSearchInput.value.toLowerCase();shopPage=0;render()});
+const shopPager=document.createElement('div');shopPager.className='ocean-shop-pager';byId('oceanShopGrid').after(shopPager);
+function showMessage(msg){byId('oceanShopMessage').textContent=msg}
+function render(){byId('oceanPearlBalance').textContent=state.pearls.toLocaleString();
+for(const type of ['body','hat','accessory','background']){const item=itemMap.get(state.equipped[type]);const emoji=item?.emoji||'';const el=byId('oceanAvatar'+({body:'Body',hat:'Hat',accessory:'Accessory',background:'Background'}[type]));el.textContent=emoji}
+const tabs=byId('oceanShopTabs');tabs.replaceChildren();for(const type of ['body','hat','accessory','background']){const b=document.createElement('button');b.type='button';b.textContent=({body:'🧜‍♀️ Avatars',hat:'👑 Hats',accessory:'💗 Companions',background:'🌊 Scenes'})[type];b.setAttribute('aria-pressed',String(type===tab));b.addEventListener('click',()=>{tab=type;shopPage=0;render()});tabs.appendChild(b)}
+const grid=byId('oceanShopGrid');grid.replaceChildren();const filtered=catalog.filter(i=>i.type===tab&&i.name.toLowerCase().includes(shopSearch));const pages=Math.max(1,Math.ceil(filtered.length/24));shopPage=Math.min(shopPage,pages-1);for(const item of filtered.slice(shopPage*24,shopPage*24+24)){
+const cell=document.createElement('div');cell.className='ocean-shop-item';
+const icon=document.createElement('div');icon.textContent=item.emoji||'🚫';icon.style.fontSize='2rem';
+const title=document.createElement('strong');title.textContent=item.name;
+const cost=document.createElement('small');cost.textContent=item.price===0?'Free':item.price.toLocaleString()+' 🫧';
+const action=document.createElement('button');action.type='button';const ownedItem=state.purchased.includes(item.id);const equipped=state.equipped[item.type]===item.id;
+action.textContent=equipped?'✓ Equipped':ownedItem?'Equip':'Buy';action.disabled=equipped;
+action.addEventListener('click',()=>{
+if(!state.purchased.includes(item.id)){
+if(state.pearls<item.price){showMessage('Not enough Ocean Pearls yet! Find more treasures. 🐚');return}
+state.pearls-=item.price;state.purchased.push(item.id);showMessage('Purchased '+item.name+'! 💙')
+}else showMessage('Equipped '+item.name+'! ✨');
+state.equipped[item.type]=item.id;save();render()
+});cell.append(icon,title,cost,action);grid.appendChild(cell)
+}shopPager.replaceChildren();const prev=document.createElement('button'),next=document.createElement('button'),label=document.createElement('span');prev.textContent='← Previous';next.textContent='Next →';label.textContent='Page '+(shopPage+1)+' / '+pages+' · '+filtered.length+' items';prev.disabled=shopPage===0;next.disabled=shopPage>=pages-1;prev.onclick=()=>{shopPage--;render()};next.onclick=()=>{shopPage++;render()};shopPager.append(prev,label,next);}
+function toggle(open){panel.hidden=!open;btn.setAttribute('aria-expanded',String(open));if(open){migrate();render()}}
+btn.addEventListener('click',()=>toggle(panel.hidden));byId('oceanShopClose').addEventListener('click',()=>toggle(false));
+// Called only after a new treasure has been added to the collection.
+window.oceanRewardTreasure=function(item){if(!item||state.awarded.includes(item.id))return;const amount=Number(item.value)||rewards[item.rarity]||5;state.awarded.push(item.id);state.pearls+=amount;save();render();setTimeout(()=>showMessage('+'+amount+' Ocean Pearls from '+item.name+'! 🫧'),0)};
+window.oceanBattleReward=function(id,amount){if(state.awarded.includes('battle-'+id))return false;state.awarded.push('battle-'+id);state.pearls+=amount;save();render();return true};
+migrate();render();
+})();
+</script>
+<style id="ocean-challenges-styles">
+#oceanChallengesPanel{position:fixed;right:12px;top:75px;z-index:10056;width:min(460px,calc(100vw - 24px));max-height:80vh;overflow:auto;padding:17px;border:1px solid #8ceeff;border-radius:20px;background:linear-gradient(150deg,#10244ffb,#271e51fc);text-align:left;box-shadow:0 15px 35px #000a;color:white}
+#oceanChallengesPanel button{padding:8px 12px;margin:5px;font-size:.85rem}#oceanChallengesPanel h3{color:#9ff5ff;margin:5px 0}#oceanChallengesPanel .battle-arena{padding:13px;border-radius:15px;background:#0c3469;margin:12px 0;text-align:center}#oceanChallengesPanel .battle-creature{font-size:4rem;display:block;animation:battleBob 2.4s ease-in-out infinite}#oceanChallengesPanel .battle-bar{height:13px;background:#351d45;border-radius:12px;overflow:hidden;margin:5px 0 12px}#oceanChallengesPanel .battle-bar span{height:100%;display:block;background:linear-gradient(90deg,#e5588c,#ffcf83);transition:width .2s}#oceanChallengesPanel .battle-log{font-size:.85rem;min-height:40px;color:#e9e2ff;line-height:1.5}#oceanChallengesPanel .battle-actions{display:flex;flex-wrap:wrap;justify-content:center}#oceanChallengesPanel .battle-actions button:disabled{opacity:.45}#oceanChallengesPanel .battle-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#oceanChallengesPanel .battle-list button{margin:0;padding:9px 5px;font-size:.75rem;white-space:normal}#oceanChallengesPanel .battle-list button.active{border-color:#ffe6a2;background:#684590}#oceanChallengesPanel .battle-stat{display:flex;justify-content:space-between;gap:6px;font-size:.85rem}#oceanChallengesPanel .battle-note{font-size:.76rem;color:#c7eaff}#oceanShopPanel .ocean-shop-search{width:100%;padding:11px;border-radius:12px;border:1px solid #7eddf5;background:#112d58;color:white;margin:10px 0}#oceanShopPanel .ocean-shop-pager{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin:12px 0;font-size:.8rem}#oceanShopPanel .ocean-shop-pager button{padding:7px 10px}
+@keyframes battleBob{50%{transform:translateY(-7px)}}@media(max-width:650px){#oceanChallengesPanel{top:160px;max-height:calc(100vh - 175px)}}@media(prefers-reduced-motion:reduce){#oceanChallengesPanel .battle-creature{animation:none}}
+</style><section id="oceanChallengesPanel" hidden aria-label="Ocean creature challenges">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h3>⚔️ Ocean Creature Challenges</h3><button id="oceanChallengesClose" type="button">✕ Close</button></div>
+<p class="battle-note">Face strange creatures during special ocean events! Win your first battle against each creature to earn Ocean Pearls. No real-money purchases or penalties for losing.</p>
+<div class="battle-stat"><span id="battleWins">0 victories</span><span id="battleEventStatus">Waiting for an event</span></div>
+<div class="battle-arena"><span class="battle-creature" id="battleCreatureEmoji">🦑</span><strong id="battleCreatureName">Choose a creature</strong><div class="battle-bar"><span id="battleEnemyBar" style="width:100%"></span></div><div class="battle-stat"><span id="battleEnemyHP">Enemy HP: —</span><span id="battlePlayerHP">Your HP: —</span></div><div class="battle-bar"><span id="battlePlayerBar" style="width:100%;background:linear-gradient(90deg,#3bc7a0,#a1f0b7)"></span></div><div class="battle-log" id="battleLog" role="status">When an event begins, select an opponent!</div><div class="battle-actions"><button type="button" id="battleAttack">⚔️ Attack</button><button type="button" id="battleGuard">🛡️ Guard</button><button type="button" id="battleHeal">💚 Heal</button></div></div>
+<h4>Event Creatures</h4><div id="battleCreatureList" class="battle-list"></div><p class="battle-note">Each creature has different strength, health and a first-victory pearl reward. Battles are turn-based and require an active event; winning does not remove the event's normal effects.</p>
+</section><script id="ocean-battles-script">
+(()=>{'use strict';
+const $=id=>document.getElementById(id),key='ocean-battles-v1';
+const creatures=[];
+const types=[['🦑','Kraken Spawn'],['🐉','Abyss Dragon'],['🦈','Ghost Shark'],['🪼','Venom Jelly'],['🐙','Cursed Octopus'],['🦀','Armored Crab'],['🐡','Spiked Puffer'],['🐍','Sea Serpent'],['🐢','Titan Turtle'],['🐠','Phantom Fish'],['🦭','Shadow Seal'],['🦐','Chaos Shrimp'],['🦞','Lava Lobster'],['🐋','Leviathan Whale'],['🦖','Ancient Sea Beast'],['👻','Drowned Spirit'],['🧟','Coral Zombie'],['🛸','Alien Jelly'],['🐲','Tide Wyrm'],['🦄','Mythic Narwhal']];
+const titles=['Wild','Stormborn','Glowing','Ancient','Shadow','Golden','Feral','Moonlit','Titan','Abyssal','Crystal','Cursed','Royal','Lost','Celestial','Volcanic','Frost','Thunder','Dream','Eternal'];
+for(let i=0;i<400;i++){const t=types[i%types.length],level=1+Math.floor(i/20),tier=Math.floor(level/4);creatures.push({id:i,name:titles[Math.floor(i/types.length)]+' '+t[1],emoji:t[0],level,hp:32+level*9,attack:4+Math.floor(level*1.4),reward:20+level*13+tier*40})}
+let saved;try{saved=JSON.parse(localStorage.getItem(key)||'{}')}catch{saved={}}
+let wins=new Set(Array.isArray(saved.wins)?saved.wins:[]),eventUntil=0,selected=0,battle=null,guard=false;
+const button=document.createElement('button');button.type='button';button.id='oceanChallengesButton';button.textContent='⚔️ Challenges';$('oceanTopTools')?.appendChild(button);
+const panel=$('oceanChallengesPanel');button.onclick=()=>{panel.hidden=!panel.hidden;update()};$('oceanChallengesClose').onclick=()=>panel.hidden=true;
+const list=$('battleCreatureList');let page=0;
+function save(){try{localStorage.setItem(key,JSON.stringify({wins:[...wins]}))}catch{}}
+function log(s){$('battleLog').textContent=s}
+function update(){const c=creatures[selected];$('battleCreatureEmoji').textContent=c.emoji;$('battleCreatureName').textContent=c.name+' · Level '+c.level+' · '+c.reward+' 🫧';$('battleWins').textContent=wins.size+' / '+creatures.length+' victories';const active=Date.now()<eventUntil;$('battleEventStatus').textContent=active?'🌊 Event active: '+Math.ceil((eventUntil-Date.now())/1000)+'s':'Waiting for an event';$('battleEnemyHP').textContent='Enemy HP: '+(battle?Math.max(0,battle.hp)+'/'+c.hp:'—');$('battlePlayerHP').textContent='Your HP: '+(battle?Math.max(0,battle.player)+'/100':'—');$('battleEnemyBar').style.width=(battle?Math.max(0,battle.hp)/c.hp*100:100)+'%';$('battlePlayerBar').style.width=(battle?Math.max(0,battle.player):100)+'%';for(const id of ['battleAttack','battleGuard','battleHeal'])$(id).disabled=!active||!!battle&&battle.ended;}
+function drawList(){list.replaceChildren();for(const c of creatures.slice(page*20,page*20+20)){const b=document.createElement('button');b.type='button';b.className=selected===c.id?'active':'';b.textContent=c.emoji+' '+c.name+(wins.has(c.id)?' ✓':'')+' · Lv '+c.level;b.onclick=()=>{selected=c.id;battle=null;guard=false;log('Selected '+c.name+'. Choose Attack to begin!');drawList();update()};list.appendChild(b)}const nav=document.createElement('div');nav.style.gridColumn='1/-1';nav.style.textAlign='center';const prev=document.createElement('button'),next=document.createElement('button');prev.textContent='←';next.textContent='→';prev.disabled=page===0;next.disabled=page>=19;prev.onclick=()=>{page--;drawList()};next.onclick=()=>{page++;drawList()};nav.append(prev,document.createTextNode(' Page '+(page+1)+'/20 '),next);list.appendChild(nav)}
+function turn(action){if(Date.now()>=eventUntil){log('Wait for a special event to begin. 🌊');update();return}const c=creatures[selected];if(!battle||battle.ended)battle={hp:c.hp,player:100,heals:3,ended:false};let message='';if(action==='attack'){const hit=9+Math.floor(Math.random()*16);battle.hp-=hit;message='You struck for '+hit+' damage! '}else if(action==='guard'){guard=true;message='You raised your shield! '}else if(action==='heal'){if(battle.heals<=0){log('No healing charges left!');return}battle.heals--;const heal=15+Math.floor(Math.random()*12);battle.player=Math.min(100,battle.player+heal);message='You recovered '+heal+' HP! '}
+if(battle.hp<=0){battle.hp=0;battle.ended=true;let bonus='';if(!wins.has(c.id)){wins.add(c.id);save();if(window.oceanBattleReward?.(c.id,c.reward))bonus=' Earned '+c.reward+' Ocean Pearls!';}else bonus=' Already defeated: no repeat reward.';log('🏆 Victory against '+c.name+'!'+bonus);drawList();update();return}
+const damage=Math.max(1,c.attack+Math.floor(Math.random()*8)-(guard?Math.floor(c.attack*.7)+6:0));guard=false;battle.player-=damage;message+=c.emoji+' hit back for '+damage+'!';if(battle.player<=0){battle.player=0;battle.ended=true;message+=' You lost this round, but you can try again while the event lasts.'}log(message);update()}
+$('battleAttack').onclick=()=>turn('attack');$('battleGuard').onclick=()=>turn('guard');$('battleHeal').onclick=()=>turn('heal');
+window.addEventListener('ocean-special-event',e=>{eventUntil=Date.now()+Math.max(20000,Number(e.detail?.duration)||120000);battle=null;log('⚡ '+(e.detail?.name||'Ocean event')+'! A creature challenge is available for two minutes.');update()});
+// Each special event remains a challenge opportunity even after its short animation ends.
+setInterval(()=>{if(!panel.hidden)update()},1000);drawList();update();
+})();</script>
+<style id="ocean-music-upgrade-style">
+.ocean-panel-dismiss{float:right!important;margin:0 0 10px 10px!important;padding:7px 12px!important;border-radius:16px!important;font-size:.85rem!important;background:#31517e!important;position:sticky;top:0;z-index:2}
+#oceanMusicNow{font-size:.8rem;color:#aeeeff;margin:7px 0}
+#oceanMusicToggle{padding:8px 12px!important;margin:5px 0!important;font-size:.85rem!important}
+#oceanSoundPanel{overflow-y:auto;max-height:75vh}
+#oceanSoundPanel label{display:block;margin:8px 0}
+#oceanTopTools{align-items:center}
+@media(max-width:650px){#oceanSoundPanel,#oceanCollectionPanel,#oceanChoosePanel,#oceanShopPanel,#oceanChallengesPanel{max-height:65vh!important;overflow:auto!important}}
+</style>
+<script id="ocean-music-upgrade-script">
+(()=>{'use strict';
+const get=id=>document.getElementById(id);
+// Each floating overlay can be dismissed without disturbing game state.
+const panels=['oceanSoundPanel','oceanCollectionPanel','oceanChoosePanel','oceanShopPanel','oceanChallengesPanel'];
+for(const id of panels){const panel=get(id);if(!panel)continue;
+if(!panel.querySelector('.ocean-panel-dismiss')){const close=document.createElement('button');close.type='button';close.className='ocean-panel-dismiss';close.textContent='✕ Close';close.setAttribute('aria-label','Close '+(panel.getAttribute('aria-label')||id));panel.prepend(close);close.addEventListener('click',()=>{panel.hidden=true;const trigger=document.querySelector('[aria-controls="'+id+'"]');if(trigger)trigger.setAttribute('aria-expanded','false')})}
+}
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;for(const id of panels){const p=get(id);if(p&&!p.hidden){p.hidden=true;const trigger=document.querySelector('[aria-controls="'+id+'"]');if(trigger)trigger.setAttribute('aria-expanded','false')}}});
+// Original ambient score written as procedural Web Audio notes; no external copyrighted tracks.
+const panel=get('oceanSoundPanel'),toggle=get('oceanSoundToggle'),slider=get('oceanVolume');if(!panel||!toggle||!slider)return;
+const musicBox=document.createElement('section');musicBox.id='oceanMusicSettings';musicBox.innerHTML=`<hr style="border:0;border-top:1px solid #78d9ee66;margin:14px 0"><strong>🎼 Music Player</strong>
+<label class="ocean-toggle"><input id="oceanMusicEnabled" type="checkbox" checked> Enable background music</label>
+<label for="oceanMusicVolume">Music volume: <output id="oceanMusicVolumeText">50%</output></label>
+<input id="oceanMusicVolume" type="range" min="0" max="100" value="50" aria-label="Music volume">
+<label for="oceanMusicMode">Soundtrack</label>
+<select id="oceanMusicMode" style="width:100%;background:#142f67;color:white;border:1px solid #8ceeff;border-radius:9px;padding:10px"><option value="auto">🔄 Automatic (boss / peaceful)</option><option value="calm">🌊 Peaceful Tide</option><option value="boss">⚔️ Storm of the Deep</option></select>
+<div id="oceanMusicNow" role="status">🎵 Ready to play</div>
+<button type="button" id="oceanMusicPreview">▶ Play music</button>
+<button type="button" id="oceanMusicStop">⏹ Stop music</button>
+<p style="font-size:.75rem;line-height:1.5;color:#c5eaff">The main volume controls everything. Music volume adjusts only the soundtrack. Automatic mode switches to battle music during special events. All music is original, generated in your browser.</p>`;
+panel.appendChild(musicBox);
+const enabled=get('oceanMusicEnabled'),musicVolume=get('oceanMusicVolume'),musicVolumeText=get('oceanMusicVolumeText'),mode=get('oceanMusicMode'),now=get('oceanMusicNow'),playButton=get('oceanMusicPreview');
+const read=(k,d)=>{try{return localStorage.getItem(k)??d}catch{return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,String(v))}catch{}};
+enabled.checked=read('ocean-music-enabled','true')==='true';musicVolume.value=read('ocean-music-volume','50');musicVolumeText.textContent=musicVolume.value+'%';mode.value=read('ocean-music-mode','auto');
+let started=false,bossUntil=0,ctx=null,out=null,beatTimer=null,step=0;
+const AC=window.AudioContext||window.webkitAudioContext;
+function setup(){if(ctx||!AC)return;ctx=new AC();out=ctx.createGain();out.connect(ctx.destination);updateMusic()}
+function updateMusic(){if(!ctx)return;out.gain.setTargetAtTime(Number(slider.value)/100*Number(musicVolume.value)/100*.24,ctx.currentTime,.08)}
+function play(freq,when,duration,volume=1,shape='sine'){
+if(!ctx||ctx.state!=='running')return;
+const osc=ctx.createOscillator(),g=ctx.createGain();osc.type=shape;osc.frequency.setValueAtTime(freq,when);
+g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(Math.max(.0002,volume*.15),when+.04);g.gain.exponentialRampToValueAtTime(.0001,when+duration);
+osc.connect(g);g.connect(out);osc.start(when);osc.stop(when+duration+.03);
+}
+const calm=[261.63,329.63,392,493.88,440,392,329.63,293.66,261.63,329.63,440,392,349.23,329.63,293.66,261.63];
+const danger=[110,164.81,146.83,130.81,110,174.61,146.83,98];
+function bossActive(){return mode.value==='boss'||(mode.value==='auto'&&Date.now()<bossUntil)}
+function tick(){if(!started||!enabled.checked||!ctx||ctx.state!=='running'||document.hidden)return;
+const boss=bossActive(),t=ctx.currentTime+.04;
+if(boss){const f=danger[step%danger.length];play(f,t,.34,.85,'sawtooth');play(f*2,t+.12,.19,.25,'triangle');if(step%2===0)play(58,t,.23,.95,'triangle');}
+else{const f=calm[step%calm.length];play(f,t,1.65,.42,'sine');if(step%4===0)play(f/2,t,2.6,.22,'triangle');}
+step++;now.textContent=boss?'⚔️ Playing: Storm of the Deep':'🌊 Playing: Peaceful Tide';
+}
+function refresh(){playButton.textContent=started?'⏸ Pause music':'▶ Play music';if(!started)now.textContent='🎵 Music paused';else if(!enabled.checked)now.textContent='🔇 Music disabled';else now.textContent=bossActive()?'⚔️ Playing: Storm of the Deep':'🌊 Playing: Peaceful Tide';if(ctx){if(started&&enabled.checked&&!document.hidden)ctx.resume();else ctx.suspend()}}
+function start(){setup();if(!ctx){now.textContent='Audio is not supported in this browser';return}started=true;refresh();if(!beatTimer){beatTimer=setInterval(tick,650);tick()}}
+playButton.addEventListener('click',()=>{if(started){started=false;refresh()}else start()});
+get('oceanMusicStop').addEventListener('click',()=>{started=false;step=0;refresh()});
+enabled.addEventListener('change',()=>{save('ocean-music-enabled',enabled.checked);refresh()});
+musicVolume.addEventListener('input',()=>{musicVolumeText.textContent=musicVolume.value+'%';save('ocean-music-volume',musicVolume.value);updateMusic()});
+mode.addEventListener('change',()=>{save('ocean-music-mode',mode.value);step=0;refresh()});
+slider.addEventListener('input',updateMusic);
+// Start with the user's gesture on the existing ocean-sound play button, or the music play button.
+toggle.addEventListener('click',()=>{setTimeout(()=>{if(toggle.textContent.includes('Pause')){if(!started&&enabled.checked)start()}else{started=false;refresh()}},0)});
+window.addEventListener('ocean-special-event',e=>{bossUntil=Date.now()+Math.max(20000,Number(e.detail?.duration)||120000);step=0;refresh()});
+setInterval(()=>{if(bossUntil&&Date.now()>=bossUntil){bossUntil=0;step=0;refresh()}},1500);
+document.addEventListener('visibilitychange',refresh);
+refresh();
+})();
+</script>
 </body>
 </html>
