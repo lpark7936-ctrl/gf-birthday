@@ -1773,7 +1773,7 @@ body.ocean-reduce-effects #oceanAtmosphere *,body.ocean-reduce-effects #oceanEve
 <button type="button" id="oceanChooseStart">✨ Summon Adventure</button>
 <button type="button" id="oceanChooseClose">Close ✕</button>
 <p id="oceanChooseCountdown" role="status">Ready to summon!</p>
-<p style="font-size:.78rem">One manual summon every 5 minutes. Automatic weather and events continue normally.</p>
+<p style="font-size:.78rem">One manual summon every 1 minute. Automatic weather and events continue normally.</p>
 </section>
 <button id="oceanSoundButton" type="button" aria-expanded="false" aria-controls="oceanSoundPanel">🔊 Ocean Sound</button>
 <div id="oceanSoundPanel" hidden>
@@ -1967,7 +1967,7 @@ const tools=$('oceanTopTools');
 ['oceanSoundButton','oceanCollectionButton'].forEach(id=>tools.appendChild($(id)));
 const chooseBtn=document.createElement('button');chooseBtn.id='oceanChooseButton';chooseBtn.type='button';chooseBtn.textContent='🌦️ Choose Event';chooseBtn.setAttribute('aria-expanded','false');chooseBtn.setAttribute('aria-controls','oceanChoosePanel');tools.appendChild(chooseBtn);
 const chooser=$('oceanChoosePanel'),chooseType=$('oceanChooseType'),chooseOption=$('oceanChooseOption'),chooseCountdown=$('oceanChooseCountdown');
-const cooldownKey='ocean-manual-summon-until-v1';
+const cooldownKey='ocean-manual-summon-until-v2';
 function refreshOptions(){chooseOption.replaceChildren();const data=chooseType.value==='weather'?weather:events;data.forEach((entry,i)=>{const opt=document.createElement('option');opt.value=i;opt.textContent=entry[0];chooseOption.appendChild(opt)})}
 chooseType.addEventListener('change',refreshOptions);refreshOptions();
 chooseBtn.addEventListener('click',()=>{chooser.hidden=!chooser.hidden;chooseBtn.setAttribute('aria-expanded',String(!chooser.hidden));$('oceanSoundPanel').hidden=true;collectionOpen(false)});
@@ -1978,7 +1978,7 @@ $('oceanChooseStart').addEventListener('click',()=>{
  const index=Number(chooseOption.value);
  if(chooseType.value==='weather')setWeather(weather[index]);
  else if(!startSpecial(index)){chooseCountdown.textContent='An event is already happening. Please wait until it finishes.';return}
- safeSet(cooldownKey,Date.now()+300000);updateCooldown();chooser.hidden=true;chooseBtn.setAttribute('aria-expanded','false');
+ safeSet(cooldownKey,Date.now()+60000);updateCooldown();chooser.hidden=true;chooseBtn.setAttribute('aria-expanded','false');
 });
 function updateCooldown(){const remain=Math.max(0,Number(safeGet(cooldownKey,'0'))-Date.now());chooseCountdown.textContent=remain?'Next summon in '+Math.ceil(remain/60000)+' min '+String(Math.floor(remain/1000)%60).padStart(2,'0')+' sec':'✨ Ready to summon!';$('oceanChooseStart').disabled=remain>0}
 updateCooldown();setInterval(updateCooldown,1000);
@@ -2624,6 +2624,45 @@ $('oceanVolume')?.addEventListener('input',updateAudio);
 document.addEventListener('visibilitychange',updateAudio);
 setInterval(updateAudio,1500);
 setWeather('sun');
+})();
+</script>
+<style id="ocean-submarine-styles">
+#oceanSubPanel{position:fixed;z-index:10125;right:14px;top:68px;width:min(360px,calc(100vw - 28px));max-height:calc(100dvh - 85px);overflow:auto;background:#09264df5;border:1px solid #8ceaff;border-radius:20px;padding:16px;color:#fff;box-shadow:0 15px 35px #0009;text-align:left}
+#oceanSubPanel[hidden]{display:none!important}#oceanSubPanel h3{margin:0 0 8px;color:#baf8ff}#oceanSubPanel button{font-size:.85rem;padding:9px 12px;margin:4px 3px;border-radius:12px}#oceanSubPanel select{width:100%;background:#123d64;color:#fff;border:1px solid #8ceaff;border-radius:10px;padding:9px;margin:7px 0}#oceanSubPanel .sub-meter{height:13px;border:1px solid #9ceaff;border-radius:15px;background:#301b39;overflow:hidden;margin:6px 0 12px}#oceanSubPanel .sub-meter span{display:block;height:100%;background:linear-gradient(90deg,#20c6a6,#8effce);transition:width .25s}#oceanSubPanel .enemy-meter span{background:linear-gradient(90deg,#ff665e,#ffc165)}
+#oceanPilot{position:fixed;z-index:8;left:var(--sub-x,45%);top:var(--sub-y,70%);transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 4px 10px #000b);font-size:clamp(44px,7vw,90px);transition:left .15s,top .15s}#oceanPilot .sub-health{font:700 12px Arial,sans-serif;color:white;background:#073451d9;padding:4px 8px;border-radius:12px;text-align:center;border:1px solid #8feaff}#oceanSpawnedMob{position:fixed;z-index:9;left:var(--mob-x,65%);top:var(--mob-y,56%);transform:translate(-50%,-50%);font-size:clamp(50px,8vw,110px);pointer-events:none;filter:drop-shadow(0 0 15px #ff6a6a)}#oceanSpawnedMob[hidden],#oceanPilot[hidden]{display:none!important}#oceanSpawnedMob small{display:block;text-align:center;font:700 12px Arial,sans-serif;color:#fff;background:#6e1a30d9;border-radius:10px;padding:4px}
+#oceanSubPanel .sub-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-width:200px;margin:10px auto}#oceanSubPanel .sub-controls button{margin:0}#oceanSubPanel .sub-controls .empty{visibility:hidden}#oceanSubMessage{font-size:.85rem;line-height:1.5;color:#c4f3ff;min-height:42px}
+@media(max-width:650px){#oceanSubPanel{right:8px;top:60px;max-height:calc(100dvh - 70px)}}
+</style>
+<section id="oceanSubPanel" hidden aria-label="Submarine and mob spawning">
+ <div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><h3>🚢 Submarine Adventure</h3><button type="button" id="oceanSubClose">✕</button></div>
+ <p style="font-size:.82rem">Pilot your own submarine! Spawn sea monsters, fight them, and protect your hull.</p>
+ <strong>❤️ Submarine HP: <span id="oceanSubHP">100 / 100</span></strong><div class="sub-meter"><span id="oceanSubHPBar" style="width:100%"></span></div>
+ <strong>👾 Enemy: <span id="oceanSubEnemyName">None</span></strong><div class="sub-meter enemy-meter"><span id="oceanSubEnemyHPBar" style="width:0%"></span></div>
+ <label for="oceanMobPicker">Spawn a creature</label><select id="oceanMobPicker"><option value="shark">🦈 Great White Shark</option><option value="squid">🦑 Giant Squid</option><option value="octopus">🐙 Angry Octopus</option><option value="whale">🐋 Blue Whale (peaceful)</option><option value="serpent">🐉 Abyssal Serpent</option><option value="jelly">🪼 Electric Jellyfish</option></select>
+ <div><button id="oceanSpawnMob" type="button">👾 Spawn Mob</button><button id="oceanSubAttack" type="button">💥 Fire Torpedo</button><button id="oceanSubRepair" type="button">🔧 Repair +25 HP</button></div>
+ <div class="sub-controls"><span class="empty"></span><button id="oceanSubUp" type="button" aria-label="Move up">▲</button><span class="empty"></span><button id="oceanSubLeft" type="button" aria-label="Move left">◀</button><button id="oceanSubDown" type="button" aria-label="Move down">▼</button><button id="oceanSubRight" type="button" aria-label="Move right">▶</button></div>
+ <p id="oceanSubMessage" role="status">Ready to explore! Your submarine appears when you open this panel.</p>
+</section>
+<div id="oceanPilot" hidden aria-label="Your submarine">🚢<div class="sub-health" id="oceanSubFloatingHP">❤️ 100 HP</div></div>
+<div id="oceanSpawnedMob" hidden aria-label="Spawned creature"><span id="oceanMobEmoji">🦈</span><small id="oceanMobFloatingHP">100 HP</small></div>
+<script id="ocean-submarine-script">
+(()=>{'use strict';const $=id=>document.getElementById(id);const tools=$('oceanTopTools');if(!tools)return;
+const btn=document.createElement('button');btn.id='oceanSubButton';btn.type='button';btn.textContent='🚢 Submarine & Spawn Mobs';btn.setAttribute('aria-controls','oceanSubPanel');tools.appendChild(btn);
+const panel=$('oceanSubPanel'),pilot=$('oceanPilot'),mobEl=$('oceanSpawnedMob');
+const mobs={shark:{name:'Great White Shark',emoji:'🦈',hp:95,damage:12},squid:{name:'Giant Squid',emoji:'🦑',hp:125,damage:15},octopus:{name:'Angry Octopus',emoji:'🐙',hp:110,damage:14},whale:{name:'Blue Whale',emoji:'🐋',hp:160,damage:0},serpent:{name:'Abyssal Serpent',emoji:'🐉',hp:180,damage:20},jelly:{name:'Electric Jellyfish',emoji:'🪼',hp:70,damage:9}};
+let hp=100,enemy=null,x=45,y=70,mx=65,my=56,lastShot=0,lastRepair=0,enemyTimer=null;
+function status(msg){$('oceanSubMessage').textContent=msg}
+function update(){hp=Math.max(0,Math.min(100,hp));$('oceanSubHP').textContent=hp+' / 100';$('oceanSubHPBar').style.width=hp+'%';$('oceanSubFloatingHP').textContent='❤️ '+hp+' HP';pilot.style.setProperty('--sub-x',x+'%');pilot.style.setProperty('--sub-y',y+'%');mobEl.style.setProperty('--mob-x',mx+'%');mobEl.style.setProperty('--mob-y',my+'%');$('oceanSubEnemyName').textContent=enemy?enemy.name+' ('+enemy.hp+' HP)':'None';$('oceanSubEnemyHPBar').style.width=enemy?Math.max(0,100*enemy.hp/enemy.maxHP)+'%':'0%';$('oceanMobFloatingHP').textContent=enemy?enemy.hp+' HP':'';mobEl.hidden=!enemy}
+function stopFight(){clearInterval(enemyTimer);enemyTimer=null}
+function open(open){panel.hidden=!open;pilot.hidden=!open;btn.setAttribute('aria-expanded',String(open));if(open){tools.hidden=true;$('oceanGameMenuButton')?.setAttribute('aria-expanded','false');$('oceanGameMenuButton').textContent='☰ Ocean Game';for(const id of ['oceanSoundPanel','oceanCollectionPanel','oceanChoosePanel','oceanShopPanel','oceanChallengesPanel','oceanMapPanel']){const p=$(id);if(p)p.hidden=true}}else{stopFight();mobEl.hidden=true}update()}
+btn.addEventListener('click',()=>open(true));$('oceanSubClose').addEventListener('click',()=>open(false));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)open(false)});
+$('oceanGameMenuButton')?.addEventListener('click',()=>{if(!panel.hidden)open(false)});
+function fightTick(){if(!enemy||panel.hidden||hp===0)return;if(enemy.damage){hp-=enemy.damage;status('⚠️ '+enemy.name+' attacked! -'+enemy.damage+' submarine HP.');if(hp<=0){hp=0;status('💔 Submarine disabled! Repair your hull to continue.');stopFight()}}update()}
+$('oceanSpawnMob').addEventListener('click',()=>{const type=mobs[$('oceanMobPicker').value];stopFight();enemy={...type,maxHP:type.hp};mx=30+Math.random()*50;my=30+Math.random()*35;$('oceanMobEmoji').textContent=type.emoji;status(type.damage?'⚠️ A hostile '+type.name+' has appeared!':'🐋 A peaceful blue whale is visiting.');update();if(type.damage&&hp>0)enemyTimer=setInterval(fightTick,4500)});
+$('oceanSubAttack').addEventListener('click',()=>{if(!enemy)return status('Spawn a creature first!');if(hp<=0)return status('Repair your submarine first!');if(Date.now()-lastShot<1100)return status('Torpedo reloading…');lastShot=Date.now();const damage=18+Math.floor(Math.random()*16);enemy.hp-=damage;if(enemy.hp<=0){status('🏆 You defeated the '+enemy.name+'!');enemy=null;stopFight()}else status('💥 Torpedo hit! -'+damage+' enemy HP.');update()});
+$('oceanSubRepair').addEventListener('click',()=>{if(Date.now()-lastRepair<12000)return status('🔧 Repair kit recharging (12 seconds).');lastRepair=Date.now();hp=Math.min(100,hp+25);status('🔧 Hull repaired! +25 HP.');if(enemy?.damage&&!enemyTimer)enemyTimer=setInterval(fightTick,4500);update()});
+for(const [id,dx,dy] of [['oceanSubUp',0,-6],['oceanSubDown',0,6],['oceanSubLeft',-6,0],['oceanSubRight',6,0]])$(id).addEventListener('click',()=>{x=Math.max(8,Math.min(92,x+dx));y=Math.max(14,Math.min(89,y+dy));update()});
+update();
 })();
 </script>
 </body>
