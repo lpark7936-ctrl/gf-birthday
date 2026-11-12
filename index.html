@@ -1833,7 +1833,7 @@ const namesNL={sun:'☀️ Zonnige oceaan',rain:'🌧️ Zachte regen',storm:'�
 function weatherLabel(w){return language()?namesNL[w[2]]:w[0]}
 function pickWeighted(){let r=Math.random()*100;for(const w of weather){r-=w[1];if(r<0)return w}return weather[0]}
 function particle(type,count,symbol){for(let i=0;i<count;i++){const el=document.createElement('span');el.className=symbol?'ocean-magic':'ocean-particle';el.style.setProperty('--x',Math.random()*100+'%');el.style.setProperty('--y',Math.random()*95+'%');el.style.setProperty('--delay',-Math.random()*12+'s');el.style.setProperty('--speed',(2+Math.random()*8)+'s');if(symbol){el.textContent=symbol[Math.floor(Math.random()*symbol.length)];el.style.setProperty('--size',(13+Math.random()*16)+'px')}else{el.style.setProperty('--w',type==='rain'?'2px':'5px');el.style.setProperty('--h',type==='rain'?'24px':'5px');el.style.setProperty('--particle',type==='rain'?'#b4ddff':'#6ef7f0')}particles.appendChild(el)}}
-function setWeather(w){currentWeather=w[2];chip.textContent=weatherLabel(w);particles.replaceChildren();let sky='transparent',sea='rgba(13,110,156,.10)';
+function setWeather(w){currentWeather=w[2];window.dispatchEvent(new CustomEvent('ocean-weather-changed',{detail:{type:currentWeather}}));chip.textContent=weatherLabel(w);particles.replaceChildren();let sky='transparent',sea='rgba(13,110,156,.10)';
 if(['rain','storm','tsunami','spout','hurricane'].includes(currentWeather)){sky='rgba(9,18,44,.35)';sea='rgba(15,57,97,.3)'}
 if(currentWeather==='fog')sky='rgba(185,207,231,.23)';
 if(['glow','aurora','meteors'].includes(currentWeather)){sky='rgba(20,10,71,.4)';sea='rgba(28,170,185,.2)'}
@@ -2452,6 +2452,178 @@ if(battle){
   if(tools){tools.hidden=false;menu?.setAttribute('aria-expanded','true');if(menu)menu.textContent='✕ Close Game Menu'}
   window.scrollTo({top:0,behavior:'smooth'});
  });
+})();
+</script>
+
+<style id="ocean-giants-style">
+#oceanGiantsLayer{position:fixed;inset:0;z-index:6;pointer-events:none;overflow:hidden;contain:layout paint}
+.ocean-giant{position:absolute;top:var(--giant-top,43%);left:0;display:flex;flex-direction:column;align-items:center;gap:5px;width:max-content;max-width:75vw;filter:drop-shadow(0 0 18px #56dcff88);animation:giantCross var(--giant-speed,24s) linear forwards;will-change:transform;opacity:.9}
+.ocean-giant .giant-art{font-size:clamp(7rem,19vw,17rem);line-height:1;white-space:nowrap;text-shadow:0 0 24px #0de2ff88}
+.ocean-giant .giant-label{font:700 clamp(.75rem,1.4vw,1.15rem) Georgia,serif;padding:5px 14px;border:1px solid #9bf6ff;border-radius:20px;background:#102d5de8;color:white}
+.ocean-giant.fight{filter:drop-shadow(0 0 28px #ff4b4b);animation:giantDuel 7s ease-in-out forwards}
+.ocean-giant.fight .giant-label{border-color:#ff9a9a}
+#oceanGiantNotice{position:fixed;left:50%;bottom:105px;transform:translateX(-50%);z-index:10018;pointer-events:none;max-width:min(90vw,550px);background:#102b55ef;border:1px solid #94f3ff;border-radius:18px;padding:12px 18px;text-align:center;color:white;box-shadow:0 0 24px #64e8ff66}
+@keyframes giantCross{from{transform:translate3d(-80vw,0,0)}to{transform:translate3d(185vw,0,0)}}
+@keyframes giantDuel{0%{transform:translate3d(-80vw,0,0)}30%{transform:translate3d(30vw,-3vh,0) rotate(-8deg)}55%{transform:translate3d(43vw,3vh,0) rotate(10deg)}75%{transform:translate3d(34vw,-3vh,0) rotate(-9deg)}100%{transform:translate3d(185vw,0,0)}}
+@media(max-width:650px){.ocean-giant .giant-art{font-size:clamp(6rem,29vw,10rem)}#oceanGiantNotice{bottom:82px;font-size:.85rem}}
+@media(prefers-reduced-motion:reduce){.ocean-giant{animation-duration:2s!important}.ocean-giant.fight{animation-duration:2s!important}}
+</style>
+<div id="oceanGiantsLayer" aria-hidden="true"></div>
+<div id="oceanGiantNotice" hidden role="status"></div>
+<script id="ocean-giants-script">
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const layer=$('oceanGiantsLayer'),notice=$('oceanGiantNotice');
+const types=[
+{emoji:'🐋',name:'Colossal Blue Whale',sound:'whale',weight:24},
+{emoji:'🦈',name:'Ancient Megalodon',sound:'shark',weight:18},
+{emoji:'🐙',name:'Titan Octopus',sound:'octopus',weight:18},
+{emoji:'🦑',name:'Giant Squid',sound:'octopus',weight:12},
+{emoji:'🐢',name:'Elder Sea Turtle',sound:'fish',weight:10},
+{emoji:'🐬',name:'Ocean Guardian Dolphin',sound:'whale',weight:7},
+{emoji:'🐉',name:'Deep Sea Serpent',sound:'shark',weight:6},
+{emoji:'🪼',name:'Moon Jelly Leviathan',sound:'fish',weight:5}
+];
+let active=false,noticeTimer=0,ctx=null,lastSound=0;
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+function pick(){let r=Math.random()*100;for(const t of types){r-=t.weight;if(r<0)return t}return types[0]}
+function notify(message){notice.textContent=message;notice.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>notice.hidden=true,5500)}
+function soundReady(){
+ return document.visibilityState==='visible'&&$('oceanMobAudioEnabled')?.checked&&Number($('oceanMobVolume')?.value)>0&&$('oceanSoundToggle')?.textContent.includes('Pause Ocean Sounds');
+}
+function call(type){
+ if(!soundReady()||Date.now()-lastSound<900)return;
+ lastSound=Date.now();
+ const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+ if(!ctx)ctx=new C();
+ if(ctx.state!=='running'){ctx.resume().catch(()=>{});return}
+ const t=ctx.currentTime,osc=ctx.createOscillator(),gain=ctx.createGain(),filter=ctx.createBiquadFilter();
+ const v=Number($('oceanMobVolume').value)/100,master=Number($('oceanVolume')?.value||35)/100;
+ const settings={fish:[410,640,.4,'sine'],shark:[100,48,.9,'sawtooth'],whale:[115,185,2.3,'sine'],octopus:[175,75,1.2,'triangle']};
+ const [start,end,duration,wave]=settings[type]||settings.fish;
+ osc.type=wave;osc.frequency.setValueAtTime(start,t);osc.frequency.exponentialRampToValueAtTime(end,t+duration*.75);
+ filter.type='lowpass';filter.frequency.value=type==='shark'?520:850;
+ gain.gain.setValueAtTime(.0001,t);gain.gain.linearRampToValueAtTime(Math.min(.09,v*master*.2),t+.09);
+ gain.gain.exponentialRampToValueAtTime(.0001,t+duration);
+ osc.connect(filter);filter.connect(gain);gain.connect(ctx.destination);osc.start(t);osc.stop(t+duration+.02);
+ osc.onended=()=>{osc.disconnect();filter.disconnect();gain.disconnect()};
+}
+function creature(type,duel,index){
+ const div=document.createElement('div');div.className='ocean-giant'+(duel?' fight':'');
+ div.style.setProperty('--giant-top',(index?54:23+Math.random()*27)+'%');
+ div.style.setProperty('--giant-speed',(reduced.matches?2:20+Math.random()*13)+'s');
+ const art=document.createElement('span');art.className='giant-art';art.textContent=type.emoji;
+ const label=document.createElement('span');label.className='giant-label';label.textContent=type.name;
+ div.append(art,label);layer.appendChild(div);
+ div.addEventListener('animationend',()=>div.remove(),{once:true});
+ setTimeout(()=>div.remove(),reduced.matches?4000:37000);
+}
+function encounter(){
+ if(active||document.hidden)return;
+ active=true;
+ const first=pick(),duel=Math.random()<.24&&!reduced.matches;
+ const second=duel?types.filter(x=>x!==first)[Math.floor(Math.random()*(types.length-1))]:null;
+ creature(first,duel,0);call(first.sound);
+ if(duel){
+  setTimeout(()=>{creature(second,true,1);call(second.sound)},1000);
+  notify('⚔️ Ocean giants clash! '+first.name+' vs. '+second.name);
+  setTimeout(()=>call('shark'),4500);
+ }else{
+  notify('🌊 A '+first.name+' is passing through the ocean!');
+ }
+ setTimeout(()=>{active=false},reduced.matches?5000:36000);
+}
+function schedule(){setTimeout(()=>{encounter();schedule()},(3.5+Math.random()*5)*60000)}
+// The existing creature volume and master volume also control giant calls.
+setTimeout(schedule,7500);
+// Occasional small fish, shark, and whale calls even when no giant is on screen.
+function ambient(){
+ if(!document.hidden&&Math.random()<.8){
+  const roll=Math.random();
+  call(roll<.57?'fish':roll<.82?'whale':'shark');
+ }
+ setTimeout(ambient,(24+Math.random()*26)*1000);
+}
+setTimeout(ambient,19000);
+})();
+</script>
+
+<style id="immersive-storm-styles">
+#immersiveStorm{position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 1.6s;--wind:-17deg;--rain-alpha:.7}
+#immersiveStorm.active{opacity:1}
+#immersiveStorm .storm-clouds{position:absolute;inset:-25%;background:radial-gradient(ellipse at 25% 12%,#070b20b8,transparent 55%),radial-gradient(ellipse at 85% 0%,#05081ad0,transparent 65%),linear-gradient(#0b10256e,transparent 72%);animation:cloudSurge 12s ease-in-out infinite alternate}
+#immersiveStorm .rain-sheet{position:absolute;inset:-35% -35%;background-image:repeating-linear-gradient(var(--wind),transparent 0px,transparent 19px,rgba(180,228,255,var(--rain-alpha)) 20px,transparent 22px,transparent 45px);background-size:145px 200px;animation:stormRain .38s linear infinite;mix-blend-mode:screen;opacity:.78}
+#immersiveStorm .rain-sheet.second{background-size:95px 155px;opacity:.43;animation-duration:.23s;filter:blur(1px)}
+#immersiveStorm .lightning{position:absolute;inset:0;background:#e7f8ff;opacity:0;mix-blend-mode:screen}
+#immersiveStorm .lightning.flash{animation:skyLightning .7s ease-out forwards}
+#immersiveStorm .bolt{position:absolute;top:-8%;left:var(--bolt-x,55%);height:90%;width:clamp(5px,1vw,14px);opacity:0;clip-path:polygon(35% 0,100% 0,50% 38%,100% 38%,25% 100%,48% 49%,0 49%);background:#efffff;filter:drop-shadow(0 0 18px #a6e7ff);transform:rotate(7deg)}
+#immersiveStorm .bolt.flash{animation:boltStrike .7s ease-out forwards}
+#immersiveStorm .wavewall{position:absolute;bottom:-13vh;left:-10%;width:120%;height:24vh;border-radius:45% 55% 0 0;background:linear-gradient(#45c4e854,#0650786b);transform-origin:bottom;animation:stormSwell 3s ease-in-out infinite alternate}
+#immersiveStorm .storm-icon{position:absolute;top:22%;left:var(--x);font-size:clamp(3rem,9vw,9rem);opacity:.55;animation:stormSpin 6s linear infinite}
+#immersiveStorm[data-weather="rain"] .storm-clouds{opacity:.45}
+#immersiveStorm[data-weather="rain"] .wavewall{opacity:.3}
+#immersiveStorm[data-weather="storm"] .rain-sheet,#immersiveStorm[data-weather="hurricane"] .rain-sheet{opacity:1}
+#immersiveStorm[data-weather="tsunami"] .wavewall{height:45vh;bottom:-12vh;animation-duration:5s}
+#immersiveStorm[data-weather="spout"] .storm-icon{opacity:.8}
+#immersiveStorm[data-weather="fog"] .rain-sheet{display:none}
+#immersiveStorm[data-weather="fog"] .storm-clouds{opacity:.65;filter:blur(35px)}
+#immersiveStorm[data-weather="fog"] .wavewall{display:none}
+@keyframes stormRain{from{background-position:0 -220px}to{background-position:0 220px}}
+@keyframes cloudSurge{to{transform:translateX(-9%) scale(1.1)}}
+@keyframes skyLightning{0%,17%,37%,100%{opacity:0}5%{opacity:.7}26%{opacity:.95}}
+@keyframes boltStrike{0%,17%,37%,100%{opacity:0}5%{opacity:1}26%{opacity:.85}}
+@keyframes stormSwell{to{transform:translateY(-7vh) rotate(-2deg)}}
+@keyframes stormSpin{to{transform:rotate(360deg)}}
+body.ocean-reduce-effects #immersiveStorm .lightning,body.ocean-reduce-effects #immersiveStorm .bolt{display:none!important}
+@media(prefers-reduced-motion:reduce){#immersiveStorm .lightning,#immersiveStorm .bolt{display:none!important}#immersiveStorm *{animation:none!important}#immersiveStorm .rain-sheet{opacity:.15!important}}
+</style>
+<div id="immersiveStorm" aria-hidden="true"><div class="storm-clouds"></div><div class="rain-sheet"></div><div class="rain-sheet second"></div><div class="wavewall"></div><div class="storm-icon" style="--x:35%" hidden>🌪️</div><div class="lightning"></div><div class="bolt"></div></div>
+<script id="immersive-storm-script">
+(()=>{'use strict';
+const $=id=>document.getElementById(id),root=$('immersiveStorm');
+let type='sun',context=null,noise=null,noiseGain=null,filter=null,stormTimer=0,lightningTimer=0;
+const severe=['rain','storm','hurricane','spout','tsunami','fog'];
+const loudness={rain:.42,storm:.75,hurricane:1,spout:.67,tsunami:.53,fog:.04};
+function audioAllowed(){return $('oceanSoundToggle')?.textContent.includes('Pause Ocean Sounds')&&document.visibilityState==='visible'}
+function volume(){return Number($('oceanVolume')?.value||0)/100}
+function makeAudio(){
+ if(context)return;
+ const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+ context=new AC();const buffer=context.createBuffer(1,context.sampleRate*2,context.sampleRate),data=buffer.getChannelData(0);
+ for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;
+ noise=context.createBufferSource();noise.buffer=buffer;noise.loop=true;
+ filter=context.createBiquadFilter();filter.type='lowpass';filter.frequency.value=450;
+ noiseGain=context.createGain();noiseGain.gain.value=0;
+ noise.connect(filter);filter.connect(noiseGain);noiseGain.connect(context.destination);noise.start();
+}
+function updateAudio(){if(!context)return;const level=audioAllowed()?(loudness[type]||0)*volume()*.17:0;noiseGain.gain.setTargetAtTime(level,context.currentTime,.45);filter.frequency.setTargetAtTime(type==='hurricane'?850:type==='storm'?650:400,context.currentTime,.35)}
+function thunder(){
+ if(!audioAllowed()||!context||context.state!=='running'||!$('oceanEffectsToggle')?.checked)return;
+ const t=context.currentTime,osc=context.createOscillator(),g=context.createGain();
+ osc.type='sawtooth';osc.frequency.setValueAtTime(75,t);osc.frequency.exponentialRampToValueAtTime(30,t+2.2);
+ g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.14*volume(),t+.14);g.gain.exponentialRampToValueAtTime(.0001,t+2.5);
+ const low=context.createBiquadFilter();low.type='lowpass';low.frequency.value=170;
+ osc.connect(low);low.connect(g);g.connect(context.destination);osc.start(t);osc.stop(t+2.6);osc.onended=()=>{osc.disconnect();low.disconnect();g.disconnect()};
+}
+function flash(){
+ if(!['storm','hurricane','spout'].includes(type)||document.hidden)return;
+ if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!$('oceanReduceToggle')?.checked){
+  const light=root.querySelector('.lightning'),bolt=root.querySelector('.bolt');
+  bolt.style.setProperty('--bolt-x',(18+Math.random()*65)+'%');
+  for(const e of [light,bolt]){e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash')}
+ }
+ setTimeout(thunder,220+Math.random()*700);
+}
+function scheduleFlash(){clearTimeout(lightningTimer);if(['storm','hurricane','spout'].includes(type)){lightningTimer=setTimeout(()=>{flash();scheduleFlash()},3800+Math.random()*6500)}}
+function setWeather(t){type=t;root.dataset.weather=t;root.classList.toggle('active',severe.includes(t));root.style.setProperty('--wind',t==='hurricane'?'-30deg':'-17deg');root.style.setProperty('--rain-alpha',t==='hurricane'?'.92':'.65');root.querySelector('.storm-icon').hidden=t!=='spout'&&t!=='hurricane';root.querySelector('.storm-icon').textContent=t==='hurricane'?'🌀':'🌪️';scheduleFlash();updateAudio()}
+window.addEventListener('ocean-weather-changed',e=>setWeather(e.detail.type));
+// Audio contexts are created only after a user starts the ocean soundtrack.
+$('oceanSoundToggle')?.addEventListener('click',()=>{if(audioAllowed()){makeAudio();context?.resume().then(updateAudio).catch(()=>{})}else updateAudio()});
+$('oceanVolume')?.addEventListener('input',updateAudio);
+document.addEventListener('visibilitychange',updateAudio);
+setInterval(updateAudio,1500);
+setWeather('sun');
 })();
 </script>
 </body>
