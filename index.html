@@ -2423,5 +2423,36 @@ if(battle){
 @media(max-width:600px){.ocean-collectible{min-width:94px;min-height:100px;padding:7px!important}.ocean-collectible .treasure-icon{font-size:3rem}.ocean-collectible .treasure-hint{font-size:.59rem}}
 @media(prefers-reduced-motion:reduce){.ocean-collectible{animation:none!important}}
 </style>
+
+<style id="ocean-permanent-restore-fix-style">
+#oceanEmergencyRestore{position:fixed!important;right:14px!important;bottom:18px!important;top:auto!important;left:auto!important;z-index:2147483000!important;margin:0!important;padding:12px 18px!important;border:2px solid #b5f7ff!important;border-radius:30px!important;background:#10396df5!important;color:white!important;box-shadow:0 6px 24px #000b!important;font-size:.9rem!important;max-width:calc(100vw - 28px)!important}
+#oceanEmergencyRestore:hover{filter:brightness(1.2)}
+@media(max-width:650px){#oceanEmergencyRestore{right:8px!important;bottom:8px!important;padding:10px 12px!important;font-size:.78rem!important}}
+</style>
+<button id="oceanEmergencyRestore" type="button" aria-label="Restore all hidden ocean panels and buttons">↺ Restore Panels</button>
+<script id="ocean-permanent-restore-fix-script">
+(()=>{'use strict';
+ const restore=document.getElementById('oceanEmergencyRestore');
+ if(!restore)return;
+ restore.addEventListener('click',()=>{
+  // Restore the page sections through the original restoration mechanism.
+  document.getElementById('oceanRestoreAll')?.click();
+  const main=document.querySelector('main');
+  if(main){for(const section of main.querySelectorAll(':scope > section')){
+   if(section.classList.contains('welcome')||section.classList.contains('comfort-corner')||section.classList.contains('gift-dedication')||section.getAttribute('aria-label')==='Our Ocean Journey and Storm Breaker')section.hidden=false;
+  }}
+  // Aquarium mode intentionally hides main; leave that mode before restoring.
+  if(document.body.classList.contains('aquarium-view'))document.getElementById('oceanViewToggle')?.click();
+  // Close overlays and reopen the main game menu so every game panel is reachable.
+  for(const id of ['oceanSoundPanel','oceanCollectionPanel','oceanChoosePanel','oceanShopPanel','oceanChallengesPanel','oceanMapPanel']){
+   const panel=document.getElementById(id);if(panel)panel.hidden=true;
+  }
+  const menu=document.getElementById('oceanGameMenuButton');
+  const tools=document.getElementById('oceanTopTools');
+  if(tools){tools.hidden=false;menu?.setAttribute('aria-expanded','true');if(menu)menu.textContent='✕ Close Game Menu'}
+  window.scrollTo({top:0,behavior:'smooth'});
+ });
+})();
+</script>
 </body>
 </html>
