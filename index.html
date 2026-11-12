@@ -2520,7 +2520,7 @@ function creature(type,duel,index){
  setTimeout(()=>div.remove(),reduced.matches?4000:37000);
 }
 function encounter(){
- if(active||document.hidden)return;
+ if(active||document.hidden)return false;
  active=true;
  const first=pick(),duel=Math.random()<.24&&!reduced.matches;
  const second=duel?types.filter(x=>x!==first)[Math.floor(Math.random()*(types.length-1))]:null;
@@ -2533,7 +2533,9 @@ function encounter(){
   notify('🌊 A '+first.name+' is passing through the ocean!');
  }
  setTimeout(()=>{active=false},reduced.matches?5000:36000);
+ return true;
 }
+window.addEventListener('ocean:request-giant-encounter',event=>{event.detail.started=encounter()});
 function schedule(){setTimeout(()=>{encounter();schedule()},(3.5+Math.random()*5)*60000)}
 // The existing creature volume and master volume also control giant calls.
 setTimeout(schedule,7500);
@@ -2665,5 +2667,110 @@ for(const [id,dx,dy] of [['oceanSubUp',0,-6],['oceanSubDown',0,6],['oceanSubLeft
 update();
 })();
 </script>
+
+<style id="ocean-giant-summon-style">
+#oceanSummonGiant{width:100%;margin-top:9px;background:linear-gradient(110deg,#084e79,#673e98);color:#fff;border:1px solid #a4efff;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
+#oceanSummonGiant:disabled{opacity:.62;cursor:not-allowed}
+#oceanSummonHint{font-size:.77rem;color:#b9f0ff;margin:4px 2px 7px;text-align:center}
+</style>
+<script id="ocean-giant-summon-script">
+(()=>{'use strict';
+const tools=document.getElementById('oceanTopTools');if(!tools)return;
+const btn=document.createElement('button');btn.type='button';btn.id='oceanSummonGiant';
+const hint=document.createElement('div');hint.id='oceanSummonHint';hint.setAttribute('role','status');
+tools.append(btn,hint);
+const key='oceanGiantSummonLastUsed_v1',cooldown=60*60*1000;
+function remaining(){let last=Number(localStorage.getItem(key)||0);return Math.max(0,cooldown-(Date.now()-last))}
+function update(){let left=remaining();btn.disabled=left>0;if(left){let m=Math.ceil(left/60000);btn.textContent='🐋 Random Giant Encounter · '+m+'m';hint.textContent='Next summon available in '+Math.floor(left/60000)+'m '+Math.floor(left%60000/1000)+'s'}else{btn.textContent='🐋 Summon Random Giant Encounter';hint.textContent='Random giant creature or giant battle · 1-hour cooldown'}}
+btn.addEventListener('click',()=>{
+ if(remaining())return;
+ const request={started:false};window.dispatchEvent(new CustomEvent('ocean:request-giant-encounter',{detail:request}));
+ if(!request.started){hint.textContent='An encounter is already happening. Try again shortly!';return}
+ localStorage.setItem(key,String(Date.now()));update();
+});
+update();setInterval(update,1000);
+window.addEventListener('storage',event=>{if(event.key===key)update()});
+})();
+</script>
+<style id="ocean-epic-events-css">
+#epicOceanStage{position:fixed;inset:0;z-index:12;pointer-events:none;overflow:hidden;display:none}#epicOceanStage.live{display:block}#epicOceanStage .epic-fog{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 65%,transparent 10%,#06132a91 100%);animation:epicPulse 4s ease-in-out infinite}#epicOceanStage .epic-actor{position:absolute;top:var(--top);left:var(--left);font-size:clamp(55px,10vw,150px);filter:drop-shadow(0 0 20px #8ceeff);animation:epicSway 4s ease-in-out infinite alternate;transition:transform .5s;white-space:nowrap}#epicOceanStage .epic-actor.danger{filter:drop-shadow(0 0 24px #f64d63)}#epicOceanStage .epic-burst{position:absolute;top:var(--top);left:var(--left);font-size:clamp(30px,6vw,85px);animation:epicBurst 1.3s ease-out forwards}#epicOceanHud{position:fixed;z-index:10012;left:50%;bottom:20px;transform:translateX(-50%);width:min(580px,94vw);padding:14px;border:2px solid #8de8ff;border-radius:20px;background:linear-gradient(130deg,#03172cf2,#153a65f2);color:#fff;box-shadow:0 5px 45px #000b;text-align:center;display:none}#epicOceanHud.live{display:block}#epicOceanHud strong{display:block;font-size:1.15rem}#epicOceanHud p{margin:8px 0;font-size:.9rem}#epicOceanHud .epic-progress{height:11px;border-radius:20px;background:#29415b;overflow:hidden;margin:8px 0}#epicOceanHud .epic-progress span{display:block;background:linear-gradient(90deg,#50c6ff,#7dffcf);height:100%;width:0;transition:width .25s}#epicOceanHud button{background:#d9f8ff;color:#05243e;border:0;border-radius:15px;padding:9px 15px;margin:3px;font-weight:700;cursor:pointer}#epicOceanHud button:disabled{opacity:.45}#epicOceanHud button.epic-close{background:#345577;color:#fff}#epicOceanHud .epic-timer{font-size:.8rem;color:#b5ebff}@keyframes epicSway{from{transform:translate(-8px,0) rotate(-7deg)}to{transform:translate(14px,-18px) rotate(8deg)}}@keyframes epicPulse{50%{opacity:.5}}@keyframes epicBurst{0%{transform:scale(.3);opacity:1}100%{transform:scale(2.4);opacity:0}}@media(prefers-reduced-motion:reduce){#epicOceanStage *{animation:none!important}}body.ocean-reduce-effects #epicOceanStage *{animation:none!important}
+</style>
+<div id="epicOceanStage" aria-hidden="true"></div>
+<div id="epicOceanHud" role="region" aria-label="Ocean event mission"><strong id="epicOceanTitle"></strong><p id="epicOceanStory"></p><div class="epic-progress"><span id="epicOceanProgress"></span></div><div id="epicOceanActions"></div><div class="epic-timer" id="epicOceanTimer"></div><button class="epic-close" id="epicOceanDismiss" type="button">Hide event controls ✕</button></div>
+<script id="ocean-epic-events-js">
+(()=>{'use strict';
+const $=id=>document.getElementById(id),stage=$('epicOceanStage'),hud=$('epicOceanHud');
+const missions=[
+ {match:'Pirate Invasion',title:'🏴‍☠️ PIRATE FLEET INVASION',story:'Enemy warships surround the reef! Fire defensive cannons to drive them away.',button:'💥 Fire reef cannon',target:8,actors:[['🏴‍☠️⛵',12,22],['🚢',66,30],['⛵',34,55],['🔥',70,61]],burst:'💥'},
+ {match:'Shipwreck',title:'🚢 SINKING LINER EMERGENCY',story:'An enormous ship has struck ice! Launch rescue boats before the vessel disappears.',button:'🛟 Launch rescue boat',target:7,actors:[['🚢',35,28],['🧊',68,24],['🌊',20,63],['🛟',78,62]],burst:'🛟'},
+ {match:'Kraken',title:'🐙 THE KRAKEN HAS AWAKENED',story:'Titanic tentacles rise from the deep! Activate sonar pulses to repel the monster.',button:'📡 Send sonar pulse',target:9,actors:[['🐙',38,23],['🦑',72,56],['🌊',8,66]],burst:'⚡'},
+ {match:'Ghost Ship',title:'👻 THE CURSED GHOST ARMADA',story:'Haunted ships emerge through a wall of fog! Light the ancient beacons to break their curse.',button:'🔦 Light beacon',target:6,actors:[['👻⛵',18,23],['👻',68,30],['⛵',46,59]],burst:'✨'},
+ {match:'Sea Serpent',title:'🐉 LEVIATHAN OF THE ABYSS',story:'A colossal sea serpent threatens the ocean! Raise protective barriers around the reef.',button:'🛡️ Raise barrier',target:8,actors:[['🐉',40,27],['🌊',12,65],['🌊',75,60]],burst:'🛡️'},
+ {match:'Lost Treasure',title:'💎 THE LOST TREASURE EXPEDITION',story:'A legendary treasure vault has surfaced! Recover the scattered riches before it sinks again.',button:'🧰 Recover treasure',target:7,actors:[['🏝️',18,24],['💎',66,25],['🧰',43,59],['✨',77,63]],burst:'💎'}
+];
+let token=0,progress=0,endAt=0,tick=null,mission=null,lastTap=0;
+function clear(){token++;clearInterval(tick);stage.classList.remove('live');hud.classList.remove('live');stage.replaceChildren();mission=null}
+function spawn(symbol,x,y,cls='epic-actor'){const el=document.createElement('span');el.className=cls;el.textContent=symbol;el.style.setProperty('--left',x+'%');el.style.setProperty('--top',y+'%');stage.appendChild(el);return el}
+function burst(){const x=15+Math.random()*70,y=12+Math.random()*58;const el=spawn(mission.burst,x,y,'epic-burst');setTimeout(()=>el.remove(),1400)}
+function update(){if(!mission)return;const left=Math.max(0,Math.ceil((endAt-Date.now())/1000));$('epicOceanProgress').style.width=Math.min(100,progress/mission.target*100)+'%';$('epicOceanTimer').textContent='⏱ '+left+'s remaining · '+progress+'/'+mission.target+' actions';if(!left)finish(false)}
+function finish(won){if(!mission)return;const m=mission;clearInterval(tick);$('epicOceanStory').textContent=won?'🏆 Success! '+(m.match==='Lost Treasure'?'The legendary treasures were recovered!':'The ocean is safe again!'):'⌛ The event has ended. The ocean settles down again.';$('epicOceanActions').replaceChildren();$('epicOceanTimer').textContent=won?'Mission completed!':'Mission expired';setTimeout(clear,5500)}
+function start(name){const m=missions.find(x=>name.includes(x.match));if(!m)return;clear();mission=m;progress=0;endAt=Date.now()+60000;const myToken=token;stage.classList.add('live');hud.classList.add('live');$('epicOceanTitle').textContent=m.title;$('epicOceanStory').textContent=m.story;for(const [symbol,x,y] of m.actors)spawn(symbol,x,y,symbol.includes('🐙')||symbol.includes('🐉')?'epic-actor danger':'epic-actor');const action=document.createElement('button');action.type='button';action.textContent=m.button;action.addEventListener('click',()=>{if(!mission||Date.now()>endAt||Date.now()-lastTap<350)return;lastTap=Date.now();progress++;burst();update();if(progress>=m.target)finish(true)});$('epicOceanActions').replaceChildren(action);update();tick=setInterval(()=>{if(myToken!==token)return;update();if(Math.random()<.3&&mission)burst()},1000);}
+window.addEventListener('ocean-special-event',e=>start(String(e.detail?.name||'')));
+$('epicOceanDismiss').addEventListener('click',()=>{hud.classList.remove('live');const reopen=document.createElement('button');reopen.id='epicOceanReopen';reopen.textContent='⚔️ Open event mission';reopen.type='button';reopen.style.cssText='position:fixed;z-index:10013;bottom:14px;left:14px;padding:10px;border-radius:16px;background:#123b68;color:white;border:1px solid #8de8ff';reopen.addEventListener('click',()=>{hud.classList.add('live');reopen.remove()});document.body.appendChild(reopen);setTimeout(()=>reopen.remove(),65000)});
+})();
+</script>
+
+<style id="cinematic-weather-css">
+#cinemaWeather{position:fixed;inset:0;z-index:5;pointer-events:none;overflow:hidden;--tint:#8feaff;--speed:14s}
+#cinemaWeather .cw-grade{position:absolute;inset:0;opacity:.3;background:radial-gradient(ellipse at 55% 25%,transparent 10%,#00132b99 100%);transition:background 1.4s,opacity 1.4s}
+#cinemaWeather .cw-halo{position:absolute;inset:-25%;background:radial-gradient(ellipse at 40% 38%,var(--tint),transparent 48%);opacity:.13;animation:cwBreath 11s ease-in-out infinite alternate}
+#cinemaWeather .cw-rays{position:absolute;inset:-30%;background:repeating-conic-gradient(from 15deg at 50% 25%,#ffffff00 0deg 10deg,#d3ffff25 11deg 14deg,#ffffff00 17deg 27deg);animation:cwRotate 55s linear infinite;opacity:.35}
+#cinemaWeather .cw-haze{position:absolute;inset:0;background:linear-gradient(105deg,transparent 5%,#c5ffff3b 40%,transparent 67%);transform:translateX(-120%);animation:cwSweep var(--speed) ease-in-out infinite}
+#cinemaWeather .cw-mist{position:absolute;inset:-20%;background:repeating-linear-gradient(172deg,transparent 0 50px,#c9f6ff20 85px,transparent 120px);animation:cwDrift 13s linear infinite;opacity:0}
+#cinemaWeather .cw-streaks{position:absolute;inset:-40%;background:repeating-linear-gradient(110deg,transparent 0 24px,#d4f7ff65 25px 27px,transparent 30px 57px);animation:cwRain .9s linear infinite;opacity:0}
+#cinemaWeather .cw-arc{position:absolute;width:85vw;height:85vw;max-width:1000px;max-height:1000px;left:50%;top:14%;transform:translate(-50%,-4%);border-radius:50%;border:clamp(9px,2vw,22px) solid transparent;border-top-color:#ff6969;border-right-color:#ffd875;border-left-color:#6cf7d8;box-shadow:0 -15px 0 -8px #84a5ff,0 -27px 0 -13px #ff89e9,0 0 75px #d4baff88;opacity:0;filter:drop-shadow(0 0 20px #fff9);animation:cwArc 9s ease-in-out infinite alternate}
+#cinemaWeather .cw-stars{position:absolute;inset:0;opacity:0;background-image:radial-gradient(circle,#ffffff 1px,transparent 3px),radial-gradient(circle,#8ffcff 2px,transparent 4px);background-size:71px 93px,139px 151px;animation:cwTwinkle 7s ease-in-out infinite alternate}
+#cinemaWeather .cw-wave{position:absolute;bottom:-12%;left:-20%;width:140%;height:45%;border-radius:48% 55% 0 0;background:linear-gradient(0deg,#004b8299,#47d4ff44 48%,transparent 100%);opacity:0;animation:cwWave 7s ease-in-out infinite}
+#cinemaWeather .cw-meteor{position:absolute;top:var(--y);left:var(--x);width:var(--len);height:3px;transform:rotate(-32deg);background:linear-gradient(90deg,transparent,#a2e9ff,#fff);border-radius:10px;box-shadow:0 0 17px #d7fcff;opacity:0;animation:cwMeteor var(--dur) linear var(--delay) infinite}
+#cinemaWeather .cw-orb{position:absolute;top:var(--y);left:var(--x);width:var(--sz);height:var(--sz);border-radius:50%;background:var(--tint);box-shadow:0 0 18px 5px var(--tint);opacity:0;animation:cwFloat var(--dur) ease-in-out var(--delay) infinite}
+#cinemaWeather .cw-lightning{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 18%,#d9f5ff88,transparent 60%);opacity:0;transition:opacity .15s}
+#cinemaWeather.cw-light .cw-lightning{opacity:.3}
+#cinemaWeather[data-w=rain] .cw-streaks{opacity:.3}#cinemaWeather[data-w=storm] .cw-streaks{opacity:.7}#cinemaWeather[data-w=hurricane] .cw-streaks{opacity:.9;animation-duration:.48s}
+#cinemaWeather[data-w=fog] .cw-mist{opacity:.9}#cinemaWeather[data-w=spout] .cw-mist{opacity:.6;animation-duration:4s}
+#cinemaWeather[data-w=tsunami] .cw-wave,#cinemaWeather[data-w=hurricane] .cw-wave{opacity:.85}
+#cinemaWeather[data-w=rainbow] .cw-arc{opacity:.9}#cinemaWeather[data-w=rainbow] .cw-rays{opacity:.6}#cinemaWeather[data-w=rainbow] .cw-halo{opacity:.3}
+#cinemaWeather[data-w=aurora] .cw-mist{opacity:.8;filter:hue-rotate(80deg)}#cinemaWeather[data-w=glow] .cw-stars,#cinemaWeather[data-w=aurora] .cw-stars,#cinemaWeather[data-w=meteors] .cw-stars{opacity:.9}
+#cinemaWeather[data-w=hearts] .cw-orb,#cinemaWeather[data-w=glow] .cw-orb,#cinemaWeather[data-w=aurora] .cw-orb,#cinemaWeather[data-w=rainbow] .cw-orb{opacity:.6}
+#cinemaWeather[data-w=sun] .cw-rays{opacity:.8}#cinemaWeather[data-w=sun] .cw-halo{opacity:.5}
+#cinemaWeather[data-w=meteors] .cw-meteor{opacity:1}
+#cinemaWeather[data-w=storm] .cw-grade,#cinemaWeather[data-w=hurricane] .cw-grade{opacity:.8;background:radial-gradient(ellipse at 50% 35%,transparent,#000a1fe0)}
+#cinemaWeather[data-w=rainbow] .cw-grade{opacity:.12}
+#cinemaWeather[data-w=hearts] .cw-halo{opacity:.4}
+#cinemaWeather .cw-caption{position:absolute;top:15%;left:50%;transform:translateX(-50%);padding:8px 18px;border-radius:30px;border:1px solid #b7f6ff88;background:#041c3fbb;color:#fff;font:700 clamp(12px,1.5vw,18px) Georgia,serif;letter-spacing:.06em;text-shadow:0 0 12px #fff9;opacity:0;transition:opacity .7s;text-align:center;white-space:nowrap;max-width:90vw}
+#cinemaWeather.cw-intro .cw-caption{opacity:1}
+@keyframes cwBreath{to{opacity:.35;transform:scale(1.1)}}@keyframes cwRotate{to{transform:rotate(360deg)}}@keyframes cwSweep{55%,100%{transform:translateX(120%)}}@keyframes cwDrift{to{transform:translateX(18%)}}@keyframes cwRain{to{transform:translate3d(-40px,80px,0)}}@keyframes cwArc{to{filter:drop-shadow(0 0 36px #fff);transform:translate(-50%,-6%) scale(1.035)}}@keyframes cwTwinkle{to{filter:brightness(2.1);transform:translateY(-8px)}}@keyframes cwWave{50%{transform:translateY(-11%) rotate(2deg)}}@keyframes cwMeteor{5%{opacity:1}40%,100%{opacity:0;transform:translate(45vw,40vh) rotate(-32deg)}}@keyframes cwFloat{30%{opacity:.85}80%,100%{opacity:0;transform:translateY(-25vh) scale(1.7)}}
+body.ocean-reduce-effects #cinemaWeather *{animation:none!important;transition:none!important}
+body.ocean-reduce-effects #cinemaWeather .cw-lightning{display:none}
+@media(prefers-reduced-motion:reduce){#cinemaWeather *{animation:none!important;transition:none!important}#cinemaWeather .cw-lightning{display:none}}
+</style>
+<div id="cinemaWeather" data-w="sun" aria-hidden="true"><div class="cw-grade"></div><div class="cw-halo"></div><div class="cw-rays"></div><div class="cw-haze"></div><div class="cw-mist"></div><div class="cw-streaks"></div><div class="cw-arc"></div><div class="cw-stars"></div><div class="cw-wave"></div><div class="cw-lightning"></div><div id="cinemaWeatherParticles"></div><div class="cw-caption"></div></div>
+<script id="cinematic-weather-script">
+(()=>{'use strict';
+const root=document.getElementById('cinemaWeather'),particleBox=document.getElementById('cinemaWeatherParticles');
+const titles={sun:'GOLDEN SUNLIGHT · SHIMMERING SEA',rain:'RAINFALL · SILVER SKIES',storm:'THUNDERSTORM · SKY IN TURMOIL',fog:'DEEP OCEAN FOG · LOST HORIZON',tsunami:'GIANT SWELLS · THE SEA RISES',spout:'WATERSPOUT · SPIRALING WINDS',hurricane:'HURRICANE · EYE OF THE STORM',glow:'BIOLUMINESCENCE · LIVING LIGHT',aurora:'AURORA · DANCING SKY',hearts:'HEARTFALL · OCEAN OF LOVE',meteors:'METEOR SHOWER · FALLING STARS',rainbow:'DOUBLE RAINBOW · PRISMATIC SKY'};
+const colors={sun:'#ffe19b',rain:'#a5d8ff',storm:'#d0e9ff',fog:'#e3faff',tsunami:'#49c7ff',spout:'#b7e9ff',hurricane:'#9dc4ff',glow:'#28ffd0',aurora:'#80ffbf',hearts:'#ff83cf',meteors:'#c0d4ff',rainbow:'#f8aaff'};
+let type='sun',captionTimeout,flashTimeout,ctx,lastCall=0;
+const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches||document.body.classList.contains('ocean-reduce-effects');
+function audioOn(){return !document.hidden&&document.getElementById('oceanEffectsToggle')?.checked&&document.getElementById('oceanSoundToggle')?.textContent.includes('Pause Ocean Sounds')}
+function tone(kind){if(!audioOn()||Date.now()-lastCall<2000)return;lastCall=Date.now();const C=window.AudioContext||window.webkitAudioContext;if(!C)return;ctx??=new C();if(ctx.state!=='running'){ctx.resume().catch(()=>{});return}const vol=Number(document.getElementById('oceanVolume')?.value||35)/100;const t=ctx.currentTime,o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();const conf={chime:[540,880,1.7,'sine'],wind:[140,65,2.1,'triangle'],wave:[90,50,2.6,'sine'],spark:[740,1150,.55,'sine']};const [a,b,d,w]=conf[kind]||conf.chime;o.type=w;o.frequency.setValueAtTime(a,t);o.frequency.exponentialRampToValueAtTime(b,t+d);f.type='lowpass';f.frequency.value=1300;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.07*vol,t+.12);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(f);f.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+d+.02);o.onended=()=>{o.disconnect();f.disconnect();g.disconnect()}}
+function particles(){particleBox.replaceChildren();if(reduced())return;const isMeteor=type==='meteors';const isOrb=['glow','aurora','hearts','rainbow'].includes(type);if(!isMeteor&&!isOrb)return;for(let i=0;i<(isMeteor?17:32);i++){const e=document.createElement('span');e.className=isMeteor?'cw-meteor':'cw-orb';e.style.setProperty('--x',Math.random()*100+'%');e.style.setProperty('--y',Math.random()*85+'%');e.style.setProperty('--sz',(3+Math.random()*11)+'px');e.style.setProperty('--len',(50+Math.random()*110)+'px');e.style.setProperty('--dur',(isMeteor?4+Math.random()*12:4+Math.random()*8)+'s');e.style.setProperty('--delay',(-Math.random()*17)+'s');particleBox.append(e)}}
+function change(w){type=w;root.dataset.w=w;root.style.setProperty('--tint',colors[w]||'#8feaff');root.querySelector('.cw-caption').textContent=titles[w]||'OCEAN WEATHER';root.classList.add('cw-intro');clearTimeout(captionTimeout);captionTimeout=setTimeout(()=>root.classList.remove('cw-intro'),4600);particles();if(['rainbow','glow','aurora','hearts'].includes(w))tone('chime');if(['tsunami','spout','hurricane'].includes(w))tone('wind');}
+window.addEventListener('ocean-weather-changed',e=>change(e.detail.type));
+// Atmospheric highlights stay slow and diffuse; avoids rapid strobing.
+function highlight(){if(!reduced()&&!document.hidden&&['storm','hurricane','spout','rainbow','aurora','meteors'].includes(type)){root.classList.add('cw-light');setTimeout(()=>root.classList.remove('cw-light'),420)}flashTimeout=setTimeout(highlight,5500+Math.random()*7500)}highlight();
+change(document.getElementById('oceanWeatherChip')?.textContent?.includes('Rain')?'rain':'sun');
+})();
+</script>
+
 </body>
 </html>
