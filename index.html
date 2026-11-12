@@ -3020,5 +3020,134 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!broadcast.hidden)b
 })();
 </script>
 
+
+<style id="apocalypse-events-style">
+#oceanApocalypsePanel{position:fixed;inset:8% auto auto 50%;transform:translateX(-50%);width:min(92vw,540px);max-height:82vh;overflow:auto;z-index:10035;background:linear-gradient(155deg,#101b35,#1a2944);border:2px solid #ffbf80;border-radius:18px;padding:22px;color:#f4f8ff;box-shadow:0 15px 70px #000c}
+#oceanApocalypsePanel[hidden],#oceanOrbitalStage[hidden],#oceanCasualtyReport[hidden]{display:none!important}
+#oceanApocalypsePanel button,#oceanCasualtyReport button{background:#174b69;border:1px solid #b4e9ff;border-radius:10px;color:white;padding:10px 16px;cursor:pointer}
+#oceanApocalypsePanel button:disabled{opacity:.55;cursor:not-allowed}
+#oceanOrbitalStage{position:fixed;inset:0;z-index:10030;pointer-events:none;overflow:hidden;background:linear-gradient(#080d25b8,#130d26c9);color:white}
+#orbitalSky{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 25%,#c3394b77,transparent 52%),repeating-linear-gradient(170deg,transparent 0 60px,#d5ecff0c 61px 62px);animation:orbitalSkyShift 9s ease-in-out infinite alternate}
+.orbitalBeam{position:absolute;top:-45%;left:var(--x);width:clamp(35px,6vw,115px);height:135%;transform:rotate(14deg) scaleY(0);transform-origin:top;background:linear-gradient(90deg,transparent,#fb8267 28%,#fff6e3 50%,#ff7457 73%,transparent);box-shadow:0 0 50px #ff7248,0 0 120px #ff3829;animation:orbitalBeamDown 2.4s ease-in-out forwards;opacity:.78}
+.orbitalImpact{position:absolute;left:var(--x);top:var(--y);width:30px;height:30px;border:4px solid #ffd6b2;border-radius:50%;transform:translate(-50%,-50%) scale(.2);animation:orbitalImpactWave 3.5s ease-out forwards;box-shadow:0 0 30px #ffb55d}
+#orbitalMessage{position:absolute;top:12%;left:50%;transform:translateX(-50%);width:min(86vw,680px);padding:20px;text-align:center;background:#0a1633e8;border:2px solid #fda979;border-radius:16px;font:700 clamp(18px,3vw,30px) Georgia,serif;text-shadow:0 0 15px #ff8d67}
+#orbitalWildlife{position:absolute;bottom:13%;left:4%;right:4%;display:flex;flex-wrap:wrap;justify-content:space-around;gap:14px}
+.orbitalReaction{max-width:160px;text-align:center;background:#102344dd;border:1px solid #94d5e8;border-radius:14px;padding:10px;font:600 12px Arial,sans-serif}
+.orbitalReaction span{display:block;font-size:clamp(32px,5vw,70px);margin-bottom:8px}
+#oceanCasualtyReport{position:fixed;z-index:10045;left:50%;top:50%;transform:translate(-50%,-50%);width:min(90vw,520px);max-height:85vh;overflow:auto;background:#101d36;border:2px solid #ffd19c;border-radius:18px;padding:24px;color:white;box-shadow:0 20px 90px #000d}
+#oceanCasualtyReport strong{color:#ffd3a1}
+#oceanCasualtyReport .report-number{font-size:clamp(19px,4vw,29px);font-weight:900}
+@keyframes orbitalBeamDown{0%{transform:rotate(14deg) scaleY(0);opacity:0}30%{opacity:.8}68%{transform:rotate(14deg) scaleY(1);opacity:1}100%{transform:rotate(14deg) scaleY(1);opacity:0}}
+@keyframes orbitalImpactWave{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}30%{opacity:.9}100%{opacity:0;transform:translate(-50%,-50%) scale(19)}}
+@keyframes orbitalSkyShift{to{filter:hue-rotate(30deg);opacity:.7}}
+@media(prefers-reduced-motion:reduce){.orbitalBeam,.orbitalImpact{animation:none!important;opacity:.35}.orbitalSky{animation:none!important}}
+</style>
+<section id="oceanApocalypsePanel" hidden aria-label="Orbital strike event">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><h2 style="margin:0">🛰️ Orbital Strike</h2><button id="orbitalClose" type="button">✕</button></div>
+<p>A fictional global catastrophe. The orbital strike devastates human civilization; surviving wildlife reacts with grief, relief, or uncertainty.</p>
+<p id="orbitalCooldownText">Checking availability…</p>
+<button id="orbitalLaunch" type="button">🛰️ Begin Orbital Strike</button>
+<p style="font-size:12px;opacity:.8">Separate 5-hour cooldown. Fictional casualty estimates; no actual saved-game damage. Reduced-motion settings are supported.</p>
+</section>
+<div id="oceanOrbitalStage" hidden aria-hidden="true">
+<div id="orbitalSky"></div><div id="orbitalBeams"></div><div id="orbitalMessage">🛰️ ORBITAL DEFENSE SYSTEM ACTIVATED</div><div id="orbitalWildlife"></div>
+</div>
+<section id="oceanCasualtyReport" hidden role="dialog" aria-modal="true" aria-label="Fictional casualty report">
+<h2 id="casualtyTitle">📊 Ocean Event Aftermath</h2>
+<p style="font-size:12px;opacity:.75">FICTIONAL IN-GAME ESTIMATES — not real-world statistics</p>
+<div id="casualtyBody"></div>
+<button type="button" id="casualtyDismiss">Close Report</button>
+</section>
+<script id="ocean-apocalypse-events-script">
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const tools=$('oceanTopTools'),nuke=$('oceanNavalLaunch'),report=$('oceanCasualtyReport'),stage=$('oceanOrbitalStage');
+if(!tools||!nuke)return;
+const button=document.createElement('button');button.type='button';button.textContent='🛰️ Orbital Strike';tools.append(button);
+const panel=$('oceanApocalypsePanel'),launch=$('orbitalLaunch'),text=$('orbitalCooldownText');
+const key='ocean-orbital-strike-cooldown-v1',period=5*60*60*1000;
+let active=false,audio=null,master=null,ticker=null,started=0;
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const rand=(a,b)=>Math.floor(a+Math.random()*(b-a+1));
+function remaining(){try{return Math.max(0,Number(localStorage.getItem(key)||0)-Date.now())}catch{return 0}}
+function update(){const ms=remaining();launch.disabled=active||ms>0;const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),sec=Math.floor(ms%60000/1000);text.textContent=active?'🛰️ Orbital event in progress':ms?'Next strike available in '+h+'h '+m+'m '+sec+'s':'🛰️ Orbital strike ready'}
+button.addEventListener('click',()=>{panel.hidden=!panel.hidden;if(!panel.hidden){tools.hidden=true;const menu=$('oceanGameMenuButton');if(menu){menu.textContent='☰ Ocean Game';menu.setAttribute('aria-expanded','false')}}update()});
+$('orbitalClose').addEventListener('click',()=>panel.hidden=true);
+$('casualtyDismiss').addEventListener('click',()=>report.hidden=true);
+function showReport(title,rows,note){
+ $('casualtyTitle').textContent=title;
+ const body=$('casualtyBody');body.replaceChildren();
+ for(const [label,value] of rows){const p=document.createElement('p');const b=document.createElement('strong');b.textContent=label+': ';const num=document.createElement('span');num.className='report-number';num.textContent=value;p.append(b,num);body.append(p)}
+ const foot=document.createElement('p');foot.textContent=note;body.append(foot);report.hidden=false;
+}
+nuke.addEventListener('click',()=>{
+ if(nuke.disabled)return;
+ // The original launch handler starts the cinematic; show estimates after its 47-second sequence.
+ const wildlife=rand(12000,2800000),humans=rand(100,16000),vessels=rand(5,36);
+ setTimeout(()=>showReport('☢️ Nuclear Test — Aftermath',[
+ ['Estimated human casualties',fmt(humans)],
+ ['Estimated marine wildlife casualties',fmt(wildlife)],
+ ['Vessels destroyed or damaged',fmt(vessels)]
+ ],'Fictional randomized estimates for this ocean event.'),47500);
+},true);
+function soundEnabled(){return $('oceanSoundToggle')?.textContent.includes('Pause Ocean Sounds')}
+function startAudio(){
+ if(!soundEnabled())return;
+ const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+ try{audio=new C();master=audio.createGain();master.gain.value=.11*(Number($('oceanVolume')?.value??35)/100);master.connect(audio.destination);audio.resume().catch(()=>{});started=Date.now();ticker=setInterval(()=>{
+ if(!audio||audio.state!=='running')return;
+ const now=audio.currentTime,elapsed=(Date.now()-started)/1000;
+ const freq=elapsed<15?55:elapsed<39?73.42:41.2;
+ for(let j=0;j<3;j++){const osc=audio.createOscillator(),gain=audio.createGain();osc.type=j===0?'sawtooth':'triangle';osc.frequency.value=freq*(j+1);gain.gain.setValueAtTime(.0001,now);gain.gain.linearRampToValueAtTime(.11/(j+1),now+.07);gain.gain.exponentialRampToValueAtTime(.0001,now+.45);osc.connect(gain);gain.connect(master);osc.start(now);osc.stop(now+.46)}
+ master.gain.setTargetAtTime(.12*(Number($('oceanVolume')?.value??35)/100),now,.3);
+ },650)}catch{}
+}
+function stopAudio(){clearInterval(ticker);ticker=null;if(audio){audio.close().catch(()=>{});audio=null;master=null}}
+function impact(){
+ if(!active||stage.hidden)return;
+ const beams=$('orbitalBeams'),x=rand(10,90),y=rand(27,78);
+ const beam=document.createElement('div');beam.className='orbitalBeam';beam.style.setProperty('--x',x+'%');beams.append(beam);
+ const ring=document.createElement('div');ring.className='orbitalImpact';ring.style.setProperty('--x',x+'%');ring.style.setProperty('--y',y+'%');
+ setTimeout(()=>beams.append(ring),1500);
+ setTimeout(()=>{beam.remove();ring.remove()},4300);
+}
+function reactions(){
+ const host=$('orbitalWildlife');host.replaceChildren();
+ const animals=[
+ ['🐬','Grieving','The dolphins mourn the humans they once knew.'],
+ ['🐢','Relieved','Sea turtles hope their nesting grounds will recover.'],
+ ['🦈','Uncertain','Sharks patrol a world suddenly transformed.'],
+ ['🐋','Mourning','The whales sing across an emptier ocean.'],
+ ['🦀','Celebrating','Crabs rejoice at quieter beaches.'],
+ ['🐙','Reflective','Octopuses cautiously explore abandoned wrecks.']
+ ];
+ for(const [emoji,mood,desc] of animals){const div=document.createElement('div');div.className='orbitalReaction';const span=document.createElement('span');span.textContent=emoji;const strong=document.createElement('strong');strong.textContent=mood;const p=document.createElement('p');p.textContent=desc;div.append(span,strong,p);host.append(div)}
+}
+function start(){
+ if(active||remaining())return;active=true;try{localStorage.setItem(key,String(Date.now()+period))}catch{}
+ panel.hidden=true;stage.hidden=false;$('orbitalBeams').replaceChildren();$('orbitalWildlife').replaceChildren();update();startAudio();
+ const message=$('orbitalMessage');message.textContent='🛰️ ORBITAL STRIKE WARNING — GLOBAL TARGETS DETECTED';
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const intervals=[];
+ setTimeout(()=>{message.textContent='🔥 ORBITAL BOMBARDMENT IN PROGRESS';impact();if(!reduced)intervals.push(setInterval(impact,1800))},4500);
+ setTimeout(()=>{message.textContent='🌍 CIVILIZATION COLLAPSE — ESTIMATED 90% HUMAN POPULATION LOST';reactions()},23500);
+ setTimeout(()=>{message.textContent='🌊 THE OCEAN REACTS TO A CHANGED WORLD';intervals.forEach(clearInterval)},39000);
+ setTimeout(()=>{
+ intervals.forEach(clearInterval);stage.hidden=true;$('orbitalBeams').replaceChildren();stopAudio();active=false;update();
+ const world=rand(8000000000,8500000000),humans=Math.round(world*.9);
+ const wildlife=rand(3000000,90000000);
+ showReport('🛰️ Orbital Strike — Global Aftermath',[
+ ['Estimated human population before strike',fmt(world)],
+ ['Estimated human casualties (90%)',fmt(humans)],
+ ['Estimated human survivors (10%)',fmt(world-humans)],
+ ['Estimated marine wildlife casualties',fmt(wildlife)]
+ ],'All figures are fictional game statistics. Wildlife responses are imagined storytelling, not real animal behavior.');
+ },54000);
+}
+launch.addEventListener('click',start);
+setInterval(update,1000);update();
+})();
+</script>
+
 </body>
 </html>
