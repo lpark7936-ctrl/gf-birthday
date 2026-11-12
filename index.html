@@ -1687,5 +1687,207 @@ function talkAmorOctopus() {
 })();
 
 </script>
+<style id="living-ocean-events-style">
+#oceanAtmosphere{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden;transition:background 3s,filter 3s}
+#oceanAtmosphere .ocean-vignette{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky,transparent),transparent 55%,var(--sea,transparent));opacity:.7;transition:background 3s}
+#oceanAtmosphere .ocean-waves{position:absolute;bottom:-7vh;left:-15%;width:130%;height:24vh;border-radius:45% 55% 0 0;background:linear-gradient(0deg,rgba(9,103,140,.23),rgba(103,236,247,.13));animation:oceanSwell 7s ease-in-out infinite alternate;opacity:.75}
+#oceanAtmosphere .ocean-waves:nth-child(3){bottom:-11vh;animation-duration:11s;animation-delay:-4s;opacity:.6}
+@keyframes oceanSwell{to{transform:translate(4%,-22px) rotate(-2deg)}}
+.ocean-particle{position:absolute;top:-12%;left:var(--x);width:var(--w,2px);height:var(--h,22px);background:var(--particle,#bcecff);border-radius:12px;opacity:.65;animation:weatherFall var(--speed,3s) linear infinite;animation-delay:var(--delay,0s)}
+@keyframes weatherFall{to{transform:translate(-70px,115vh)}}
+.ocean-magic{position:absolute;left:var(--x);top:var(--y);font-size:var(--size,20px);filter:drop-shadow(0 0 8px #d2faff);animation:magicFloat var(--speed,8s) ease-in-out infinite alternate;animation-delay:var(--delay,0s)}
+@keyframes magicFloat{to{transform:translate(20px,-60px) rotate(25deg);opacity:.35}}
+#oceanLightning{position:absolute;inset:0;background:#e0f5ff;opacity:0;transition:opacity .16s}
+#oceanAtmosphere.flash #oceanLightning{opacity:.27}
+#oceanEventScene{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+.ocean-scene-item{position:absolute;bottom:18%;left:-35%;font-size:clamp(5rem,15vw,12rem);filter:drop-shadow(0 8px 18px #0008);animation:sceneTravel 18s linear both;white-space:nowrap}
+@keyframes sceneTravel{to{transform:translateX(150vw)}}
+.ocean-scene-item.center{left:40%;animation:sceneAppear 16s ease-in-out both}
+@keyframes sceneAppear{0%,100%{opacity:0;transform:translateY(80px) scale(.5)}20%,80%{opacity:1;transform:translateY(0) scale(1)}}
+.ocean-scene-item.sink{animation:shipSink 19s linear both}
+@keyframes shipSink{0%{transform:translateX(0) rotate(0);opacity:0}12%{opacity:1}65%{transform:translateX(75vw) rotate(0)}100%{transform:translate(110vw,28vh) rotate(38deg);opacity:0}}
+.ocean-extra-wildlife{position:absolute;left:var(--x);top:var(--y);font-size:var(--size);opacity:.65;animation:extraWildlife var(--speed) ease-in-out infinite alternate;animation-delay:var(--delay)}
+@keyframes extraWildlife{to{transform:translate(65px,-25px) rotate(9deg)}}
+#oceanSoundButton{position:fixed;right:14px;top:12px;z-index:10040;margin:0;padding:10px 15px;font-size:.87rem;background:#0b3158ee;box-shadow:0 0 15px #55e7ff77}
+#oceanSoundPanel{position:fixed;right:14px;top:60px;z-index:10041;width:min(315px,calc(100vw - 28px));padding:16px;border:1px solid #9afaff;border-radius:18px;background:#0c2349f5;box-shadow:0 12px 35px #0008;text-align:left;backdrop-filter:blur(10px)}
+#oceanSoundPanel[hidden]{display:none!important}
+#oceanSoundPanel label{display:block;margin:12px 0 5px}
+#oceanSoundPanel input[type=range]{width:100%;accent-color:#6ceaff}
+#oceanSoundPanel button{margin:7px 6px 2px 0;padding:9px 14px;font-size:.86rem}
+#oceanSoundPanel .ocean-toggle{display:flex;gap:8px;align-items:center;font-size:.85rem}
+#oceanWeatherChip{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);z-index:6;border:1px solid #8ceeff99;border-radius:22px;background:#10294bdc;color:#effaff;padding:7px 12px;font:13px Georgia,serif;max-width:55vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+#oceanJournal{margin:24px auto;padding:18px;max-width:680px;background:#0b2759cc;border:1px solid #8ceeff77;border-radius:20px}
+#oceanJournal summary{cursor:pointer;color:#9bf6ff;font-weight:bold}
+#oceanJournalEntries{line-height:1.9;text-align:left;font-size:.94rem}
+body.aquarium-view #oceanWeatherChip{bottom:12px}
+@media(max-width:650px){#oceanSoundButton{top:108px;right:8px;padding:8px 10px;font-size:.75rem}#oceanSoundPanel{top:150px;right:8px}#oceanWeatherChip{bottom:84px;font-size:11px;max-width:65vw}}
+@media(prefers-reduced-motion:reduce){#oceanAtmosphere *,#oceanEventScene *, .ocean-extra-wildlife{animation:none!important}}
+body.ocean-reduce-effects #oceanAtmosphere *,body.ocean-reduce-effects #oceanEventScene *,body.ocean-reduce-effects .ocean-extra-wildlife{animation:none!important}
+</style>
+<div id="oceanAtmosphere" aria-hidden="true"><div class="ocean-vignette"></div><div class="ocean-waves"></div><div class="ocean-waves"></div><div id="oceanLightning"></div><div id="oceanParticles"></div></div>
+<div id="oceanEventScene" aria-hidden="true"></div>
+<button id="oceanSoundButton" type="button" aria-expanded="false" aria-controls="oceanSoundPanel">🔊 Ocean Sound</button>
+<div id="oceanSoundPanel" hidden>
+<strong>🌊 Ocean Sound &amp; Weather</strong>
+<label for="oceanVolume">Volume: <output id="oceanVolumeText">35%</output></label>
+<input id="oceanVolume" type="range" min="0" max="100" value="35" aria-label="Ocean sound volume">
+<div><button type="button" id="oceanSoundToggle">▶ Start Ocean Sounds</button></div>
+<label class="ocean-toggle"><input id="oceanEffectsToggle" type="checkbox" checked> Event sound effects</label>
+<label class="ocean-toggle"><input id="oceanNavigationToggle" type="checkbox" checked> Page transition sounds</label>
+<label class="ocean-toggle"><input id="oceanReduceToggle" type="checkbox"> Reduce visual effects</label>
+<p style="font-size:.78rem;color:#b9ddf1;line-height:1.5">Sounds start only after you press Play. The weather changes every 3 minutes.</p>
+</div>
+
+<style id="ocean-collection-upgrade-style">
+#oceanCollectionButton{position:fixed;right:14px;top:62px;z-index:10040;margin:0;padding:9px 13px;font-size:.85rem;background:#0b3158f2}
+#oceanCollectionPanel{position:fixed;right:14px;top:111px;z-index:10041;width:min(340px,calc(100vw - 28px));max-height:65vh;overflow:auto;padding:18px;border:1px solid #9afaff;border-radius:18px;background:#0c2349f8;box-shadow:0 12px 35px #0009;text-align:left}
+#oceanCollectionPanel h3{margin:0 0 8px;color:#a4f4ff}
+#oceanCollectionPanel button{margin:6px 0;padding:7px 12px;font-size:.83rem}
+#oceanCollectionItems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.ocean-collect-slot{padding:10px;border:1px solid #7cdcfb66;border-radius:12px;background:#173b65;font-size:.82rem;line-height:1.5}
+.ocean-collect-slot.locked{opacity:.48}
+.ocean-collectible{position:fixed;z-index:10015;font-size:clamp(2.4rem,5vw,4rem);padding:9px;border:2px solid #f8df8d;border-radius:50%;background:#0c3567d9;box-shadow:0 0 24px #ffdf70aa;animation:collectFloat 3s ease-in-out infinite;cursor:pointer;margin:0}
+.ocean-collectible:focus-visible{outline:3px solid white}
+@keyframes collectFloat{50%{transform:translateY(-12px)}}
+#oceanCollectToast{position:fixed;left:50%;bottom:65px;transform:translateX(-50%);z-index:10042;background:#132b5ef5;border:1px solid #ffe7a5;border-radius:16px;padding:13px 18px;color:white;max-width:85vw;pointer-events:none}
+#oceanNavCurtain{position:fixed;inset:0;z-index:10060;background:radial-gradient(circle at 50% 65%,#158aaf,#06244c 80%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:15px;color:white;font:1.3rem Georgia,serif;opacity:0;pointer-events:none;transition:opacity .35s}
+#oceanNavCurtain.active{opacity:1;pointer-events:auto}
+#oceanNavCurtain span{font-size:4rem}
+@media(max-width:650px){#oceanCollectionButton{top:151px;right:8px;padding:8px 10px;font-size:.74rem}#oceanCollectionPanel{top:194px;right:8px;max-height:55vh}}
+@media(prefers-reduced-motion:reduce){.ocean-collectible{animation:none}#oceanNavCurtain{transition:none}}
+</style>
+
+<button type="button" id="oceanCollectionButton" aria-expanded="false" aria-controls="oceanCollectionPanel">💎 Collection <span id="oceanCollectionCount">0/12</span></button>
+<section id="oceanCollectionPanel" hidden aria-label="Rare ocean collection">
+<h3>💎 Ocean Treasure Collection</h3>
+<p style="font-size:.85rem;line-height:1.5">Rare treasures sometimes appear in our ocean. Tap one to keep it forever in this browser! 💙</p>
+<button type="button" id="oceanCollectionClose">Close ✕</button>
+<div id="oceanCollectionItems"></div>
+<p style="font-size:.74rem;color:#b9ddf1">Saved privately on this device. Collectibles appear approximately every 2–5 minutes; some are much rarer than others.</p>
+</section>
+<div id="oceanCollectToast" role="status" hidden></div>
+<div id="oceanNavCurtain" aria-hidden="true"><span>🌊🐬</span><div>Swimming to our next adventure…</div></div>
+<div id="oceanWeatherChip" role="status" aria-live="polite">☀️ Sunny Ocean</div>
+<script id="living-ocean-events-script">
+(()=>{'use strict';
+const $=id=>document.getElementById(id), atmos=$('oceanAtmosphere'), particles=$('oceanParticles'), scene=$('oceanEventScene'), chip=$('oceanWeatherChip');
+const weather=[['☀️ Sunny Ocean',30,'sun'],['🌧️ Gentle Rain',18,'rain'],['⛈️ Thunderstorm',12,'storm'],['🌫️ Ocean Fog',10,'fog'],['🌊 Tsunami',7,'tsunami'],['🌪️ Waterspout',5,'spout'],['🌀 Hurricane',4,'hurricane'],['✨ Bioluminescent Night',5,'glow'],['🌌 Aurora Ocean',3,'aurora'],['💗 Heartfall',2,'hearts'],['☄️ Meteor Shower',1,'meteors'],['🌈 Double Rainbow',3,'rainbow']];
+const events=[['🏴‍☠️ Pirate Invasion','🏴‍☠️⛵','travel'],['🚢 Titanic-inspired Shipwreck','🚢🧊','sink'],['🐙 Kraken Awakening','🐙','center'],['👻 Ghost Ship','⛵👻','travel'],['🐉 Sea Serpent','🐉','center'],['💎 Lost Treasure','🧰💎','center']];
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let currentWeather='sun', activeEvent=false, soundOn=false, audio=null, master=null, waveSource=null, windSource=null, audioNodes=[];
+const safeGet=(k,d)=>{try{return localStorage.getItem(k)??d}catch{return d}},safeSet=(k,v)=>{try{localStorage.setItem(k,String(v))}catch{}};
+const volume=$('oceanVolume'),effects=$('oceanEffectsToggle'),reduce=$('oceanReduceToggle');
+volume.value=safeGet('ocean-volume','35');$('oceanVolumeText').textContent=volume.value+'%';effects.checked=safeGet('ocean-event-sfx','true')==='true';reduce.checked=safeGet('ocean-reduced','false')==='true'||reduced;
+document.body.classList.toggle('ocean-reduce-effects',reduce.checked);
+const language=()=>document.documentElement.lang==='nl';
+const namesNL={sun:'☀️ Zonnige oceaan',rain:'🌧️ Zachte regen',storm:'⛈️ Onweer',fog:'🌫️ Zeemist',tsunami:'🌊 Tsunami',spout:'🌪️ Waterhoos',hurricane:'🌀 Orkaan',glow:'✨ Lichtgevende zee',aurora:'🌌 Noorderlicht',hearts:'💗 Hartenregen',meteors:'☄️ Meteorenregen',rainbow:'🌈 Dubbele regenboog'};
+function weatherLabel(w){return language()?namesNL[w[2]]:w[0]}
+function pickWeighted(){let r=Math.random()*100;for(const w of weather){r-=w[1];if(r<0)return w}return weather[0]}
+function particle(type,count,symbol){for(let i=0;i<count;i++){const el=document.createElement('span');el.className=symbol?'ocean-magic':'ocean-particle';el.style.setProperty('--x',Math.random()*100+'%');el.style.setProperty('--y',Math.random()*95+'%');el.style.setProperty('--delay',-Math.random()*12+'s');el.style.setProperty('--speed',(2+Math.random()*8)+'s');if(symbol){el.textContent=symbol[Math.floor(Math.random()*symbol.length)];el.style.setProperty('--size',(13+Math.random()*16)+'px')}else{el.style.setProperty('--w',type==='rain'?'2px':'5px');el.style.setProperty('--h',type==='rain'?'24px':'5px');el.style.setProperty('--particle',type==='rain'?'#b4ddff':'#6ef7f0')}particles.appendChild(el)}}
+function setWeather(w){currentWeather=w[2];chip.textContent=weatherLabel(w);particles.replaceChildren();let sky='transparent',sea='rgba(13,110,156,.10)';
+if(['rain','storm','tsunami','spout','hurricane'].includes(currentWeather)){sky='rgba(9,18,44,.35)';sea='rgba(15,57,97,.3)'}
+if(currentWeather==='fog')sky='rgba(185,207,231,.23)';
+if(['glow','aurora','meteors'].includes(currentWeather)){sky='rgba(20,10,71,.4)';sea='rgba(28,170,185,.2)'}
+if(currentWeather==='hearts')sky='rgba(135,53,123,.18)';if(currentWeather==='rainbow')sky='rgba(144,92,179,.15)';
+atmos.style.setProperty('--sky',sky);atmos.style.setProperty('--sea',sea);
+if(['rain','storm','hurricane'].includes(currentWeather))particle('rain',currentWeather==='rain'?55:105);
+if(currentWeather==='glow')particle('magic',45,['✧','✦','·']);
+if(currentWeather==='aurora')particle('magic',24,['✨','💠']);
+if(currentWeather==='hearts')particle('magic',35,['💗','💖','💕']);
+if(currentWeather==='meteors')particle('magic',22,['☄️','✦']);
+if(currentWeather==='rainbow')particle('magic',18,['🌈','✨']);
+if(currentWeather==='fog')particle('magic',25,['☁️']);
+if(currentWeather==='spout')particle('magic',12,['🌪️']);
+if(currentWeather==='tsunami')particle('magic',18,['🌊']);
+if(currentWeather==='hurricane')particle('magic',18,['🌀']);
+if(currentWeather==='storm'&&!reduce.checked){let flashes=0;const f=()=>{if(currentWeather!=='storm'||reduce.checked||flashes++>3)return;atmos.classList.add('flash');setTimeout(()=>atmos.classList.remove('flash'),150);setTimeout(f,7000+Math.random()*9000)};setTimeout(f,1800)}
+if(soundOn)playEventSound(currentWeather==='storm'?'thunder':currentWeather==='rain'?'rain':currentWeather==='tsunami'?'wave':'chime');
+}
+function startSpecial(){if(activeEvent||document.hidden)return;activeEvent=true;const e=events[Math.floor(Math.random()*events.length)];const el=document.createElement('div');el.className='ocean-scene-item '+(e[2]==='travel'?'':e[2]);el.textContent=e[1];scene.appendChild(el);chip.textContent=(language()?'Bijzondere gebeurtenis: ':'Special event: ')+e[0];saveDiscovery(e[0]);playEventSound(e[0].includes('Pirate')?'cannon':e[0].includes('Treasure')?'chime':'deep');setTimeout(()=>{el.remove();activeEvent=false;chip.textContent=weatherLabel(weather.find(w=>w[2]===currentWeather))},20000)}
+function saveDiscovery(name){let items=[];try{items=JSON.parse(safeGet('ocean-discoveries','[]'))}catch{}if(!items.includes(name)){items.push(name);safeSet('ocean-discoveries',JSON.stringify(items))}updateJournal()}
+function updateJournal(){const target=$('oceanJournalEntries');if(!target)return;let items=[];try{items=JSON.parse(safeGet('ocean-discoveries','[]'))}catch{}target.textContent=items.length?items.join(' · '):'No rare events discovered yet. Keep exploring! 🌊'}
+function initJournal(){const journal=document.createElement('details');journal.id='oceanJournal';journal.innerHTML='<summary>📖 Ocean Journal · Rare Discoveries</summary><p id="oceanJournalEntries"></p>';const main=document.querySelector('main');if(main){const footer=main.querySelector('footer');if(footer)footer.before(journal);else main.append(journal)}updateJournal()}
+function wildlife(){const root=$('aquariumWildlife')||document.querySelector('.ocean');if(!root)return;const species=['🐬','🐋','🦈','🦭','🐢','🪼','🐙','🐠','🐟','🦀','🦐','🪸','🐚','🦑'];for(let i=0;i<23;i++){const el=document.createElement('span');el.className='ocean-extra-wildlife';el.textContent=species[i%species.length];el.style.setProperty('--x',(4+Math.random()*90)+'%');el.style.setProperty('--y',(8+Math.random()*85)+'%');el.style.setProperty('--size',(22+Math.random()*28)+'px');el.style.setProperty('--speed',(7+Math.random()*15)+'s');el.style.setProperty('--delay',-Math.random()*18+'s');root.appendChild(el)}}
+function initAudio(){if(audio)return true;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;audio=new AC();master=audio.createGain();master.gain.value=Number(volume.value)/100*.22;master.connect(audio.destination);const buffer=audio.createBuffer(1,audio.sampleRate*3,audio.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*.7;const source=audio.createBufferSource();source.buffer=buffer;source.loop=true;const low=audio.createBiquadFilter();low.type='lowpass';low.frequency.value=550;const g=audio.createGain();g.gain.value=.35;source.connect(low);low.connect(g);g.connect(master);source.start();waveSource={source,g,low};const wind=audio.createBufferSource();wind.buffer=buffer;wind.loop=true;const high=audio.createBiquadFilter();high.type='bandpass';high.frequency.value=230;high.Q.value=.5;const wg=audio.createGain();wg.gain.value=.12;wind.connect(high);high.connect(wg);wg.connect(master);wind.start();windSource={source:wind,g:wg,high};let t=0;setInterval(()=>{if(!audio||!soundOn)return;t+=.28;g.gain.setTargetAtTime(.24+.18*Math.sin(t),audio.currentTime,.3);wg.gain.setTargetAtTime(currentWeather==='storm'||currentWeather==='hurricane'?.32:.09,audio.currentTime,.5)},280);return true}
+function playEventSound(type){if(!soundOn||!effects.checked||!audio)return;const now=audio.currentTime;const tone=(freq,duration,shape='sine',gain=.1)=>{const osc=audio.createOscillator(),g=audio.createGain();osc.type=shape;osc.frequency.setValueAtTime(freq,now);osc.frequency.exponentialRampToValueAtTime(Math.max(30,freq*.65),now+duration);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(gain,now+.025);g.gain.exponentialRampToValueAtTime(.0001,now+duration);osc.connect(g);g.connect(master);osc.start(now);osc.stop(now+duration+.05)};
+if(type==='chime'){tone(660,.9);setTimeout(()=>tone(880,.7),190)}else if(type==='thunder'||type==='deep'){tone(80,2,'sawtooth',.08)}else if(type==='cannon'){tone(130,1,'triangle',.14)}else if(type==='wave'||type==='rain'){tone(200,1.2,'triangle',.035)}}
+function toggleSound(){if(!soundOn){if(!initAudio()){alert('Audio is not supported in this browser.');return}audio.resume();soundOn=true;$('oceanSoundToggle').textContent='⏸ Pause Ocean Sounds';$('oceanSoundButton').textContent='🔊 Ocean Sound'}else{soundOn=false;audio.suspend();$('oceanSoundToggle').textContent='▶ Start Ocean Sounds';$('oceanSoundButton').textContent='🔇 Ocean Sound'}}
+$('oceanSoundButton').addEventListener('click',()=>{const p=$('oceanSoundPanel');p.hidden=!p.hidden;$('oceanSoundButton').setAttribute('aria-expanded',String(!p.hidden))});$('oceanSoundToggle').addEventListener('click',toggleSound);
+volume.addEventListener('input',()=>{$('oceanVolumeText').textContent=volume.value+'%';safeSet('ocean-volume',volume.value);if(master&&audio)master.gain.setTargetAtTime(Number(volume.value)/100*.22,audio.currentTime,.08)});
+effects.addEventListener('change',()=>safeSet('ocean-event-sfx',effects.checked));reduce.addEventListener('change',()=>{document.body.classList.toggle('ocean-reduce-effects',reduce.checked);safeSet('ocean-reduced',reduce.checked)});
+
+// Rare collectible treasures. Each spawn chooses one item by rarity; only direct taps collect it.
+const treasureCatalog=[
+['🐚','Pearl Shell',24],['⭐','Golden Starfish',18],['🪸','Crystal Coral',15],
+['🧭','Pirate Compass',11],['🪙','Sunken Coin',10],['🔱','Poseidon’s Trident',7],
+['💠','Ocean Sapphire',5],['🦑','Kraken Relic',4],['🚢','Lost Liner Keepsake',2.5],
+['👑','Mermaid Crown',1.7],['💎','Heart of the Ocean',1.3],['🌌','Starlight Pearl',.5]
+];
+const collectionKey='ocean-treasure-collection-v1';
+function collectionRead(){try{const a=JSON.parse(safeGet(collectionKey,'[]'));return Array.isArray(a)?a.filter(x=>Number.isInteger(x)&&x>=0&&x<treasureCatalog.length):[]}catch{return []}}
+let owned=new Set(collectionRead()), collectible=null, collectibleTimer=null;
+const collectionPanel=$('oceanCollectionPanel'),collectionButton=$('oceanCollectionButton');
+function collectionRender(){
+ $('oceanCollectionCount').textContent=owned.size+'/'+treasureCatalog.length;
+ $('oceanCollectionItems').replaceChildren();
+ treasureCatalog.forEach(([emoji,name],i)=>{
+ const slot=document.createElement('div');slot.className='ocean-collect-slot'+(owned.has(i)?'':' locked');
+ slot.textContent=owned.has(i)?emoji+' '+name:'🔒 Undiscovered treasure';
+ slot.title=owned.has(i)?name:'Find this treasure in the ocean';
+ $('oceanCollectionItems').appendChild(slot);
+ });
+}
+function collectionOpen(open){collectionPanel.hidden=!open;collectionButton.setAttribute('aria-expanded',String(open))}
+collectionButton.addEventListener('click',()=>collectionOpen(collectionPanel.hidden));
+$('oceanCollectionClose').addEventListener('click',()=>collectionOpen(false));
+function collectionToast(message){const el=$('oceanCollectToast');el.textContent=message;el.hidden=false;clearTimeout(collectionToast.timer);collectionToast.timer=setTimeout(()=>el.hidden=true,4500)}
+function weightedTreasure(){let r=Math.random()*100;for(let i=0;i<treasureCatalog.length;i++){r-=treasureCatalog[i][2];if(r<0)return i}return 0}
+function spawnTreasure(){
+ if(document.hidden||collectible||owned.size===treasureCatalog.length)return;
+ const i=weightedTreasure(),item=treasureCatalog[i];
+ const b=document.createElement('button');b.type='button';b.className='ocean-collectible';
+ b.textContent=item[0];b.setAttribute('aria-label','Collect rare treasure: '+item[1]);b.title='Tap to collect a treasure!';
+ b.style.left=(12+Math.random()*65)+'vw';b.style.top=(25+Math.random()*47)+'vh';
+ document.body.appendChild(b);collectible=b;
+ const expiry=setTimeout(()=>{b.remove();if(collectible===b)collectible=null},25000);
+ b.addEventListener('click',()=>{
+ clearTimeout(expiry);b.remove();collectible=null;
+ if(!owned.has(i)){owned.add(i);safeSet(collectionKey,JSON.stringify([...owned]));collectionRender();
+ collectionToast('✨ Found: '+item[0]+' '+item[1]+'! Added to your collection.');
+ if(soundOn)playEventSound('chime');
+ }else{collectionToast('🐚 '+item[1]+' — already in your collection!')}
+ });
+}
+function scheduleTreasure(){setTimeout(()=>{spawnTreasure();scheduleTreasure()},(2+Math.random()*3)*60000)}
+collectionRender();scheduleTreasure();
+
+// Play a gentle ascending departure sound and show an ocean curtain before local navigation.
+const navigationToggle=$('oceanNavigationToggle');
+navigationToggle.checked=safeGet('ocean-navigation-sfx','true')==='true';
+navigationToggle.addEventListener('change',()=>safeSet('ocean-navigation-sfx',navigationToggle.checked));
+let departing=false;
+document.addEventListener('click',event=>{
+ const a=event.target.closest('a[href]');
+ if(!a||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||a.target==='_blank'||a.hasAttribute('download')||departing)return;
+ let target;try{target=new URL(a.href,location.href)}catch{return}
+ if(target.origin!==location.origin||target.pathname===location.pathname&&target.search===location.search)return;
+ if(!/\.html$|\/$/.test(target.pathname))return;
+ event.preventDefault();departing=true;
+ const curtain=$('oceanNavCurtain');curtain.classList.add('active');
+ if(navigationToggle.checked&&soundOn&&effects.checked&&audio){
+ const t=audio.currentTime,osc=audio.createOscillator(),gain=audio.createGain();
+ osc.type='sine';osc.frequency.setValueAtTime(340,t);osc.frequency.exponentialRampToValueAtTime(680,t+.5);
+ gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.12,t+.05);gain.gain.exponentialRampToValueAtTime(.0001,t+.65);
+ osc.connect(gain);gain.connect(master);osc.start(t);osc.stop(t+.7);
+ }
+ setTimeout(()=>{location.href=target.href},800);
+});
+
+initJournal();wildlife();setWeather(weather[0]);setInterval(()=>setWeather(pickWeighted()),180000);
+// Each 5-10 minute interval offers a 65% chance of a rare encounter.
+function scheduleSpecial(){const delay=(5+Math.random()*5)*60000;setTimeout(()=>{if(Math.random()<.65)startSpecial();scheduleSpecial()},delay)}scheduleSpecial();
+})();
+</script>
+
 </body>
 </html>
