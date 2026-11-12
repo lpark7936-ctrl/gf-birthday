@@ -2910,10 +2910,10 @@ function remaining(){try{return Math.max(0,Number(localStorage.getItem(key)||0)-
 function update(){const ms=remaining();$('oceanNavalLaunch').disabled=ms>0||running;const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),sec=Math.floor(ms%60000/1000);$('oceanNavalCooldown').textContent=running?'⚔️ Event in progress…':ms?'Next event in '+h+'h '+m+'m '+sec+'s':'✨ Nuclear event ready!'}
 btn.addEventListener('click',()=>{panel.hidden=!panel.hidden;if(!panel.hidden){tools.hidden=true;const menu=$('oceanGameMenuButton');if(menu){menu.textContent='☰ Ocean Game';menu.setAttribute('aria-expanded','false')}}update()});
 $('oceanNavalClose').addEventListener('click',()=>panel.hidden=true);
-function noise(freq,duration=1.2){if(!($('oceanSoundToggle')?.textContent.includes('Pause Ocean Sounds')))return;const C=window.AudioContext||window.webkitAudioContext;if(!C)return;try{ctx=ctx||new C();if(ctx.state!=='running'){ctx.resume();return}const o=ctx.createOscillator(),g=ctx.createGain(),t=ctx.currentTime,v=(Number($('oceanVolume')?.value||30)/100)*.07;o.type='sawtooth';o.frequency.setValueAtTime(freq,t);o.frequency.exponentialRampToValueAtTime(Math.max(25,freq*.3),t+duration);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.1);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+duration+.01)}catch{}}
+function noise(freq,duration=1.2){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;try{ctx=ctx||new C();if(ctx.state!=='running'){ctx.resume();return}const o=ctx.createOscillator(),g=ctx.createGain(),t=ctx.currentTime,v=(Number($('oceanVolume')?.value||30)/100)*.07;o.type='sawtooth';o.frequency.setValueAtTime(freq,t);o.frequency.exponentialRampToValueAtTime(Math.max(25,freq*.3),t+duration);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.1);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+duration+.01)}catch{}}
 function blast(x,y){const e=document.createElement('span');e.className='oceanNavalBlast';e.textContent='💥';e.style.setProperty('--x',x+'%');e.style.setProperty('--y',y+'%');ships.append(e);setTimeout(()=>e.remove(),1400);noise(90,.5)}
 function ship(i){const e=document.createElement('span');e.className='oceanWarship'+(i%2?' enemy':'');e.textContent=['🚢','🛳️','🚢','⛴️'][i%4];e.style.setProperty('--y',(27+(i%5)*12)+'%');e.style.setProperty('--dur',(17+(i%4)*3)+'s');ships.append(e);setTimeout(()=>e.remove(),32000)}
-function start(){if(running||remaining())return;running=true;try{localStorage.setItem(key,String(Date.now()+cooldown))}catch{}update();panel.hidden=true;stage.hidden=false;startOrbitalScore();ships.replaceChildren();banner.textContent='☢️ A colossal explosion shakes the ocean!';const cloud=$('oceanNavalCloud'),flash=$('oceanNavalFlash');cloud.classList.add('active');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)flash.classList.add('active');noise(55,3);
+function start(){if(running||remaining())return;running=true;try{localStorage.setItem(key,String(Date.now()+cooldown))}catch{}update();panel.hidden=true;stage.hidden=false;ships.replaceChildren();banner.textContent='☢️ A colossal explosion shakes the ocean!';const cloud=$('oceanNavalCloud'),flash=$('oceanNavalFlash');cloud.classList.add('active');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)flash.classList.add('active');noise(55,3);
 setTimeout(()=>flash.classList.remove('active'),1400);
 setTimeout(()=>{banner.textContent='⚓ Naval fleets converge on the blast zone!';for(let i=0;i<12;i++)setTimeout(()=>ship(i),i*650)},6500);
 setTimeout(()=>{banner.textContent='⚔️ MASSIVE NAVAL BATTLE — cannons firing!';let n=0;const interval=setInterval(()=>{if(n++>=22){clearInterval(interval);return}blast(12+Math.random()*76,27+Math.random()*57)},1100)},12500);
@@ -3007,14 +3007,14 @@ launch.addEventListener('click',begin);
 const $=id=>document.getElementById(id);
 const launch=$('oceanNavalLaunch'),broadcast=$('nukeBroadcast'),ack=$('nukeBroadcastAcknowledge');if(!launch||!broadcast)return;
 let audio=null,master=null,loop=null,active=false,startedAt=0;
-function vol(){const main=$('oceanVolume');return Math.min(.32,Math.max(0,Number(main?.value??35)/100)*.24)}
+function vol(){const main=$('oceanVolume');return Math.min(.55,Math.max(.12,Number(main?.value??35)/100)*.55)}
 function note(freq,at,duration=.5,type='sine',amp=.35){if(!audio||!master)return;const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.setValueAtTime(freq,at);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(Math.max(.0002,amp),at+.035);g.gain.exponentialRampToValueAtTime(.0001,at+duration);o.connect(g);g.connect(master);o.start(at);o.stop(at+duration+.02);o.onended=()=>{o.disconnect();g.disconnect()}}
 function rumble(at,duration=2.5,intensity=.4){if(!audio||!master)return;const buffer=audio.createBuffer(1,Math.ceil(audio.sampleRate*duration),audio.sampleRate),data=buffer.getChannelData(0);let prev=0;for(let i=0;i<data.length;i++){prev=prev*.93+(Math.random()*2-1)*.07;data[i]=prev}const source=audio.createBufferSource(),filter=audio.createBiquadFilter(),gain=audio.createGain();source.buffer=buffer;filter.type='lowpass';filter.frequency.value=165;gain.gain.setValueAtTime(.0001,at);gain.gain.linearRampToValueAtTime(intensity,at+.14);gain.gain.exponentialRampToValueAtTime(.0001,at+duration);source.connect(filter);filter.connect(gain);gain.connect(master);source.start(at);source.stop(at+duration);source.onended=()=>{source.disconnect();filter.disconnect();gain.disconnect()}}
 function siren(at){for(let i=0;i<3;i++){note(440,at+i*.8,.72,'sawtooth',.09);note(660,at+i*.8+.35,.37,'triangle',.08)}}
 function scoreTick(){if(!active||!audio)return;master.gain.setTargetAtTime(vol(),audio.currentTime,.15);const t=audio.currentTime,elapsed=(Date.now()-startedAt)/1000;if(elapsed<6){note(55,t,1.4,'sine',.3);if(Math.floor(elapsed)%3===0)note(220,t,.3,'triangle',.1)}else if(elapsed<13){note(42,t,2,'sawtooth',.24);rumble(t,1.9,.5)}else if(elapsed<41){const chord=[55,65.41,73.42,82.41];const n=Math.floor(elapsed*1.7);note(chord[n%4],t,.44,'sawtooth',.21);note(chord[n%4]*2,t,.23,'triangle',.13);if(n%3===0)rumble(t,.4,.16);if(n%5===0)note(110,t,.19,'square',.12)}else{note(55,t,2.4,'sine',.19);note(82.41,t,2.6,'triangle',.08)}}
 function stop(){active=false;clearInterval(loop);loop=null;if(master&&audio){master.gain.setTargetAtTime(0,audio.currentTime,.3);setTimeout(()=>{if(!active&&audio){audio.close().catch(()=>{});audio=null;master=null}},1200)}}
 function startSound(){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;try{audio=new C();master=audio.createGain();master.gain.value=vol();master.connect(audio.destination);audio.resume().catch(()=>{});active=true;startedAt=Date.now();siren(audio.currentTime+.1);setTimeout(()=>{if(active&&audio)rumble(audio.currentTime,5,.8)},5700);loop=setInterval(scoreTick,560);scoreTick();setTimeout(stop,47000)}catch(e){console.warn('Nuclear soundtrack unavailable',e)}}
-launch.addEventListener('click',()=>{if(launch.disabled||active)return;broadcast.hidden=false;startSound();setTimeout(()=>broadcast.hidden=true,6200)},true);
+launch.addEventListener('click',()=>{if(active||launch.disabled)return;broadcast.hidden=false;startSound();setTimeout(()=>broadcast.hidden=true,6200)},true);
 ack.addEventListener('click',()=>broadcast.hidden=true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!broadcast.hidden)broadcast.hidden=true});
 })();
@@ -3098,7 +3098,7 @@ nuke.addEventListener('click',()=>{
 },true);
 function soundEnabled(){return $('oceanSoundToggle')?.textContent.includes('Pause Ocean Sounds')}
 function startAudio(){
- if(!soundEnabled())return;
+ // Event sound is independent of the ambient Ocean Sounds toggle.
  const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
  try{audio=new C();master=audio.createGain();master.gain.value=.11*(Number($('oceanVolume')?.value??35)/100);master.connect(audio.destination);audio.resume().catch(()=>{});started=Date.now();ticker=setInterval(()=>{
  if(!audio||audio.state!=='running')return;
@@ -3173,7 +3173,7 @@ function reactions(){
 }
 function start(){
  if(active||remaining())return;active=true;try{localStorage.setItem(key,String(Date.now()+period))}catch{}
- panel.hidden=true;stage.hidden=false;$('orbitalBeams').replaceChildren();$('orbitalWildlife').replaceChildren();update();startAudio();
+ panel.hidden=true;stage.hidden=false;$('orbitalBeams').replaceChildren();$('orbitalWildlife').replaceChildren();update();startAudio();startOrbitalScore();
  const message=$('orbitalMessage');message.textContent='🛰️ ORBITAL STRIKE WARNING — GLOBAL TARGETS DETECTED';
  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
  const intervals=[];
@@ -3194,6 +3194,40 @@ function start(){
 }
 launch.addEventListener('click',start);
 setInterval(update,1000);update();
+})();
+</script>
+
+
+<style>
+#eventAudioTestBar{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+#eventAudioTestBar button{background:#235377;color:#fff;border:1px solid #94dfff;border-radius:9px;padding:9px 12px;cursor:pointer}
+#eventAudioStatus{font-size:12px;color:#bdeeff}
+</style>
+<script id="event-audio-reliability">
+(()=>{
+ const $=id=>document.getElementById(id);
+ const panel=$('oceanNavalPanel'),orbital=$('oceanApocalypsePanel');
+ function addTest(parent,label){
+  if(!parent)return;
+  const bar=document.createElement('div');bar.id='eventAudioTestBar';
+  const button=document.createElement('button');button.type='button';button.textContent='🔊 Test '+label+' Audio';
+  const status=document.createElement('div');status.id='eventAudioStatus';status.textContent='Audio starts when you press Launch. Check device and browser volume.';
+  bar.append(button,status);parent.append(bar);
+  button.addEventListener('click',async()=>{
+   const C=window.AudioContext||window.webkitAudioContext;
+   if(!C){status.textContent='This browser does not support Web Audio.';return}
+   try{
+    const ctx=new C();await ctx.resume();
+    const t=ctx.currentTime,g=ctx.createGain(),o=ctx.createOscillator();
+    g.gain.setValueAtTime(.001,t);g.gain.linearRampToValueAtTime(.18,t+.1);g.gain.exponentialRampToValueAtTime(.001,t+1.5);
+    o.type='sawtooth';o.frequency.setValueAtTime(330,t);o.frequency.linearRampToValueAtTime(620,t+.65);o.frequency.linearRampToValueAtTime(330,t+1.3);
+    o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+1.5);
+    o.onended=()=>ctx.close().catch(()=>{});
+    status.textContent='🔊 Test alarm playing. If silent, check your browser tab and device volume.';
+   }catch(e){status.textContent='Audio could not start: '+e.message}
+  });
+ }
+ addTest(panel,'Nuclear');addTest(orbital,'Orbital');
 })();
 </script>
 
