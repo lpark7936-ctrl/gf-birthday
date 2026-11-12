@@ -1924,19 +1924,19 @@ function spawnTreasure(){
  if(document.hidden||collectible||owned.size===treasureCatalog.length)return;
  const item=weightedTreasure();
  const b=document.createElement('button');b.type='button';b.className='ocean-collectible';
- b.textContent=item.emoji;b.setAttribute('aria-label','Collect '+item.rarity+' treasure: '+item.name);b.title='Tap to collect a treasure!';
- b.style.borderColor=rarityMap[item.rarity].color;b.style.left=(12+Math.random()*65)+'vw';b.style.top=(25+Math.random()*47)+'vh';
+ b.innerHTML='<span class="treasure-icon">'+item.emoji+'</span><span class="treasure-hint">✨ COLLECT ME ✨</span><span class="treasure-rarity">'+item.rarity+'</span>';b.setAttribute('aria-label','Collect '+item.rarity+' treasure: '+item.name);b.title='Tap to collect a treasure!';
+ b.style.setProperty('--treasure-glow',rarityMap[item.rarity].color);b.style.borderColor=rarityMap[item.rarity].color;b.style.left=(8+Math.random()*65)+'vw';b.style.top=(24+Math.random()*48)+'vh';
  document.body.appendChild(b);collectible=b;
- const expiry=setTimeout(()=>{b.remove();if(collectible===b)collectible=null},25000);
+ const expiry=setTimeout(()=>{b.remove();if(collectible===b)collectible=null},65000);
  b.addEventListener('click',()=>{
  clearTimeout(expiry);b.remove();collectible=null;
- if(!owned.has(item.id)){owned.add(item.id);oceanRewardTreasure(item);safeSet(collectionKey,JSON.stringify([...owned]));collectionRender();
+ if(!owned.has(item.id)){owned.add(item.id);oceanRewardTreasure(item);window.oceanGainXP?.(Math.max(10,Math.round((item.value||10)*0.7)),'treasure');safeSet(collectionKey,JSON.stringify([...owned]));collectionRender();
  collectionToast('✨ '+item.rarity+' found: '+item.emoji+' '+item.name+'!');
  if(soundOn)playEventSound('chime');
  }else{collectionToast('🐚 '+item.name+' — already in your collection!')}
  });
 }
-function scheduleTreasure(){setTimeout(()=>{spawnTreasure();scheduleTreasure()},(2+Math.random()*3)*60000)}
+function scheduleTreasure(){setTimeout(()=>{spawnTreasure();scheduleTreasure()},(1.3+Math.random()*1.7)*60000)}
 collectionRender();scheduleTreasure();
 
 // Play a gentle ascending departure sound and show an ocean curtain before local navigation.
@@ -2176,5 +2176,252 @@ document.addEventListener('visibilitychange',refresh);
 refresh();
 })();
 </script>
+
+<style id="ocean-xp-boss-style">
+/* A separate, wrapping control dock below the decorative header */
+#oceanTopTools{position:relative!important;top:auto!important;left:auto!important;right:auto!important;width:min(1050px,calc(100% - 24px))!important;margin:165px auto 8px!important;padding:13px!important;display:flex!important;justify-content:center!important;gap:9px!important;min-height:0!important;border:1px solid #8ee9ff88;border-radius:22px;background:#092b50d9;box-shadow:0 9px 25px #0006;backdrop-filter:blur(12px)}
+#oceanTopTools button{position:static!important;flex:0 1 auto;white-space:normal!important;min-width:130px;margin:0!important;padding:11px 13px!important;line-height:1.25}
+#oceanWeatherStatus{margin:4px auto 14px!important;position:relative!important;z-index:4!important}
+#oceanWeatherChip{margin:0 auto!important}
+#oceanSoundPanel,#oceanCollectionPanel,#oceanChoosePanel,#oceanShopPanel,#oceanChallengesPanel{position:fixed!important;top:95px!important;right:16px!important;left:auto!important;max-height:calc(100vh - 112px)!important;z-index:10090!important}
+#bigShark{top:185px!important;left:10px!important;right:auto!important;transform:scale(.7)!important;z-index:5!important}
+main{padding-top:35px!important}
+#oceanXPWidget{width:min(750px,calc(100% - 28px));margin:12px auto 16px;position:relative;z-index:5;border:1px solid #b2efff88;border-radius:18px;background:#09294adf;padding:13px 17px;color:#fff;text-align:left;box-shadow:0 6px 18px #0004}
+#oceanXPWidget .xp-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+#oceanXPWidget .xp-track{height:13px;border-radius:20px;background:#13203f;overflow:hidden;margin:9px 0 4px;border:1px solid #b6eaff66}
+#oceanXPFill{height:100%;width:0%;background:linear-gradient(90deg,#38d4ea,#9f91ff,#ffe39a);transition:width .3s}
+#oceanXPWidget small{color:#d2ecff}
+#oceanBossEncounter{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(470px,calc(100vw - 28px));z-index:10120;text-align:center;border:3px solid #ff8f87;border-radius:28px;padding:20px;background:radial-gradient(circle at 50% 35%,#6e2146,#171438 75%);box-shadow:0 0 0 100vmax #06071c66,0 0 55px #f44a7899;color:white}
+#oceanBossEncounter .boss-figure{font-size:clamp(6rem,21vw,11rem);line-height:1.3;display:block;filter:drop-shadow(0 0 20px #ff5757);animation:oceanBossRage 1.15s ease-in-out infinite alternate}
+#oceanBossEncounter .boss-eyes{font-size:2.2rem;letter-spacing:15px;color:#ff5555;text-shadow:0 0 20px red}
+#oceanBossEncounter button{margin:8px;padding:10px 18px;font-size:.92rem}
+@keyframes oceanBossRage{from{transform:rotate(-5deg) scale(.95)}to{transform:rotate(5deg) scale(1.08)}}
+@media(max-width:650px){#oceanTopTools{margin-top:145px!important;padding:9px!important;gap:6px!important}#oceanTopTools button{min-width:0!important;flex:1 1 42%!important;font-size:.77rem!important;padding:9px 7px!important}#bigShark{top:190px!important;transform:scale(.45)!important}#oceanSoundPanel,#oceanCollectionPanel,#oceanChoosePanel,#oceanShopPanel,#oceanChallengesPanel{top:12px!important;right:8px!important;max-height:calc(100vh - 24px)!important}main{padding-top:24px!important}}
+@media(prefers-reduced-motion:reduce){#oceanBossEncounter .boss-figure{animation:none}}
+</style>
+<section id="oceanXPWidget" aria-label="Ocean experience level"><div class="xp-head"><strong id="oceanXPLevel">⭐ Level 1</strong><strong id="oceanXPValue">0 / 100 XP</strong></div><div class="xp-track"><div id="oceanXPFill"></div></div><small id="oceanXPMessage">Find treasures and win battles to level up!</small></section>
+<section id="oceanBossEncounter" hidden role="dialog" aria-label="A creature has appeared" aria-modal="false">
+<strong id="oceanBossTitle">⚠️ A WILD CREATURE APPEARS!</strong>
+<span class="boss-figure" id="oceanBossFigure">🦑</span><div class="boss-eyes">⌁ ⌁</div>
+<p id="oceanBossName">An angry creature has surfaced!</p>
+<button type="button" id="oceanBossFight">⚔️ Fight Creature</button><button type="button" id="oceanBossDismiss">✕ Hide</button>
+</section>
+<script id="ocean-xp-boss-script">
+(()=>{'use strict';
+const $=id=>document.getElementById(id), xpKey='ocean-xp-v1';
+let xp=0;try{xp=Math.max(0,Number(localStorage.getItem(xpKey))||0)}catch{}
+const threshold=level=>100+Math.floor(35*(level-1)**1.35);
+function calculate(){let level=1,remaining=xp,needed=threshold(level);while(remaining>=needed&&level<500){remaining-=needed;level++;needed=threshold(level)}return {level,remaining,needed}}
+function render(){const a=calculate();$('oceanXPLevel').textContent='⭐ Level '+a.level;$('oceanXPValue').textContent=Math.floor(a.remaining)+' / '+a.needed+' XP';$('oceanXPFill').style.width=Math.min(100,a.remaining/a.needed*100)+'%'}
+window.oceanGainXP=(amount,source)=>{const before=calculate().level;xp+=Math.max(0,Math.floor(amount));try{localStorage.setItem(xpKey,String(xp))}catch{}render();const now=calculate().level;$('oceanXPMessage').textContent=now>before?'🎉 Level up! You reached Level '+now+'!':'+'+Math.floor(amount)+' XP from '+source+'!'};
+render();
+// Reposition the status and XP below the toolbar; leave all controls functional.
+const tools=$('oceanTopTools'),weather=$('oceanWeatherStatus'),xpWidget=$('oceanXPWidget');
+if(tools&&weather){tools.insertAdjacentElement('afterend',weather);weather.insertAdjacentElement('afterend',xpWidget)}
+const faces=['🦑','🐉','🦈','🐙','🦀','🐍','🐋','🦖','🐲','🪼','🦞','👻','🛸'];
+let hideTimer;
+function showBoss(name){const figure=$('oceanBossFigure'),panel=$('oceanBossEncounter');figure.textContent=faces[Math.floor(Math.random()*faces.length)];$('oceanBossName').textContent='😡 '+name+' — an angry creature challenges you!';panel.hidden=false;clearTimeout(hideTimer);hideTimer=setTimeout(()=>panel.hidden=true,17000)}
+$('oceanBossDismiss').onclick=()=>{$('oceanBossEncounter').hidden=true;clearTimeout(hideTimer)};
+$('oceanBossFight').onclick=()=>{$('oceanBossEncounter').hidden=true;const b=$('oceanChallengesButton');if(b){const p=$('oceanChallengesPanel');if(p?.hidden)b.click();p?.scrollTo(0,0)}};
+window.addEventListener('ocean-special-event',e=>showBoss(e.detail?.name||'Ocean monster'));
+})();
+</script>
+
+<style id="ocean-right-hub-style">
+/* All game controls live inside one collapsible right drawer. */
+#oceanTopTools{position:fixed!important;top:70px!important;right:14px!important;left:auto!important;bottom:auto!important;width:min(300px,calc(100vw - 28px))!important;max-height:calc(100dvh - 86px)!important;overflow-y:auto!important;margin:0!important;padding:12px!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:7px!important;z-index:10065!important;border:1px solid #9beeffaa!important;border-radius:18px!important;background:#09244bea!important;box-shadow:0 12px 30px #0008!important;transform:none!important}
+#oceanTopTools[hidden]{display:none!important}
+#oceanTopTools button{display:block!important;flex:none!important;width:100%!important;min-width:0!important;max-width:100%!important;white-space:normal!important;font-size:.85rem!important;padding:10px 8px!important;margin:0!important;position:static!important}
+#oceanGameMenuButton{position:fixed!important;right:14px!important;top:12px!important;left:auto!important;z-index:10110!important;margin:0!important;padding:10px 16px!important;border-radius:24px!important;font-size:.9rem!important;background:linear-gradient(110deg,#075e85,#574a9d)!important;border:1px solid #a9f3ff!important;box-shadow:0 5px 18px #0009!important}
+#oceanGameMenuButton[aria-expanded="true"]{background:#153b65!important}
+#oceanWeatherStatus{position:relative!important;margin:10px auto!important;top:auto!important;right:auto!important;left:auto!important;pointer-events:none!important}
+#oceanXPWidget{margin:12px auto!important}
+#bigShark{top:180px!important;left:8px!important;right:auto!important;transform:scale(.65)!important;transform-origin:top left!important}
+#oceanMapPanel{position:fixed;right:14px;top:70px;z-index:10090;width:min(570px,calc(100vw - 28px));max-height:calc(100dvh - 85px);overflow:auto;background:linear-gradient(145deg,#0c294dfb,#222251fb);color:#fff;border:1px solid #8feaff;border-radius:19px;padding:18px;box-shadow:0 16px 45px #000a;text-align:left}
+#oceanMapPanel h3{color:#a5f5ff;margin:5px 0}
+#oceanMapPanel .map-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:13px}
+#oceanMapPanel .map-place{margin:0;padding:12px 9px;border-radius:13px;text-align:left;white-space:normal;font-size:.82rem;line-height:1.5;min-width:0}
+#oceanMapPanel .map-place:disabled{opacity:.48;cursor:not-allowed}
+#oceanMapPanel .map-place.active{outline:2px solid #ffe5a2;background:#345b85}
+#oceanMapPanel .map-place small{display:block;color:#c6ebfa}
+#oceanMapPanel .map-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#oceanMapPanel .map-head button{margin:0;padding:8px 12px;font-size:.8rem}
+#oceanMapPanel .map-filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
+#oceanMapPanel .map-filters button{margin:0;padding:8px 12px;font-size:.8rem}
+#oceanMapPanel .map-filters input{min-width:100px;flex:1;padding:10px;border:1px solid #9beeff;border-radius:10px;background:#112e57;color:white}
+#oceanPowerPanel{margin:13px 0;padding:12px;border:1px solid #a9e5ff88;border-radius:14px;background:#112b55}
+#oceanPowerPanel h4{margin:0 0 8px;color:#ffe3a1}
+#oceanPowerPanel .power-row{display:flex;gap:6px;flex-wrap:wrap}
+#oceanPowerPanel button{margin:0;padding:8px 9px;font-size:.76rem;flex:1 1 115px}
+#oceanPowerPanel button:disabled{opacity:.5}
+#oceanPowerStatus{font-size:.77rem;color:#bfe9ff;margin-top:8px;line-height:1.4}
+@media(max-width:650px){#oceanGameMenuButton{right:8px!important;top:8px!important;padding:9px 12px!important}#oceanTopTools{top:58px!important;right:8px!important;max-height:calc(100dvh - 70px)!important;width:min(285px,calc(100vw - 16px))!important;margin:0!important}#oceanMapPanel{top:58px;right:8px;max-height:calc(100dvh - 70px);padding:12px}#oceanMapPanel .map-grid{grid-template-columns:1fr}#bigShark{top:190px!important;transform:scale(.45)!important}}
+</style>
+
+<button type="button" id="oceanGameMenuButton" aria-controls="oceanTopTools" aria-expanded="false">☰ Ocean Game</button>
+<section id="oceanMapPanel" hidden aria-label="Ocean world map">
+ <div class="map-head"><h3>🗺️ The Endless Ocean Map</h3><button id="oceanMapClose" type="button">✕ Close</button></div>
+ <p style="font-size:.84rem;line-height:1.5">Discover 120 fantasy locations. Level up by finding treasures and winning battles to unlock new destinations. Your selected location is saved!</p>
+ <div id="oceanMapProgress" style="font-size:.88rem;color:#ffe7a5"></div>
+ <div class="map-filters"><input id="oceanMapSearch" type="search" placeholder="Search locations…" aria-label="Search ocean locations"><button id="oceanMapUnlocked" type="button" aria-pressed="false">Unlocked only</button></div>
+ <div id="oceanMapCurrent" role="status" style="font-size:.9rem;color:#aaf1ff"></div>
+ <div id="oceanMapGrid" class="map-grid"></div>
+</section>
+
+<script id="ocean-right-hub-script">
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const tools=$('oceanTopTools'),menu=$('oceanGameMenuButton'),map=$('oceanMapPanel');
+if(!tools||!menu||!map)return;
+const panelIds=['oceanSoundPanel','oceanCollectionPanel','oceanChoosePanel','oceanShopPanel','oceanChallengesPanel','oceanMapPanel'];
+const closePanels=()=>{for(const id of panelIds){const p=$(id);if(p){p.hidden=true;const b=document.querySelector('[aria-controls="'+id+'"]');b?.setAttribute('aria-expanded','false')}}};
+const setMenu=open=>{tools.hidden=!open;menu.setAttribute('aria-expanded',String(open));menu.textContent=open?'✕ Close Game Menu':'☰ Ocean Game'};
+setMenu(false);
+menu.addEventListener('click',()=>{const opening=tools.hidden;closePanels();setMenu(opening)});
+// Keep buttons in the drawer. Opening any game panel hides the drawer and other panels.
+tools.addEventListener('click',e=>{const button=e.target.closest('button');if(!button)return;const target=button.getAttribute('aria-controls')||({oceanShopButton:'oceanShopPanel',oceanChallengesButton:'oceanChallengesPanel',oceanChooseButton:'oceanChoosePanel'}[button.id]);if(!target||!$(target))return;
+// Existing listeners toggle the chosen panel; close other panels before they run.
+for(const id of panelIds)if(id!==target&&$(id))$(id).hidden=true;
+setTimeout(()=>{if(!$(target).hidden)setMenu(false)},0);
+},true);
+// Clicking close inside any panel leaves the screen uncluttered and the menu closed.
+for(const id of panelIds){const panel=$(id);if(!panel)continue;panel.addEventListener('click',e=>{if(e.target.closest('.ocean-panel-dismiss, #oceanMapClose, #oceanChallengesClose, #oceanCollectionClose'))setMenu(false)})}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePanels();setMenu(false)}});
+// 120 fictional locations, grouped into 12 ocean regions, each requiring the matching explorer level.
+const regions=[['🐚','Coral Coast'],['🐠','Sunlit Reefs'],['🪸','Crystal Gardens'],['🏝️','Lost Islands'],['🐬','Dolphin Kingdom'],['🌙','Moonlit Trench'],['⚓','Sunken Empire'],['🦑','Kraken Territory'],['🌋','Volcanic Abyss'],['❄️','Frozen Deep'],['🌌','Celestial Sea'],['💎','Heart of the Ocean']];
+const sites=['Harbor','Lagoon','Passage','Sanctuary','Cavern','Grotto','Palace','Ruins','Citadel','Horizon'];
+const locations=Array.from({length:120},(_,i)=>({id:i,level:i+1,name:regions[Math.floor(i/10)][1]+' '+sites[i%10],emoji:regions[Math.floor(i/10)][0]}));
+const levelNow=()=>{const label=$('oceanXPLevel')?.textContent||'';return Math.max(1,Number(label.match(/\d+/)?.[0])||1)};
+const mapKey='ocean-map-location-v1';let selected=0;try{selected=Math.min(119,Math.max(0,Number(localStorage.getItem(mapKey))||0))}catch{}
+let unlockedOnly=false;
+const mapButton=document.createElement('button');mapButton.id='oceanMapButton';mapButton.type='button';mapButton.textContent='🗺️ World Map (120 Places)';mapButton.setAttribute('aria-controls','oceanMapPanel');mapButton.setAttribute('aria-expanded','false');tools.appendChild(mapButton);
+mapButton.addEventListener('click',()=>{const open=map.hidden;closePanels();map.hidden=!open;mapButton.setAttribute('aria-expanded',String(open));setMenu(false);if(open)renderMap()});
+$('oceanMapClose').addEventListener('click',()=>{map.hidden=true;mapButton.setAttribute('aria-expanded','false');setMenu(false)});
+$('oceanMapSearch').addEventListener('input',renderMap);
+$('oceanMapUnlocked').addEventListener('click',()=>{unlockedOnly=!unlockedOnly;$('oceanMapUnlocked').setAttribute('aria-pressed',String(unlockedOnly));renderMap()});
+function renderMap(){const level=levelNow();if(locations[selected].level>level)selected=0;
+ $('oceanMapProgress').textContent='⭐ Level '+level+' · '+Math.min(level,120)+' / 120 locations unlocked';
+ $('oceanMapCurrent').textContent='📍 Current destination: '+locations[selected].emoji+' '+locations[selected].name;
+ const q=$('oceanMapSearch').value.trim().toLowerCase(),grid=$('oceanMapGrid');grid.replaceChildren();
+ for(const loc of locations){if(unlockedOnly&&loc.level>level||q&&!loc.name.toLowerCase().includes(q))continue;
+ const b=document.createElement('button');b.type='button';b.className='map-place'+(selected===loc.id?' active':'');b.disabled=loc.level>level;
+ b.textContent=(loc.level>level?'🔒 ':loc.emoji+' ')+loc.name;
+ const sub=document.createElement('small');sub.textContent='Level '+loc.level+(loc.level>level?' required':selected===loc.id?' · Exploring':' · Unlocked');b.appendChild(sub);
+ b.addEventListener('click',()=>{selected=loc.id;try{localStorage.setItem(mapKey,String(selected))}catch{}renderMap()});grid.appendChild(b)
+ }
+ if(!grid.children.length)grid.textContent='No matching locations.';
+}
+// Three special combat abilities share a 10-minute cooldown, saved across refreshes.
+const arena=$('oceanChallengesPanel')?.querySelector('.battle-arena');if(arena){
+ const powers=document.createElement('section');powers.id='oceanPowerPanel';powers.innerHTML='<h4>✨ Special Powers</h4><div class="power-row"><button type="button" data-power="surge">⚡ Tidal Surge (2 hits)</button><button type="button" data-power="shield">🛡️ Ocean Shield</button><button type="button" data-power="heal">💖 Healing Current</button></div><div id="oceanPowerStatus" role="status">All powers share a 10-minute cooldown.</div>';
+ arena.appendChild(powers);
+ const key='ocean-power-last-use-v1';let last=0;try{last=Number(localStorage.getItem(key))||0}catch{}
+ const cooldown=600000;let activeUntil=0;
+ const update=()=>{const left=Math.max(0,cooldown-(Date.now()-last));const active=Date.now()<activeUntil;for(const b of powers.querySelectorAll('button'))b.disabled=left>0||!active;
+ $('oceanPowerStatus').textContent=left>0?'⏳ Next special power in '+Math.ceil(left/60000)+'m '+String(Math.ceil(left/1000)%60).padStart(2,'0')+'s':active?'✨ Power ready! Choose one special ability.':'⚔️ Powers become available during special events.'};
+ window.addEventListener('ocean-special-event',e=>{activeUntil=Date.now()+Math.max(20000,Number(e.detail?.duration)||120000);update()});
+ powers.addEventListener('click',e=>{const b=e.target.closest('button[data-power]');if(!b||b.disabled||Date.now()-last<cooldown||Date.now()>=activeUntil)return;
+ const action=b.dataset.power;const attack=$('battleAttack'),guard=$('battleGuard'),heal=$('battleHeal');
+ const target=action==='surge'?attack:action==='shield'?guard:heal;
+ if(!target||target.disabled){$('oceanPowerStatus').textContent='Start a battle first!';return}
+ if(action==='heal'&&/No healing charges/.test($('battleLog')?.textContent||'')){return}
+ last=Date.now();try{localStorage.setItem(key,String(last))}catch{}
+ target.click();if(action==='surge'&&!attack.disabled){setTimeout(()=>{if(Date.now()<activeUntil&&!attack.disabled)attack.click()},220)}
+ $('oceanPowerStatus').textContent='✨ '+(action==='surge'?'Tidal Surge':action==='shield'?'Ocean Shield':'Healing Current')+' activated!';setTimeout(update,900)
+ });setInterval(update,1000);update();
+}
+})();
+</script>
+
+<style id="ocean-ui-and-creature-audio-v3">
+/* The two site-wide controls are now part of the page, not fixed over its heading. */
+#oceanSiteControls{position:relative;z-index:7;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;margin:0 auto 20px;max-width:95%}
+#oceanSiteControls #oceanViewToggle,#oceanSiteControls #oceanLanguageHomeButton{position:static!important;left:auto!important;top:auto!important;right:auto!important;transform:none!important;margin:0!important;padding:9px 15px!important;font-size:.83rem!important;white-space:normal!important}
+#oceanSiteControls #oceanViewToggle:hover{transform:translateY(-2px)!important}
+#oceanSiteControls #oceanRestoreDock{position:static!important;transform:none!important;margin:0!important;max-width:100%!important}
+#oceanXPWidget{position:relative!important;margin:32px auto 24px!important;width:min(750px,94%)!important;clear:both!important}
+#oceanWeatherStatus{position:relative!important;z-index:5!important;max-width:max-content!important}
+#oceanGameMenuButton{top:12px!important;right:14px!important}
+#oceanTopTools{top:67px!important;right:14px!important;max-height:calc(100dvh - 82px)!important}
+#oceanBossEncounter .boss-figure{border:7px solid #ff3535!important;border-radius:50%!important;width:min(235px,65vw)!important;height:min(235px,65vw)!important;display:flex!important;align-items:center;justify-content:center;margin:12px auto!important;background:radial-gradient(circle,#5d1634,#210e24)!important;box-shadow:0 0 0 5px #ff373744,0 0 40px #ff1c31bb!important;font-size:clamp(5rem,18vw,9rem)!important}
+#oceanBossEncounter{max-height:90dvh!important;overflow-y:auto!important}
+#oceanSoundPanel .mob-audio-settings{padding:13px 0 8px;border-top:1px solid #8ceeff66;margin-top:14px}
+#oceanSoundPanel .mob-audio-settings input[type=range]{width:100%}
+#oceanSoundPanel .mob-audio-settings .mob-line{display:flex;justify-content:space-between;align-items:center;gap:10px}
+@media(max-width:650px){#oceanSiteControls{gap:6px}#oceanSiteControls #oceanViewToggle,#oceanSiteControls #oceanLanguageHomeButton{font-size:.73rem!important;padding:8px 10px!important}#oceanXPWidget{margin:26px auto 18px!important}#oceanGameMenuButton{right:8px!important;top:8px!important}#oceanTopTools{right:8px!important;top:60px!important}}
+</style>
+<script id="ocean-ui-and-creature-audio-v3-script">
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const welcome=document.querySelector('main .welcome');
+if(welcome){
+ const controls=document.createElement('div');controls.id='oceanSiteControls';
+ for(const id of ['oceanViewToggle','oceanLanguageHomeButton','oceanRestoreDock']){const el=$(id);if(el)controls.appendChild(el)}
+ welcome.insertBefore(controls,welcome.firstChild);
+ // Level indicator belongs below the opening card, not above the birthday heading.
+ const xp=$('oceanXPWidget');if(xp)welcome.insertAdjacentElement('afterend',xp);
+}
+const panel=$('oceanSoundPanel');if(!panel)return;
+const area=document.createElement('div');area.className='mob-audio-settings';
+area.innerHTML='<h3 style="margin:0 0 8px;color:#b5f3ff">🐟 Creature Sounds</h3><label class="ocean-toggle"><input id="oceanMobAudioEnabled" type="checkbox"> Enable creature noises</label><div class="mob-line"><label for="oceanMobVolume">Creature volume</label><strong id="oceanMobVolumeValue">35%</strong></div><input id="oceanMobVolume" type="range" min="0" max="100" step="1" value="35" aria-label="Creature sound volume"><p style="font-size:.75rem;color:#c1e9ff;line-height:1.4">Soft sea-life calls while exploring; louder warning growls when hostile creatures appear. Uses the existing ocean sound switch.</p>';
+panel.appendChild(area);
+const enabled=$('oceanMobAudioEnabled'),volume=$('oceanMobVolume'),label=$('oceanMobVolumeValue');
+function get(key,fallback){try{return localStorage.getItem(key)??fallback}catch{return fallback}}
+function set(key,value){try{localStorage.setItem(key,String(value))}catch{}}
+enabled.checked=get('ocean-mob-sounds-enabled','true')==='true';
+volume.value=get('ocean-mob-volume','35');label.textContent=volume.value+'%';
+enabled.addEventListener('change',()=>set('ocean-mob-sounds-enabled',enabled.checked));
+volume.addEventListener('input',()=>{label.textContent=volume.value+'%';set('ocean-mob-volume',volume.value)});
+let ctx=null;
+function getContext(){if(!ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ctx=new C()}return ctx}
+function canPlay(){return enabled.checked&&Number(volume.value)>0&&$('oceanSoundToggle')?.textContent.includes('Pause Ocean Sounds')&&document.visibilityState==='visible'}
+function chirp(hostile=false){
+ if(!canPlay())return;
+ const ac=getContext();if(!ac)return;
+ if(ac.state==='suspended'){ac.resume().catch(()=>{});return}
+ const now=ac.currentTime;
+ const loud=Number(volume.value)/100 * (hostile?.17:.048);
+ const masterSetting=Number($('oceanVolume')?.value??35)/100;
+ const g=ac.createGain(),o=ac.createOscillator(),f=ac.createBiquadFilter();
+ f.type='lowpass';f.frequency.value=hostile?900:1400;
+ o.type=hostile?'sawtooth':'sine';
+ const start=hostile?75:310+Math.random()*160;
+ o.frequency.setValueAtTime(start,now);
+ o.frequency.exponentialRampToValueAtTime(hostile?42:start*1.3,now+(hostile?.52:.28));
+ o.frequency.exponentialRampToValueAtTime(hostile?58:start*.7,now+(hostile?.95:.7));
+ g.gain.setValueAtTime(.0001,now);g.gain.linearRampToValueAtTime(Math.max(.0001,loud*masterSetting),now+.07);
+ g.gain.exponentialRampToValueAtTime(.0001,now+(hostile?1.1:.85));
+ o.connect(f);f.connect(g);g.connect(ac.destination);o.start(now);o.stop(now+(hostile?1.13:.87));
+ o.onended=()=>{o.disconnect();f.disconnect();g.disconnect()};
+}
+function ambientLoop(){if(canPlay()&&Math.random()<.78)chirp(false);setTimeout(ambientLoop,12000+Math.random()*14000)}
+setTimeout(ambientLoop,10000);
+const boss=$('oceanBossEncounter');
+if(boss){
+ let lastBoss=false;
+ const observe=new MutationObserver(()=>{
+  const active=!boss.hidden;
+  if(active&&!lastBoss){chirp(true);setTimeout(()=>{if(!boss.hidden)chirp(true)},1500)}
+  lastBoss=active;
+ });
+ observe.observe(boss,{attributes:true,attributeFilter:['hidden']});
+}
+const battle=$('oceanChallengesPanel');
+if(battle){
+ battle.addEventListener('click',e=>{if(e.target.closest('.battle-actions button')&&Math.random()<.5)chirp(true)});
+}
+// Hide open settings with Escape, without changing the player's audio preferences.
+})();
+</script>
+
+<style id="treasure-visibility-upgrade">
+.ocean-collectible{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:120px;min-height:125px;padding:11px!important;border-width:4px!important;border-radius:24px!important;background:linear-gradient(145deg,#102e62f5,#183e72f5)!important;box-shadow:0 0 0 5px #ffffff55,0 0 32px 10px var(--treasure-glow,#ffe56c),0 8px 30px #000a!important;animation:treasureNotice 1.7s ease-in-out infinite!important;line-height:1.2;white-space:nowrap}
+.ocean-collectible .treasure-icon{font-size:clamp(3.5rem,7vw,5.5rem);filter:drop-shadow(0 0 12px #fff8)}
+.ocean-collectible .treasure-hint{font:bold .72rem Arial,sans-serif;letter-spacing:.6px;color:#fff7b6;text-shadow:0 1px 3px #000}
+.ocean-collectible .treasure-rarity{font:bold .7rem Arial,sans-serif;color:#fff;background:#0007;padding:3px 9px;border-radius:10px}
+@keyframes treasureNotice{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.07)}}
+@media(max-width:600px){.ocean-collectible{min-width:94px;min-height:100px;padding:7px!important}.ocean-collectible .treasure-icon{font-size:3rem}.ocean-collectible .treasure-hint{font-size:.59rem}}
+@media(prefers-reduced-motion:reduce){.ocean-collectible{animation:none!important}}
+</style>
 </body>
 </html>
